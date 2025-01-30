@@ -137,8 +137,10 @@ function createPeerConnection() {
 
   // Handle remote stream
   peerConnection.ontrack = (event) => {
+    console.log("test1");
     remoteStream = event.streams[0];
     if (remoteVideo) {
+      console.log("test2");
       remoteVideo.srcObject = remoteStream;
       
     }
