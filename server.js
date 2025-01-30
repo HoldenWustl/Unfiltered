@@ -102,6 +102,7 @@ io.on('connection', (socket) => {
 
   // Handle user joining the video chat
   socket.on('joinVideoChat', ({ userName, age }) => {
+    socket.isRefreshing = false;
     socket.userName = userName;
     socket.age = age;
     videoQueue.push(socket);
@@ -122,31 +123,49 @@ io.on('connection', (socket) => {
 
   // Handle user leaving the video chat
   socket.on('leaveVideoChat', () => {
+    // Ensure user is removed from the queue on leave
+    videoQueue = videoQueue.filter(s => s !== socket);
+  
     if (socket.partner) {
       socket.partner.emit('videoUserLeft');
       socket.partner.partner = null;
-      // Ensure the partner is only pushed back to the queue if it's empty
+  
+      // Only push partner back to the queue if it's empty
       if (videoQueue.length === 0) {
         videoQueue.push(socket.partner);
         socket.partner.emit('waitingForVideoPair', false);
       }
     }
-    videoQueue = videoQueue.filter(s => s !== socket);
+  
+    // Reset the partner reference
     socket.partner = null;
   });
 
   // Handle user disconnecting
   socket.on('disconnect', () => {
+    // Remove user from the video queue
+    videoQueue = videoQueue.filter(s => s !== socket);
+  
+    if (socket.isRefreshing) {
+      // Skip further processing if it is a refresh
+      return;
+    }
+  
+    // Handle partner-related logic
     if (socket.partner) {
+      // Inform the partner that the user has left
       socket.partner.emit('videoUserLeft');
       socket.partner.partner = null;
-      // Ensure the partner is only pushed back to the queue if it's empty
+  
+      // Only push partner back to the queue if it's empty
       if (videoQueue.length === 0) {
         videoQueue.push(socket.partner);
         socket.partner.emit('waitingForVideoPair', false);
       }
     }
-    videoQueue = videoQueue.filter(s => s !== socket);
+  
+    // Reset the socket's partner
+    socket.partner = null;
   });
 
   // Relay WebRTC signaling messages
@@ -166,6 +185,9 @@ io.on('connection', (socket) => {
     if (socket.partner) {
       socket.partner.emit('candidate', candidate);
     }
+  });
+  socket.on('refresh', () => {
+    socket.isRefreshing = true;
   });
 });
 
