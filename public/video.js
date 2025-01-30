@@ -10,7 +10,31 @@ let peerConnection = null;
 const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 let iceCandidateQueue = [];
-const iceServers = { urls: 'stun:stun.l.google.com:19302' };
+const iceServers = [
+  {
+    urls: "stun:stun.relay.metered.ca:80",
+  },
+  {
+    urls: "turn:global.relay.metered.ca:80",
+    username: "24f50eaa40fe5b3385c2413b",
+    credential: "yNKdn0DH6LknYKXq",
+  },
+  {
+    urls: "turn:global.relay.metered.ca:80?transport=tcp",
+    username: "24f50eaa40fe5b3385c2413b",
+    credential: "yNKdn0DH6LknYKXq",
+  },
+  {
+    urls: "turn:global.relay.metered.ca:443",
+    username: "24f50eaa40fe5b3385c2413b",
+    credential: "yNKdn0DH6LknYKXq",
+  },
+  {
+    urls: "turns:global.relay.metered.ca:443?transport=tcp",
+    username: "24f50eaa40fe5b3385c2413b",
+    credential: "yNKdn0DH6LknYKXq",
+  },
+];
 
 // Flag to track whether the local stream is ready
 let localStreamReady = false;
@@ -99,7 +123,7 @@ function createPeerConnection() {
     return;
   }
 
-  peerConnection = new RTCPeerConnection({ iceServers: [iceServers] });
+  peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
   // Add local stream tracks to the peer connection
   localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
@@ -114,7 +138,10 @@ function createPeerConnection() {
   // Handle remote stream
   peerConnection.ontrack = (event) => {
     remoteStream = event.streams[0];
-    if (remoteVideo) remoteVideo.srcObject = remoteStream;
+    if (remoteVideo) {
+      remoteVideo.srcObject = remoteStream;
+      
+    }
   };
 }
 
