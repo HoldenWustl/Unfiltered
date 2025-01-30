@@ -1,4 +1,4 @@
-const socket = io();
+var socket = io.connect();
 const urlParams = new URLSearchParams(window.location.search);
 const userName = urlParams.get('userName') || 'User';
 const age = urlParams.get('age') || 'Unknown';
