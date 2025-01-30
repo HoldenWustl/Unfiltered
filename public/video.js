@@ -70,6 +70,7 @@ document.getElementById("status").textContent = "Finding someone...";
 
 // Handle pairing
 socket.on('pairedForVideo', async (otherUser) => {
+  console.log('Paired for video with:', otherUser);
   hideWaitingForMatch();
   otherUserName = otherUser.userName;
   otherUserAge = otherUser.age;
@@ -78,13 +79,16 @@ socket.on('pairedForVideo', async (otherUser) => {
   // Wait for the local stream to be ready before creating the peer connection and sending offer
   await ensureLocalStream();
   if (!peerConnection) {
+    console.log("Creating peer connection...");
     createPeerConnection(); // Create the peer connection only after stream is ready
+    console.log("Creating offer...");
     createOffer(); // Create and send the offer to the other user
   }
 });
 
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
+  console.log('Waiting for video pair...');
   showWaitingForMatch();
   document.getElementById("status").textContent = reconnecting ? 
     "Your partner left. Searching for a new match..." : 
@@ -94,9 +98,11 @@ socket.on('waitingForVideoPair', (reconnecting) => {
 
 // When the other user leaves
 socket.on('videoUserLeft', () => {
+  console.log(`${otherUserName} has left the chat.`);
   document.getElementById("status").textContent = `${otherUserName} has left the chat.`;
   otherUserName = null;
   if (peerConnection) {
+    console.log("Closing peer connection...");
     peerConnection.close();
     peerConnection = null;
   }
@@ -107,11 +113,13 @@ socket.on('videoUserLeft', () => {
 });
 // When the user refreshes the page
 window.addEventListener('beforeunload', () => {
+  console.log('User is refreshing the page...');
   socket.emit('refresh');
 });
 
 // Leave chat handler
 document.getElementById("leave-btn").addEventListener("click", () => {
+  console.log("User is leaving the chat...");
   socket.emit("leaveVideoChat");
   window.location.href = "info.html";
 });
@@ -123,26 +131,31 @@ function createPeerConnection() {
     return;
   }
 
+  console.log("Creating RTCPeerConnection...");
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
   // Add local stream tracks to the peer connection
-  localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+  localStream.getTracks().forEach(track => {
+    console.log("Adding track to peer connection:", track);
+    peerConnection.addTrack(track, localStream);
+  });
 
   // Handle ICE candidate
   peerConnection.onicecandidate = (event) => {
+    console.log("ICE candidate event:", event);
     if (event.candidate) {
+      console.log("Sending ICE candidate to server...");
       socket.emit('candidate', event.candidate);
     }
   };
 
   // Handle remote stream
   peerConnection.ontrack = (event) => {
-    console.log("test1");
+    console.log("Received remote track:", event);
     remoteStream = event.streams[0];
     if (remoteVideo) {
-      console.log("test2");
+      console.log("Setting remote video stream...");
       remoteVideo.srcObject = remoteStream;
-      
     }
   };
 }
@@ -155,8 +168,10 @@ async function createOffer() {
   }
 
   try {
+    console.log("Creating offer...");
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
+    console.log("Sending offer to server...");
     socket.emit('offer', offer);
   } catch (error) {
     console.error("Error creating offer:", error);
@@ -165,6 +180,7 @@ async function createOffer() {
 
 // Handle offer from the other user
 socket.on('offer', async (offer) => {
+  console.log("Received offer:", offer);
   if (peerConnection) {
     console.log("Already have a peer connection.");
     return;
@@ -179,11 +195,12 @@ socket.on('offer', async (offer) => {
 
     // Process queued ICE candidates
     iceCandidateQueue.forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
-
     iceCandidateQueue = [];
 
+    console.log("Creating answer...");
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
+    console.log("Sending answer to server...");
     socket.emit('answer', answer);
   } catch (error) {
     console.error("Error handling offer:", error);
@@ -192,6 +209,7 @@ socket.on('offer', async (offer) => {
 
 // Handle the answer from the other user
 socket.on('answer', async (answer) => {
+  console.log("Received answer:", answer);
   if (peerConnection) {
     try {
       await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
@@ -203,6 +221,7 @@ socket.on('answer', async (answer) => {
 
 // Handle ICE candidates
 socket.on('candidate', (candidate) => {
+  console.log("Received ICE candidate:", candidate);
   if (peerConnection && peerConnection.remoteDescription) {
     peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(error => {
       console.error("Error adding ICE candidate:", error);
@@ -214,9 +233,11 @@ socket.on('candidate', (candidate) => {
 });
 
 function showWaitingForMatch() {
+  console.log("Showing waiting for match...");
   document.getElementById("loading-symbol").style.display = "block";
 }
 
 function hideWaitingForMatch() {
+  console.log("Hiding waiting for match...");
   document.getElementById("loading-symbol").style.display = "none";
 }
