@@ -1,0 +1,170 @@
+/* Overall body styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #6a11cb, #2575fc); /* Smooth gradient background */
+  color: white;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Status text styling */
+#unfiltered {
+  font-size: 3em;
+  font-weight: bold;
+  color: #f1f1f1;
+  margin-bottom: 10px; /* Reduced margin */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Status text styling */
+#status {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #f1f1f1;
+  margin-bottom: 10px; /* Reduced margin */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.video-wrapper{
+  display:flex;
+  gap: 20px;
+}
+#remoteSpinner{
+  position:relative;
+}
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  position: absolute;
+  top: 30%; /* Position the videos closer to the center */
+}
+
+/* Larger video sizes */
+video {
+  border: 8px solid #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  width: 400px; /* Larger video size */
+  height: 300px; /* Larger video size */
+  object-fit: cover;
+}
+
+/* Add a better border effect when the user is actively in a call */
+.video-container .active-video {
+  border-color: #25f6b0;
+  animation: pulse 1.5s infinite alternate;
+}
+
+/* Pulse effect to highlight active video */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+/* Button styling */
+button {
+  padding: 10px 20px;
+  margin: 20px;
+  background-color: #2575fc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #6a11cb;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Centering the leave button at the bottom */
+#leave-btn {
+  
+  transform: translateY(-50%);
+  z-index: 10;
+}
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3; /* Light grey color */
+  border-top: 5px solid #3498db; /* Blue color for the spinner */
+  border-radius: 50%;
+  animation: spin 1s linear infinite; /* Spin animation */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Ensure videos stack on top of each other on small screens */
+/* Ensure videos stack on top of each other on small screens */
+@media (max-width: 768px) {
+  .video-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Reduce spacing for better fit */
+    position: relative; /* Ensure videos stay within the screen */
+    top: 15%; /* Reset positioning */
+    padding: 10px; /* Add some padding to prevent overlap */
+  }
+
+  .video-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Reduce the gap between videos */
+  }
+
+  video {
+    width: 90%; /* Make video responsive to screen size */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 350px; /* Limit max width */
+    border-radius: 10px; /* Ensure rounded corners */
+  }
+
+  #unfiltered{
+    display:none;
+  }
+
+  #status {
+    display:block;
+    top: 0%; /* Adjust position of status text */
+  }
+
+ 
+}

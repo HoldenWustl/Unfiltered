@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the Fun</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    /* Basic styling for chat.html */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); /* A light texture */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .back-btn {
+      background-color: #e11d48;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+      transition: background-color 0.3s;
+    }
+
+    .back-btn:hover {
+      background-color: #be123c;
+    }
+    .form-container {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .glowing-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 15px;
+    font-size: 18px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    text-align: center;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.5); /* Orange glow */
+    margin: 0 auto; /* Center it horizontally */
+    display: block; /* Needed for margin auto to work */
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.glowing-input:focus {
+    border-color: #FF6A00;
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); /* Stronger glow on focus */
+}
+
+.glowing-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.glowing-input:focus::placeholder {
+    color: transparent; /* Hide placeholder when typing */
+}
+
+
+
+    .slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-top: 10px;
+  }
+
+  .slider-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .styled-slider {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 80%;
+    height: 8px;
+    background: linear-gradient(90deg, #ff6a00, #e11d48);
+    border-radius: 5px;
+    outline: none;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+
+  .styled-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 2px solid #ff6a00;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .styled-slider::-webkit-slider-thumb:hover {
+    background: #ff6a00;
+  }
+
+  .slider-min, .slider-max {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .age-display {
+    font-size: 2.5rem; /* Bigger text */
+    font-weight: bold;
+    color: #ff6a00;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 12px 25px;
+    margin-top: 10px;
+    display: inline-block;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 106, 0, 0.7); /* Glowing effect */
+    text-shadow: 0 0 8px rgba(255, 106, 0, 0.8);
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 10px;
+  }
+  .age-display.pop {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.8);
+}
+    .slider-container input {
+      width: 80%;
+    }
+
+    .slider-container span {
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    /* Container to hold the two buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Adjust the gap between buttons */
+    margin-top: 20px; /* Add space above the buttons */
+}
+
+/* Styling for both buttons */
+.start-chat-btn, .start-video-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Chat button style */
+.start-chat-btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+/* Video call button style */
+.start-video-btn {
+    background-color: blueviolet; /* Orange */
+    color: white;
+}
+
+/* Hover effect for buttons */
+.start-chat-btn:hover, .start-video-btn:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+    filter: brightness(80%);
+}
+
+/* Optional: Add some animations */
+.animate__animated {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+}
+.animate__zoomIn {
+    animation-name: zoomIn;
+}
+
+@keyframes zoomIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Enter Your Info</h2>
+
+    <form id="user-form">
+      <input type="text" id="name" class="glowing-input" placeholder="Enter your name" required maxlength="20">
+
+      
+      <div class="slider-container">
+        <label for="age">Age:</label>
+        <div class="slider-wrapper">
+          <span class="slider-min">18</span>
+          <input type="range" id="age" class="styled-slider" min="18" max="40" value="18" oninput="updateAgeValue()">
+          <span class="slider-max">40+</span>
+        </div>
+        <div id="age-display" class="age-display">18</div>
+      </div>
+      
+
+      <div class="button-container">
+        <button type="submit" class="start-chat-btn animate__animated animate__zoomIn" onclick="startChat()">Start Text Chat</button>
+        <button type="submit" class="start-video-btn animate__animated animate__zoomIn" onclick="startVideo()">Start Video Chat</button>
+    </div>
+    
+    </form>
+
+    <button onclick="window.location.href='index.html'" class="back-btn">Back to Home</button>
+  </div>
+
+  <script>
+    // Age slider functionality
+    const ageSlider = document.getElementById('age');
+    const ageValue = document.getElementById('age-display');
+
+    // ageSlider.addEventListener('input', function() {
+    //   ageValue.textContent = ageSlider.value;
+    // });
+
+   
+
+    function updateAgeValue() {
+      let age = parseInt(document.getElementById("age").value); // Get the age value and parse it as an integer
+
+  if (age === 40) {
+    document.getElementById("age-display").textContent = "40+"; // If the age is exactly 40, display "40+"
+  } else {
+    document.getElementById("age-display").textContent = age; // Otherwise, display the age
+  }
+  }
+
+  
+  const ageDisplay = document.getElementById("age-display");
+
+  ageSlider.addEventListener("input", function () {
+      
+
+      // Add pop effect
+      ageDisplay.classList.add("pop");
+
+      // Remove pop effect after animation (smooth reset)
+      setTimeout(() => {
+          ageDisplay.classList.remove("pop");
+      }, 200);
+  });
+
+  function startChat() {
+    event.preventDefault(); 
+    // Get the value of the name input field
+    const nameInput = document.getElementById('name').value;
+
+    // Check if the name input is empty
+    if (nameInput.trim() === "") {
+        alert("Please enter your name before starting the chat!");
+    } else {
+        // If name input is filled, redirect to the chat page (chat.html)
+        window.location.href = `chat.html?userName=${encodeURIComponent(nameInput.trim())}`; 
+    }
+}
+function startVideo() {
+    event.preventDefault(); 
+    // Get the value of the name input field
+    const nameInput = document.getElementById('name').value;
+    const ageInput = document.getElementById('age-display').innerText;
+    // Check if the name input is empty
+    if (nameInput.trim() === "") {
+        alert("Please enter your name before starting the chat!");
+    } else {
+        // If name input is filled, redirect to the chat page (chat.html)
+        window.location.href = `video.html?userName=${encodeURIComponent(nameInput.trim())}&age=${encodeURIComponent(ageInput)}`;
+    }
+}
+
+  </script>
+
+</body>
+</html>

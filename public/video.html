@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Chat</title>
+    <link rel="stylesheet" href="videostyles.css">
+</head>
+<body>
+  <div id="unfiltered">Unfiltered</div>
+  <h2 id="status">Finding someone...</h2>
+    <div class="video-container">
+        
+        <div class="video-wrapper">
+          
+          <video id="local-video" autoplay muted></video>
+          <div id="remoteSpinner">
+          <div id="loading-symbol" class="loading-spinner" style="display: none;"></div>
+          <video id="remote-video" autoplay></video>    
+        </div>      
+        </div>
+        <button id="leave-btn">Leave Chat</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="video.js"></script>
+</body>
+</html>

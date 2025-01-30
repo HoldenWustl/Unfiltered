@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="chatstyles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header with user's name -->
+        <div class="chat-header">
+            <h2>ChatRoom</h2>
+            <button id="back-btn" onclick="goBack()">Back</button>
+        </div>
+
+        <!-- Chat Messages Display -->
+        <div id="chat-messages" class="chat-messages">
+            <!-- Chat messages will go here -->
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <input type="text" id="message-input" placeholder="Type a message..." maxlength="200"  />
+            <span id="char-count">200</span>
+            <button id="send-message-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="chat.js"></script>
+    
+
+
+</body>
+</html>

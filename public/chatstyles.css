@@ -1,0 +1,183 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+  background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); /* A light texture */
+  margin: 0;
+  padding: 0;
+}
+
+.chat-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.chat-header h2 {
+  margin: 0;
+}
+
+#back-btn {
+  background-color: #ff6a00;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#back-btn:hover {
+  background-color: #ff4500;
+}
+/* Style for the neutral join message */
+.chat-message.neutral-message {
+  text-align: center;   /* Center the text */
+  font-style: italic;   /* Make it look more neutral */
+  color: #777;          /* Use a subtle color */
+  margin-top: 10px;     /* Add some space above */
+  margin-bottom: 10px;  /* Add some space below */
+}
+
+.sender-name {
+  font-weight: bold;
+  margin-right: 5px;
+  color: #FF6A00; /* Change this color as needed */
+}
+
+#char-count {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #999;
+  padding: 5px 10px;
+  background-color: #f1f5f9;
+  border-radius: 20px;
+}
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: scroll;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+
+.chat-message {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%; /* Limit the width of each message to 80% of the container width */
+  word-wrap: break-word; /* Ensure long words break within the block */
+  overflow-wrap: break-word; /* Ensure long words break and do not overflow */
+  display: block; /* Ensure each message is its own block */
+  margin-bottom: 10px; /* Add space between messages */
+}
+
+.chat-message.user {
+  background-color: #ff6a00;
+  color: white;
+  align-self: flex-end; /* Align user messages to the right */
+  text-align: right; /* Align text inside the message to the right */
+}
+
+.chat-message.other {
+  background-color: #f1f5f9;
+  color: #333;
+  align-self: flex-start; /* Align other user messages to the left */
+  text-align: left; /* Align text inside the message to the left */
+}
+
+
+
+
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+#message-input {
+  flex-grow: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+}
+
+#send-message-btn {
+  background-color: #ff6a00;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#send-message-btn:hover {
+  background-color: #ff4500;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+
+  .chat-container {
+    width: 95%; /* Make sure it fits within small screens */
+    padding: 15px; /* Reduce padding */
+    height: 85vh; /* Adjust height to prevent overflow */
+  }
+
+  .chat-header {
+    flex-direction: column; /* Stack items if needed */
+    align-items: center;
+    text-align: center;
+  }
+
+  #back-btn {
+    width: 100%; /* Ensure button stays inside */
+    max-width: 150px; /* Prevent it from being too wide */
+    padding: 8px 15px; /* Reduce padding */
+    margin-top: 10px; /* Add spacing */
+  }
+
+  .chat-input-container {
+    flex-direction: column; /* Stack input and button */
+    align-items: center;
+    width: 100%;
+  }
+
+  #message-input {
+    width: 100%; /* Make input take full width */
+    max-width: 90%;
+    margin-bottom: 10px; /* Add space before button */
+  }
+
+  #send-message-btn {
+    width: 100%; /* Ensure button stays inside */
+    max-width: 120px; /* Prevent it from being too wide */
+    margin-left: 0; /* Remove unnecessary margin */
+  }
+  #char-count{
+    margin-left: 0;
+  }
+}

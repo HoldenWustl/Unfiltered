@@ -1,0 +1,736 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Body and Font Styles */
+body {
+  background-color: #f4f4f9;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+/* Navbar Styles */
+.navbar {
+  opacity: 1;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: #2D3E50;
+  color: white;
+  width: 100%; /* Ensures navbar takes full width */
+  z-index: 1000;
+}
+
+.navbar h1 {
+  transition: transform 0.5s; 
+  font-size: 2.5em;
+  font-weight: bold;
+  flex-grow: 0;
+  margin-right: 20px; /* Space between title and scrolling text */
+  animation: fadeInScale 1.5s ease-out forwards; /* Apply fadeInScale animation */
+}
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8); /* Start small */
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1); /* Scale to normal size */
+  }
+}
+.navbar .scrolling-text-container {
+  flex-grow: 1; /* Allows this space to grow and fill the gap */
+  position: relative;
+  overflow: hidden; /* Ensures text stays within bounds */
+  display: flex;
+}
+header {
+  z-index:1000;
+  top:0;
+  position: sticky;
+}
+.about-section {
+  padding: 20px 20px;
+  background: #f1f5f9 url('https://www.transparenttextures.com/patterns/paper.png');
+  background-blend-mode: darken;
+  text-align: center;
+}
+
+.about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+
+.about-section h2 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.about-description {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.feature {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+
+.feature p {
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 40px;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #1d4ed8;
+}
+
+.navbar .scrolling-text {
+  
+  font-size: 20px;
+  color: #FF6A00;
+  white-space: nowrap;
+  animation: scrollText 10s linear infinite;
+}
+.navbar .scrolling-text span {
+  display: inline-block; /* Allow for transformation */
+  animation: pulseColor 2s linear infinite;
+}
+.navbar .scrolling-text:nth-child(2) {
+  animation-delay: -6s; /* Makes the second sentence start 5 seconds later */
+}
+.navbar nav a {
+  transition: transform 0.3s ease, color 0.3s ease; /* Smooth transition for both transform and color */
+}
+
+.navbar nav a:hover {
+  transform: rotate(-5deg); /* Tilt the element to the left */
+  color: #FF6A00; /* Optional: change the color on hover */
+}
+.navbar .home-link:hover {
+  transform: rotate(5deg); /* Tilt the element to the right */
+}
+.navbar nav {
+  display: flex;
+  justify-content: flex-end; /* Aligns buttons to the right */
+  gap: 20px;
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(200%); /* Starts at the right edge of the container */
+    
+  }
+  100% {
+    transform: translateX(-200%); /* Scrolls off to the left of the container */
+    
+  }
+}
+
+
+.about {
+  padding: 80px 20px;
+  background: #f7f9fc;
+  text-align: center;
+}
+
+.about h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.about p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #555;
+}
+
+
+
+.navbar nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 20px;
+  font-size: 1.1em;
+  white-space: nowrap;
+}
+
+.navbar nav a:hover {
+  color: #FF6A00;
+}
+
+/* Hero Section */
+.hero {
+  color: white;
+  padding: 120px 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, #4A90E2, lightblue);
+  background-size: 400% 400%; /* Ensures the gradient has enough space to move */
+  animation: gradientAnimation 5s ease infinite; /* Apply the gradient animation */
+}
+/* How It Works Section */
+.how-it-works-section {
+  padding: 80px 20px;
+  background: linear-gradient(145deg, lightgrey, #f8fafc);
+  text-align: center;
+  position: relative;
+}
+
+.how-it-works-container {
+  max-width: 900px;
+  margin: 0 auto;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+
+.how-it-works-section h2 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.intro-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 40px;
+  color: #4b5563;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.step {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  flex: 1 1 250px;
+  max-width: 300px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.step-icon {
+  font-size: 3rem;
+  color: #2563eb;
+  margin-bottom: 15px;
+  animation: bounceIcon 1.5s ease-in-out infinite;
+}
+
+.step h3 {
+  font-size: 1.5rem;
+  color: #1e40af;
+  margin-bottom: 10px;
+}
+
+.step p {
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 40px;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Animation for the Step Icons */
+@keyframes bounceIcon {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Hide the default cursor while hovering over the hero */
+
+
+/* Define the custom ripple effect on hover */
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  transform: scale(0);
+  animation: cursorRipple 0.6s ease-out forwards;
+  opacity: 0;
+  left: var(--mouse-x);
+  top: var(--mouse-y);
+}
+
+/* Apply the ripple effect on hover */
+.hero:hover::after {
+  transform: scale(10); /* Ripple expands */
+  opacity: 0; /* Fade out */
+  transition: transform 0.4s, opacity 0.4s;
+}
+
+/* Keyframes for the ripple effect */
+.ripple {
+  position: absolute;
+  width: 30px; /* Initial size of ripple */
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  transform: scale(1); /* Default scale */
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.5; /* Faint visibility while moving */
+}
+
+.ripple.expand {
+  animation: rippleExpand 0.6s forwards ease-out;
+}
+.emoji {
+  display: inline-block;
+  font-size: 2rem;
+}
+
+.globe {
+  animation: rotateGlobe 6s linear infinite;
+}
+
+.camera {
+  animation: bounceCamera 1.5s ease-in-out infinite;
+}
+
+.lock {
+  animation: pulseLock 1.5s infinite;
+}
+@keyframes rotateGlobe {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounceCamera {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulseLock {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+@keyframes rippleExpand {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(15);
+    opacity: 0;
+  }
+}
+
+/* Keyframes for the ripple effect */
+@keyframes cursorRipple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(10);
+    opacity: 0;
+  }
+}
+
+/* Gradient Animation */
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.hero-content {
+  z-index: 2;
+}
+
+.hero h2 {
+  font-size: 3.5em;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.hero p {
+  font-size: 1.3em;
+  margin-bottom: 30px;
+}
+
+.cta-btn {
+  background-color: #FF6A00;
+  color: white;
+  font-size: 1.3em;
+  padding: 20px 40px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.cta-btn:hover {
+  background-color: #FF4D00;
+  transform: scale(1.05);
+}
+
+/* Features Section */
+.features {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 30px 30px;
+  background: #f1f5f9 url('https://www.transparenttextures.com/patterns/paper.png');
+  background-blend-mode: darken;
+
+
+}
+
+.feature {
+  text-align: center;
+  flex: 1;
+  margin: 0 30px;
+  transition: transform 0.3s ease;
+}
+
+.feature h3 {
+  font-size: 2.2em;
+  margin-bottom: 15px;
+}
+
+.feature p {
+  font-size: 1.1em;
+  color: #555;
+}
+
+.feature:hover {
+  transform: translateY(-10px);
+}
+
+/* Chat Section */
+.chat-section {
+  text-align: center;
+  padding: 50px 30px;
+  background: linear-gradient(45deg, #4C8C6B, #3A6A4D, #2A5233, #4C8C6B);
+  background-size: 400% 400%;
+  animation: gradientAnimation 10s ease infinite;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.start-chat-btn {
+  background-color: #FF6A00;
+  margin-top: 5px;
+  color: white;
+  font-size: 1.6em;
+  padding: 20px 40px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.start-chat-btn:hover {
+  background-color: #FF4D00;
+  transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+  background-color: #2D3E50;
+  color: white;
+  padding: 20px 30px;
+  text-align: center;
+}
+.navbar h1:hover {
+  
+  transform: scale(1.1); /* Slightly enlarges the title */
+  color: #FF6A00; /* Changes title color */
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate__fadeIn {
+  animation: fadeIn 1.5s ease-out;
+}
+
+.animate__fadeInUp {
+  animation: fadeInUp 1.5s ease-out;
+}
+
+.animate__zoomIn {
+  animation: zoomIn 0.5s ease-out;
+}
+
+@keyframes zoomIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Delayed Animation */
+.animate__delay-1s {
+  animation-delay: 1s;
+}
+
+.animate__delay-2s {
+  animation-delay: 2s;
+}
+
+
+/* Responsive Styles */
+@media screen and (max-width: 1024px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .navbar h1 {
+    font-size: 2rem; /* Slightly smaller for tablets */
+  }
+
+  .navbar .scrolling-text-container {
+    display: none; /* Hides scrolling text for better spacing */
+  }
+
+  .navbar nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navbar nav a {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .hero {
+    padding: 80px 20px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr; /* Stacks features vertically */
+    gap: 15px;
+  }
+
+  .steps {
+    flex-direction: column; /* Stack steps vertically */
+  }
+
+  .step {
+    max-width: 100%;
+  }
+
+  .about-section {
+    padding: 15px;
+  }
+
+  .about-container {
+    max-width: 90%;
+  }
+
+  .cta-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Mobile-Specific Styles (Phones) */
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 10px;
+    opacity: 0.9;
+  }
+
+  .navbar h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero {
+    padding: 60px 20px;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr; /* Single column for small screens */
+  }
+
+  .step {
+    padding: 15px;
+  }
+
+  .cta-button {
+    font-size: 1rem;
+    padding: 12px 20px;
+  }
+
+  .about-section h2 {
+    font-size: 2rem;
+  }
+
+  .about-description {
+    font-size: 1rem;
+  }
+}
+
+/* Small Devices (max-width: 480px) */
+@media screen and (max-width: 480px) {
+  .navbar h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero {
+    padding: 50px 15px;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero p {
+    font-size: 0.85rem;
+  }
+
+  .cta-button {
+    font-size: 0.9rem;
+    padding: 10px 15px;
+  }
+
+  .features,
+  .steps {
+    gap: 10px;
+  }
+
+  .step {
+    padding: 10px;
+  }
+}
+@media screen and (max-width: 768px) {
+  body {
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+  }
+
+  .features {
+    display: flex;
+    flex-direction: column; /* Stack features vertically */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%; /* Ensures it doesn’t exceed screen width */
+    padding: 20px;
+  }
+
+  .feature-item {
+    width: 90%; /* Prevents elements from extending too far */
+    max-width: 400px; /* Ensures reasonable width */
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;
+  }
+}
