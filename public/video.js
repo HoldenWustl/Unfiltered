@@ -81,6 +81,10 @@ socket.on('videoUserLeft', () => {
     location.reload(); // Refresh the page after a short delay
   }, 1000);
 });
+// When the user refreshes the page
+window.addEventListener('beforeunload', () => {
+  socket.emit('refresh');
+});
 
 // Leave chat handler
 document.getElementById("leave-btn").addEventListener("click", () => {
