@@ -9,7 +9,7 @@ let remoteStream;
 let peerConnection = null;
 const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
-
+let iceCandidateQueue = [];
 const iceServers = { urls: 'stun:stun.l.google.com:19302' };
 
 // Flag to track whether the local stream is ready
@@ -138,6 +138,13 @@ socket.on('offer', async (offer) => {
 
   try {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+    // Process queued ICE candidates
+
+    iceCandidateQueue.forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
+
+    iceCandidateQueue = [];
+    
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
     socket.emit('answer', answer);
@@ -159,12 +166,13 @@ socket.on('answer', async (answer) => {
 
 // Handle ICE candidates
 socket.on('candidate', (candidate) => {
-  if (peerConnection) {
-    try {
-      peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-    } catch (error) {
+  if (peerConnection && peerConnection.remoteDescription) {
+    peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(error => {
       console.error("Error adding ICE candidate:", error);
-    }
+    });
+  } else {
+    console.log("ICE candidate received before remote description. Queueing it.");
+    iceCandidateQueue.push(candidate);
   }
 });
 
