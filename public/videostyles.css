@@ -151,7 +151,7 @@ button:active {
   }
 
   video {
-    width: 90%; /* Make video responsive to screen size */
+    width: 100%; /* Make video responsive to screen size */
     height: auto; /* Maintain aspect ratio */
     max-width: 350px; /* Limit max width */
     border-radius: 10px; /* Ensure rounded corners */
