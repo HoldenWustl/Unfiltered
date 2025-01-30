@@ -32,13 +32,18 @@ async function startCamera() {
   }
 }
 
-// Initialize camera for the first user right away
+// Ensure local stream is ready before proceeding with the connection
+async function ensureLocalStream() {
+  if (!localStreamReady) {
+    console.log("Local stream not ready, waiting...");
+    await startCamera(); // Wait for local stream to be available
+  }
+}
 startCamera();
-
 // Emit to server to join the video chat
 socket.emit('joinVideoChat', { userName, age });
 document.getElementById("status").textContent = "Finding someone...";
-showWaitingForMatch();
+
 // Handle pairing
 socket.on('pairedForVideo', async (otherUser) => {
   hideWaitingForMatch();
@@ -46,11 +51,11 @@ socket.on('pairedForVideo', async (otherUser) => {
   otherUserAge = otherUser.age;
   document.getElementById("status").textContent = `Randomly matched with ${otherUserName}, Age: ${otherUserAge}`;
 
-  // Create peer connection and offer only after stream is ready
+  // Wait for the local stream to be ready before creating the peer connection and sending offer
+  await ensureLocalStream();
   if (!peerConnection) {
-    await ensureLocalStream(); // Ensure local stream is ready before starting the connection
-    createPeerConnection();
-    createOffer();
+    createPeerConnection(); // Create the peer connection only after stream is ready
+    createOffer(); // Create and send the offer to the other user
   }
 });
 
@@ -140,11 +145,10 @@ socket.on('offer', async (offer) => {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
 
     // Process queued ICE candidates
-
     iceCandidateQueue.forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
 
     iceCandidateQueue = [];
-    
+
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
     socket.emit('answer', answer);
@@ -175,14 +179,6 @@ socket.on('candidate', (candidate) => {
     iceCandidateQueue.push(candidate);
   }
 });
-
-// Ensures that the local stream is ready for use
-async function ensureLocalStream() {
-  if (!localStreamReady) {
-    console.log("Local stream not ready, waiting...");
-    await startCamera(); // Wait for local stream to be available
-  }
-}
 
 function showWaitingForMatch() {
   document.getElementById("loading-symbol").style.display = "block";
