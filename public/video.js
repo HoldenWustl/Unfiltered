@@ -149,16 +149,34 @@ function createPeerConnection() {
     }
   };
 
-  // Handle remote stream
+  // Handle remote stream properly
+  remoteStream = new MediaStream(); // Create a new remote stream
+  remoteVideo.srcObject = remoteStream; // Set it to the video element
+  
   peerConnection.ontrack = (event) => {
     console.log("Received remote track:", event);
-    remoteStream = event.streams[0];
-    if (remoteVideo) {
-      console.log("Setting remote video stream...");
-      remoteVideo.srcObject = remoteStream;
-    }
+    event.streams[0].getTracks().forEach(track => {
+      console.log("Adding track to remote stream:", track);
+      remoteStream.addTrack(track);
+    });
   };
 }
+
+// Handle ICE candidates correctly
+socket.on('candidate', async (candidate) => {
+  console.log("Received ICE candidate:", candidate);
+  if (peerConnection && peerConnection.remoteDescription) {
+    try {
+      await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    } catch (error) {
+      console.error("Error adding ICE candidate:", error);
+    }
+  } else {
+    console.log("ICE candidate received before remote description. Queueing it.");
+    iceCandidateQueue.push(candidate);
+  }
+});
+
 
 // Function to create and send an offer
 async function createOffer() {
