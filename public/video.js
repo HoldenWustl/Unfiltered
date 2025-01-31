@@ -131,25 +131,23 @@ let addedTracks = new Set(); // To track which tracks are already added
 
 async function createPeerConnection() {
   if (!localStream) {
-    console.error("Local stream is not available when creating peer connection.");
+    console.error("Local stream not available.");
     return;
   }
 
   console.log("Creating RTCPeerConnection...");
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
-  // Add local stream tracks to the peer connection, only if they haven't been added already
+  // Add local stream tracks to the peer connection, if not already added
   await Promise.all(localStream.getTracks().map(track => {
     if (!addedTracks.has(track)) {
       console.log("Adding track to peer connection:", track);
       peerConnection.addTrack(track, localStream);
-      addedTracks.add(track); // Mark track as added
-    } else {
-      console.log("Track already added to peer connection, skipping:", track);
+      addedTracks.add(track);
     }
   }));
 
-  // Handle ICE candidate
+  // Handle ICE candidates
   peerConnection.onicecandidate = (event) => {
     console.log("ICE candidate event:", event);
     if (event.candidate) {
@@ -158,12 +156,12 @@ async function createPeerConnection() {
     }
   };
 
-  // Handle remote stream properly
-  remoteStream = new MediaStream(); // Create a new remote stream
-  remoteVideo.srcObject = remoteStream; // Set it to the video element
-
+  // Handle remote stream
+  remoteStream = new MediaStream();
+  remoteVideo.srcObject = remoteStream;
+  
   peerConnection.ontrack = (event) => {
-    console.log("ontrack event fired!", event);
+    console.log("ontrack event fired!");
     if (!remoteStream) {
       remoteStream = new MediaStream();
       remoteVideo.srcObject = remoteStream;
@@ -174,15 +172,50 @@ async function createPeerConnection() {
     });
   };
 
-  // Create offer after tracks are added
+  // Create an offer only after tracks are fully added
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
-
-  // Send offer to the signaling server
+  
+  // Send the offer to the server
   socket.emit("offer", offer);
 
   console.log("Offer created and sent");
 }
+
+// Handle receiving an answer
+socket.on('answer', async (answer) => {
+  console.log("Received answer:", answer);
+
+  if (peerConnection.signalingState === "have-local-offer") {
+    try {
+      await peerConnection.setRemoteDescription(answer);
+      console.log("Remote description set successfully");
+    } catch (error) {
+      console.error("Error setting remote description for answer:", error);
+    }
+  } else {
+    console.error("Invalid state for setting remote description:", peerConnection.signalingState);
+  }
+});
+
+// Handle receiving ICE candidates
+socket.on('candidate', (candidate) => {
+  console.log("Received ICE candidate:", candidate);
+
+  if (peerConnection.remoteDescription) {
+    peerConnection.addIceCandidate(candidate).catch(e => console.error(e));
+  } else {
+    console.log("Remote description is not set yet, delaying ICE candidate addition");
+  }
+});
+
+// Function to start the connection process
+async function startConnection() {
+  await createPeerConnection();
+}
+
+// Call startConnection() to initialize everything when appropriate (e.g., after getting the local stream)
+startConnection();
 
 // Handle receiving answer
 socket.on('answer', async (answer) => {
