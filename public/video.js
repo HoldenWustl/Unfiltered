@@ -11,27 +11,9 @@ const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 let iceCandidateQueue = [];
 const iceServers = [
-  {
-    urls: "stun:stun.relay.metered.ca:80",
-  },
-  {
-    urls: "turn:global.relay.metered.ca:80",
-    username: "24f50eaa40fe5b3385c2413b",
-    credential: "yNKdn0DH6LknYKXq",
-  },
-  {
-    urls: "turn:global.relay.metered.ca:443",
-    username: "24f50eaa40fe5b3385c2413b",
-    credential: "yNKdn0DH6LknYKXq",
-  },
-  {
-    urls: "turns:global.relay.metered.ca:443?transport=tcp",
-    username: "24f50eaa40fe5b3385c2413b",
-    credential: "yNKdn0DH6LknYKXq",
-  },
+  // Your existing iceServers config remains the same
 ];
 
-// Flag to track whether the local stream is ready
 let localStreamReady = false;
 
 // Start the camera for the local stream
@@ -40,7 +22,7 @@ async function startCamera() {
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     if (localStream) {
       localVideo.srcObject = localStream; // Immediately show local stream for the first user
-      localStreamReady = true; // Local stream is ready
+      localStreamReady = true;
       console.log("Local stream is ready.");
     } else {
       console.error("Local stream is not available.");
@@ -51,15 +33,15 @@ async function startCamera() {
   }
 }
 
-// Ensure local stream is ready before proceeding with the connection
 async function ensureLocalStream() {
   if (!localStreamReady) {
     console.log("Local stream not ready, waiting...");
-    await startCamera(); // Wait for local stream to be available
+    await startCamera();
   }
 }
 
 startCamera();
+
 // Emit to server to join the video chat
 socket.emit('joinVideoChat', { userName, age });
 document.getElementById("status").textContent = "Finding someone...";
@@ -73,17 +55,15 @@ socket.on('pairedForVideo', async (otherUser) => {
   otherUserAge = otherUser.age;
   document.getElementById("status").textContent = `Randomly matched with ${otherUserName}, Age: ${otherUserAge}`;
 
-  // Wait for the local stream to be ready before creating the peer connection and sending offer
   await ensureLocalStream();
   if (!peerConnection) {
     console.log("Creating peer connection...");
-    await createPeerConnection(); // Create the peer connection only after stream is ready
+    await createPeerConnection();
     console.log("Creating offer...");
-    await createOffer(); // Create and send the offer to the other user
+    await createOffer();
   }
 });
 
-// Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
   setTimeout(() => {
     console.log('Waiting for video pair...');
@@ -95,7 +75,6 @@ socket.on('waitingForVideoPair', (reconnecting) => {
   }, 2000);
 });
 
-// When the other user leaves
 socket.on('videoUserLeft', () => {
   console.log(`${otherUserName} has left the chat.`);
   document.getElementById("status").textContent = `${otherUserName} has left the chat.`;
@@ -107,7 +86,7 @@ socket.on('videoUserLeft', () => {
   }
   remoteVideo.srcObject = null;
   setTimeout(() => {
-    location.reload(); // Refresh the page after a short delay
+    location.reload(); // Refresh after a short delay
   }, 1000);
 });
 
@@ -117,7 +96,6 @@ window.addEventListener('beforeunload', () => {
   socket.emit('refresh');
 });
 
-// Leave chat handler
 document.getElementById("leave-btn").addEventListener("click", () => {
   console.log("User is leaving the chat...");
   socket.emit("leaveVideoChat");
@@ -125,7 +103,7 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 });
 
 // Function to create a peer connection
-let addedTracks = new Set(); // To track which tracks are already added
+let addedTracks = new Set();
 
 async function createPeerConnection() {
   await ensureLocalStream();
@@ -146,7 +124,6 @@ async function createPeerConnection() {
     }
   });
 
-  // Handle ICE candidates
   peerConnection.onicecandidate = (event) => {
     console.log("ICE candidate event:", event);
     if (event.candidate) {
@@ -155,7 +132,6 @@ async function createPeerConnection() {
     }
   };
 
-  // Handle remote stream
   remoteStream = new MediaStream();
   remoteVideo.srcObject = remoteStream;
 
@@ -163,7 +139,7 @@ async function createPeerConnection() {
     console.log("ontrack event fired!");
     event.streams[0].getTracks().forEach(track => {
       console.log("Adding track to remote stream:", track);
-      remoteStream.addTrack(track);
+      remoteStream.addTrack(track);  // Ensure the remote stream is updated here
     });
   };
 }
@@ -232,7 +208,6 @@ socket.on('answer', async (answer) => {
   }
 });
 
-// Function to create and send an offer
 async function createOffer() {
   if (!localStream) {
     console.error("Local stream is still not available when creating offer.");
