@@ -126,6 +126,8 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 
 // Function to create a peer connection
 // Function to create a peer connection
+let addedTracks = new Set(); // To track which tracks are already added
+
 async function createPeerConnection() {
   if (!localStream) {
     console.error("Local stream is not available when creating peer connection.");
@@ -135,12 +137,13 @@ async function createPeerConnection() {
   console.log("Creating RTCPeerConnection...");
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
-  // Add local stream tracks to the peer connection, only if they aren't already added
+  // Add local stream tracks to the peer connection, only if they haven't been added already
   localStream.getTracks().forEach(track => {
-    const sender = peerConnection.getSenders().find(s => s.track === track);
-    if (!sender) {
+    // Check if this track has already been added
+    if (!addedTracks.has(track)) {
       console.log("Adding track to peer connection:", track);
       peerConnection.addTrack(track, localStream);
+      addedTracks.add(track); // Mark track as added
     } else {
       console.log("Track already added to peer connection, skipping:", track);
     }
@@ -172,11 +175,18 @@ async function createPeerConnection() {
   };
 
   // Wait for the tracks to be added before creating the offer
-  await Promise.all(localStream.getTracks().map(track => peerConnection.addTrack(track, localStream)));
+  await Promise.all(localStream.getTracks().map(track => {
+    // Ensure track is added once per connection
+    if (!addedTracks.has(track)) {
+      peerConnection.addTrack(track, localStream);
+      addedTracks.add(track); // Mark as added
+    }
+  }));
 
   // Create offer only after tracks are added
   socket.emit("readyToCreateOffer");
 }
+
 
 
 // Handle ICE candidates correctly
