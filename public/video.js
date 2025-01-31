@@ -63,6 +63,7 @@ async function ensureLocalStream() {
     await startCamera(); // Wait for local stream to be available
   }
 }
+
 startCamera();
 // Emit to server to join the video chat
 socket.emit('joinVideoChat', { userName, age });
@@ -131,6 +132,7 @@ let addedTracks = new Set(); // To track which tracks are already added
 
 
 async function createPeerConnection() {
+  ensureLocalStream();
   if (!localStream) {
     console.error("Local stream not available.");
     return;
@@ -193,7 +195,7 @@ async function startConnection() {
 }
 
 // Call startConnection() to initialize everything when appropriate (e.g., after getting the local stream)
-startConnection();
+
 
 
 
@@ -214,7 +216,6 @@ socket.on('candidate', async (candidate) => {
 
 socket.on('offer', async (offer) => {
   console.log("Received offer:", offer);
-  await ensureLocalStream();
   if (peerConnection) {
     console.log("Already have a peer connection.");
     return;
@@ -276,3 +277,5 @@ function hideWaitingForMatch() {
   console.log("Hiding waiting for match...");
   document.getElementById("loading-symbol").style.display = "none";
 }
+
+startConnection();
