@@ -70,6 +70,7 @@ document.getElementById("status").textContent = "Finding someone...";
 
 // Handle pairing
 socket.on('pairedForVideo', async (otherUser) => {
+  await ensureLocalStream();
   console.log('Paired for video with:', otherUser);
   hideWaitingForMatch();
   otherUserName = otherUser.userName;
