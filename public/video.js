@@ -11,7 +11,9 @@ const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 let iceCandidateQueue = [];
 const iceServers = [
-  // Your existing iceServers config remains the same
+  {
+    urls: 'stun:stun.l.google.com:19302'
+  }
 ];
 
 let localStreamReady = false;
@@ -141,6 +143,14 @@ async function createPeerConnection() {
       console.log("Adding track to remote stream:", track);
       remoteStream.addTrack(track);  // Ensure the remote stream is updated here
     });
+  };
+
+  peerConnection.oniceconnectionstatechange = () => {
+    console.log('ICE connection state:', peerConnection.iceConnectionState);
+    if (peerConnection.iceConnectionState === 'failed') {
+      console.error('ICE connection failed');
+      // Try to reconnect or restart the peer connection
+    }
   };
 }
 
