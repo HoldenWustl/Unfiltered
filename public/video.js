@@ -9,12 +9,8 @@ let remoteStream;
 let peerConnection = null;
 const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
+const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
 let iceCandidateQueue = [];
-const iceServers = [
-  {
-    urls: 'stun:stun.l.google.com:19302'
-  }
-];
 
 let localStreamReady = false;
 
@@ -23,11 +19,9 @@ async function startCamera() {
   try {
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     if (localStream) {
-      localVideo.srcObject = localStream; // Immediately show local stream for the first user
+      localVideo.srcObject = localStream;
       localStreamReady = true;
       console.log("Local stream is ready.");
-    } else {
-      console.error("Local stream is not available.");
     }
   } catch (error) {
     console.error("Error accessing camera/microphone:", error);
@@ -50,14 +44,13 @@ document.getElementById("status").textContent = "Finding someone...";
 
 // Handle pairing
 socket.on('pairedForVideo', async (otherUser) => {
-  await ensureLocalStream();
   console.log('Paired for video with:', otherUser);
+  await ensureLocalStream();
   hideWaitingForMatch();
   otherUserName = otherUser.userName;
   otherUserAge = otherUser.age;
   document.getElementById("status").textContent = `Randomly matched with ${otherUserName}, Age: ${otherUserAge}`;
 
-  await ensureLocalStream();
   if (!peerConnection) {
     console.log("Creating peer connection...");
     await createPeerConnection();
@@ -70,8 +63,8 @@ socket.on('waitingForVideoPair', (reconnecting) => {
   setTimeout(() => {
     console.log('Waiting for video pair...');
     showWaitingForMatch();
-    document.getElementById("status").textContent = reconnecting ? 
-      "Your partner left. Searching for a new match..." : 
+    document.getElementById("status").textContent = reconnecting ?
+      "Your partner left. Searching for a new match..." :
       "Waiting for someone to join...";
     remoteVideo.srcObject = null;
   }, 2000);
@@ -115,7 +108,7 @@ async function createPeerConnection() {
   }
 
   console.log("Creating RTCPeerConnection...");
-  peerConnection = new RTCPeerConnection({ iceServers: iceServers });
+  peerConnection = new RTCPeerConnection({ iceServers });
 
   // Add local stream tracks to the peer connection, if not already added
   localStream.getTracks().forEach(track => {
