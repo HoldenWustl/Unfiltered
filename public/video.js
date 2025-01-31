@@ -139,10 +139,12 @@ async function createPeerConnection() {
 
   peerConnection.ontrack = (event) => {
     console.log("ontrack event fired!");
-    event.streams[0].getTracks().forEach(track => {
-      console.log("Adding track to remote stream:", track);
-      remoteStream.addTrack(track);  // Ensure the remote stream is updated here
-    });
+    if (event.streams && event.streams[0]) {
+      event.streams[0].getTracks().forEach(track => {
+        console.log("Adding track to remote stream:", track);
+        remoteStream.addTrack(track);  // Ensure the remote stream is updated here
+      });
+    }
   };
 
   peerConnection.oniceconnectionstatechange = () => {
