@@ -90,12 +90,14 @@ socket.on('pairedForVideo', async (otherUser) => {
 
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
+  setTimeout(() => {
   console.log('Waiting for video pair...');
   showWaitingForMatch();
   document.getElementById("status").textContent = reconnecting ? 
     "Your partner left. Searching for a new match..." : 
     "Waiting for someone to join...";
   remoteVideo.srcObject = null;
+  },2000);
 });
 
 // When the other user leaves
