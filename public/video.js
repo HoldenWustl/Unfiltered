@@ -81,15 +81,8 @@ socket.on('pairedForVideo', async (otherUser) => {
   if (!peerConnection) {
     console.log("Creating peer connection...");
     createPeerConnection(); // Create the peer connection only after stream is ready
-    console.log("Adding tracks to peer connection...");
-    localStream.getTracks().forEach(track => {
-      if (!peerConnection.getSenders().some(sender => sender.track === track)) {
-        console.log("Adding track:", track);
-        peerConnection.addTrack(track, localStream);
-      }
-    });
     console.log("Creating offer...");
-    createOffer(); // Create and send the offer to the other user
+    await createOffer(); // Create and send the offer to the other user
   }
 });
 
@@ -132,7 +125,7 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 });
 
 // Function to create a peer connection
-function createPeerConnection() {
+async function createPeerConnection() {
   if (!localStream) {
     console.error("Local stream is not available when creating peer connection.");
     return;
@@ -140,6 +133,12 @@ function createPeerConnection() {
 
   console.log("Creating RTCPeerConnection...");
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
+
+  // Add local stream tracks to the peer connection
+  for (let track of localStream.getTracks()) {
+    console.log("Adding track to peer connection:", track);
+    peerConnection.addTrack(track, localStream);
+  }
 
   // Handle ICE candidate
   peerConnection.onicecandidate = (event) => {
@@ -167,12 +166,7 @@ function createPeerConnection() {
   };
 
   // Wait for the tracks to be added before creating the offer
-  localStream.getTracks().forEach(track => {
-    if (!peerConnection.getSenders().some(sender => sender.track === track)) {
-      console.log("Adding track:", track);
-      peerConnection.addTrack(track, localStream);
-    }
-  });
+  await Promise.all(localStream.getTracks().map(track => peerConnection.addTrack(track, localStream)));
 
   // Create offer only after tracks are added
   socket.emit("readyToCreateOffer");
