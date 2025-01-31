@@ -277,5 +277,5 @@ function hideWaitingForMatch() {
   console.log("Hiding waiting for match...");
   document.getElementById("loading-symbol").style.display = "none";
 }
-
+ensureLocalStream();
 startConnection();
