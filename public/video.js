@@ -128,6 +128,7 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 // Function to create a peer connection
 let addedTracks = new Set(); // To track which tracks are already added
 
+
 async function createPeerConnection() {
   if (!localStream) {
     console.error("Local stream is not available when creating peer connection.");
@@ -138,8 +139,7 @@ async function createPeerConnection() {
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
   // Add local stream tracks to the peer connection, only if they haven't been added already
-  localStream.getTracks().forEach(track => {
-    // Check if this track has already been added
+  await Promise.all(localStream.getTracks().map(track => {
     if (!addedTracks.has(track)) {
       console.log("Adding track to peer connection:", track);
       peerConnection.addTrack(track, localStream);
@@ -147,7 +147,7 @@ async function createPeerConnection() {
     } else {
       console.log("Track already added to peer connection, skipping:", track);
     }
-  });
+  }));
 
   // Handle ICE candidate
   peerConnection.onicecandidate = (event) => {
@@ -174,16 +174,7 @@ async function createPeerConnection() {
     });
   };
 
-  // Wait for the tracks to be added before creating the offer
-  await Promise.all(localStream.getTracks().map(track => {
-    // Ensure track is added once per connection
-    if (!addedTracks.has(track)) {
-      peerConnection.addTrack(track, localStream);
-      addedTracks.add(track); // Mark as added
-    }
-  }));
-
-  // Create offer only after tracks are added
+  // Create offer after tracks are added
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
 
@@ -192,6 +183,23 @@ async function createPeerConnection() {
 
   console.log("Offer created and sent");
 }
+
+// Handle receiving answer
+socket.on('answer', async (answer) => {
+  console.log("Received answer:", answer);
+  await peerConnection.setRemoteDescription(answer);
+});
+
+// Handle receiving ICE candidates
+socket.on('candidate', (candidate) => {
+  console.log("Received ICE candidate:", candidate);
+  if (peerConnection.remoteDescription) {
+    peerConnection.addIceCandidate(candidate).catch(e => console.error(e));
+  } else {
+    console.log("Remote description is not set yet, delaying ICE candidate addition");
+  }
+});
+
 
 // Handle receiving answer
 socket.on('answer', async (answer) => {
