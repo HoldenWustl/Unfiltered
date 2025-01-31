@@ -216,6 +216,15 @@ socket.on('candidate', async (candidate) => {
   }
 });
 
+async function processQueuedIceCandidates() {
+  if (peerConnection && peerConnection.remoteDescription) {
+    while (iceCandidateQueue.length > 0) {
+      let candidate = iceCandidateQueue.shift();
+      await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    }
+  }
+}
+
 socket.on('offer', async (offer) => {
   console.log("Received offer:", offer);
   if (peerConnection) {
@@ -225,9 +234,14 @@ socket.on('offer', async (offer) => {
   await ensureLocalStream();
   createPeerConnection();
 
+  if (!peerConnection) {
+    console.error("Failed to create peer connection.");
+    return;
+  }
+
   try {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
+    processQueuedIceCandidates();
     iceCandidateQueue.forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
     iceCandidateQueue = [];
 
@@ -241,11 +255,13 @@ socket.on('offer', async (offer) => {
   }
 });
 
+
 socket.on('answer', async (answer) => {
   console.log("Received answer:", answer);
   if (peerConnection) {
     try {
       await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+      processQueuedIceCandidates();
     } catch (error) {
       console.error("Error setting remote description for answer:", error);
     }
@@ -279,5 +295,5 @@ function hideWaitingForMatch() {
   console.log("Hiding waiting for match...");
   document.getElementById("loading-symbol").style.display = "none";
 }
-ensureLocalStream();
+
 startConnection();
