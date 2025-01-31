@@ -82,7 +82,7 @@ socket.on('pairedForVideo', async (otherUser) => {
   await ensureLocalStream();
   if (!peerConnection) {
     console.log("Creating peer connection...");
-    createPeerConnection(); // Create the peer connection only after stream is ready
+    await createPeerConnection(); // Create the peer connection only after stream is ready
     console.log("Creating offer...");
     await createOffer(); // Create and send the offer to the other user
   }
@@ -91,13 +91,13 @@ socket.on('pairedForVideo', async (otherUser) => {
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
   setTimeout(() => {
-  console.log('Waiting for video pair...');
-  showWaitingForMatch();
-  document.getElementById("status").textContent = reconnecting ? 
-    "Your partner left. Searching for a new match..." : 
-    "Waiting for someone to join...";
-  remoteVideo.srcObject = null;
-  },2000);
+    console.log('Waiting for video pair...');
+    showWaitingForMatch();
+    document.getElementById("status").textContent = reconnecting ? 
+      "Your partner left. Searching for a new match..." : 
+      "Waiting for someone to join...";
+    remoteVideo.srcObject = null;
+  }, 2000);
 });
 
 // When the other user leaves
@@ -115,6 +115,7 @@ socket.on('videoUserLeft', () => {
     location.reload(); // Refresh the page after a short delay
   }, 1000);
 });
+
 // When the user refreshes the page
 window.addEventListener('beforeunload', () => {
   console.log('User is refreshing the page...');
@@ -129,12 +130,10 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 });
 
 // Function to create a peer connection
-// Function to create a peer connection
 let addedTracks = new Set(); // To track which tracks are already added
 
-
 async function createPeerConnection() {
-  ensureLocalStream();
+  await ensureLocalStream();
   if (!localStream) {
     console.error("Local stream not available.");
     return;
@@ -144,13 +143,13 @@ async function createPeerConnection() {
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
   // Add local stream tracks to the peer connection, if not already added
-  await Promise.all(localStream.getTracks().map(track => {
+  localStream.getTracks().forEach(track => {
     if (!addedTracks.has(track)) {
       console.log("Adding track to peer connection:", track);
       peerConnection.addTrack(track, localStream);
       addedTracks.add(track);
     }
-  }));
+  });
 
   // Handle ICE candidates
   peerConnection.onicecandidate = (event) => {
@@ -167,39 +166,12 @@ async function createPeerConnection() {
   
   peerConnection.ontrack = (event) => {
     console.log("ontrack event fired!");
-    if (!remoteStream) {
-      remoteStream = new MediaStream();
-      remoteVideo.srcObject = remoteStream;
-    }
     event.streams[0].getTracks().forEach(track => {
       console.log("Adding track to remote stream:", track);
       remoteStream.addTrack(track);
     });
   };
-
-  // Create an offer only after tracks are fully added
-  const offer = await peerConnection.createOffer();
-  await peerConnection.setLocalDescription(offer);
-  
-  // Send the offer to the server
-  socket.emit("offer", offer);
-
-  console.log("Offer created and sent");
 }
-
-
-
-// Handle receiving ICE candidates
-
-// Function to start the connection process
-async function startConnection() {
-  await createPeerConnection();
-}
-
-// Call startConnection() to initialize everything when appropriate (e.g., after getting the local stream)
-
-
-
 
 // Handle receiving ICE candidates
 socket.on('candidate', async (candidate) => {
@@ -232,7 +204,7 @@ socket.on('offer', async (offer) => {
     return;
   }
   await ensureLocalStream();
-  createPeerConnection();
+  await createPeerConnection();
 
   if (!peerConnection) {
     console.error("Failed to create peer connection.");
@@ -241,9 +213,7 @@ socket.on('offer', async (offer) => {
 
   try {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-    processQueuedIceCandidates();
-    iceCandidateQueue.forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
-    iceCandidateQueue = [];
+    await processQueuedIceCandidates();
 
     console.log("Creating answer...");
     const answer = await peerConnection.createAnswer();
@@ -255,13 +225,12 @@ socket.on('offer', async (offer) => {
   }
 });
 
-
 socket.on('answer', async (answer) => {
   console.log("Received answer:", answer);
   if (peerConnection) {
     try {
       await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-      processQueuedIceCandidates();
+      await processQueuedIceCandidates();
     } catch (error) {
       console.error("Error setting remote description for answer:", error);
     }
@@ -295,5 +264,3 @@ function hideWaitingForMatch() {
   console.log("Hiding waiting for match...");
   document.getElementById("loading-symbol").style.display = "none";
 }
-
-startConnection();
