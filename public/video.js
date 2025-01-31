@@ -182,32 +182,9 @@ async function createPeerConnection() {
   console.log("Offer created and sent");
 }
 
-// Handle receiving an answer
-socket.on('answer', async (answer) => {
-  console.log("Received answer:", answer);
 
-  if (peerConnection.signalingState === "have-local-offer") {
-    try {
-      await peerConnection.setRemoteDescription(answer);
-      console.log("Remote description set successfully");
-    } catch (error) {
-      console.error("Error setting remote description for answer:", error);
-    }
-  } else {
-    console.error("Invalid state for setting remote description:", peerConnection.signalingState);
-  }
-});
 
 // Handle receiving ICE candidates
-socket.on('candidate', (candidate) => {
-  console.log("Received ICE candidate:", candidate);
-
-  if (peerConnection.remoteDescription) {
-    peerConnection.addIceCandidate(candidate).catch(e => console.error(e));
-  } else {
-    console.log("Remote description is not set yet, delaying ICE candidate addition");
-  }
-});
 
 // Function to start the connection process
 async function startConnection() {
@@ -217,39 +194,9 @@ async function startConnection() {
 // Call startConnection() to initialize everything when appropriate (e.g., after getting the local stream)
 startConnection();
 
-// Handle receiving answer
-socket.on('answer', async (answer) => {
-  console.log("Received answer:", answer);
-  await peerConnection.setRemoteDescription(answer);
-});
+
 
 // Handle receiving ICE candidates
-socket.on('candidate', (candidate) => {
-  console.log("Received ICE candidate:", candidate);
-  if (peerConnection.remoteDescription) {
-    peerConnection.addIceCandidate(candidate).catch(e => console.error(e));
-  } else {
-    console.log("Remote description is not set yet, delaying ICE candidate addition");
-  }
-});
-
-
-// Handle receiving answer
-socket.on('answer', async (answer) => {
-  console.log("Received answer:", answer);
-  await peerConnection.setRemoteDescription(answer);
-});
-
-// Handle receiving ICE candidates
-socket.on('candidate', (candidate) => {
-  console.log("Received ICE candidate:", candidate);
-  peerConnection.addIceCandidate(candidate).catch(e => console.error(e));
-});
-
-
-
-
-// Handle ICE candidates correctly
 socket.on('candidate', async (candidate) => {
   console.log("Received ICE candidate:", candidate);
   if (peerConnection && peerConnection.remoteDescription) {
@@ -261,6 +208,42 @@ socket.on('candidate', async (candidate) => {
   } else {
     console.log("ICE candidate received before remote description. Queueing it.");
     iceCandidateQueue.push(candidate);
+  }
+});
+
+socket.on('offer', async (offer) => {
+  console.log("Received offer:", offer);
+  if (peerConnection) {
+    console.log("Already have a peer connection.");
+    return;
+  }
+  await ensureLocalStream();
+  createPeerConnection();
+
+  try {
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+    iceCandidateQueue.forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
+    iceCandidateQueue = [];
+
+    console.log("Creating answer...");
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+    console.log("Sending answer to server...");
+    socket.emit('answer', answer);
+  } catch (error) {
+    console.error("Error handling offer:", error);
+  }
+});
+
+socket.on('answer', async (answer) => {
+  console.log("Received answer:", answer);
+  if (peerConnection) {
+    try {
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    } catch (error) {
+      console.error("Error setting remote description for answer:", error);
+    }
   }
 });
 
@@ -281,60 +264,6 @@ async function createOffer() {
     console.error("Error creating offer:", error);
   }
 }
-
-// Handle offer from the other user
-socket.on('offer', async (offer) => {
-  console.log("Received offer:", offer);
-  if (peerConnection) {
-    console.log("Already have a peer connection.");
-    return;
-  }
-
-  // Create a new peer connection for the incoming offer
-  await ensureLocalStream(); // Ensure local stream is ready before proceeding
-  createPeerConnection();
-
-  try {
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
-    // Process queued ICE candidates
-    iceCandidateQueue.forEach(candidate => peerConnection.addIceCandidate(new RTCIceCandidate(candidate)));
-    iceCandidateQueue = [];
-
-    console.log("Creating answer...");
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
-    console.log("Sending answer to server...");
-    socket.emit('answer', answer);
-  } catch (error) {
-    console.error("Error handling offer:", error);
-  }
-});
-
-// Handle the answer from the other user
-socket.on('answer', async (answer) => {
-  console.log("Received answer:", answer);
-  if (peerConnection) {
-    try {
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-    } catch (error) {
-      console.error("Error setting remote description for answer:", error);
-    }
-  }
-});
-
-// Handle ICE candidates
-socket.on('candidate', (candidate) => {
-  console.log("Received ICE candidate:", candidate);
-  if (peerConnection && peerConnection.remoteDescription) {
-    peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(error => {
-      console.error("Error adding ICE candidate:", error);
-    });
-  } else {
-    console.log("ICE candidate received before remote description. Queueing it.");
-    iceCandidateQueue.push(candidate);
-  }
-});
 
 function showWaitingForMatch() {
   console.log("Showing waiting for match...");
