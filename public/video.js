@@ -214,6 +214,7 @@ socket.on('candidate', async (candidate) => {
 
 socket.on('offer', async (offer) => {
   console.log("Received offer:", offer);
+  await ensureLocalStream();
   if (peerConnection) {
     console.log("Already have a peer connection.");
     return;
