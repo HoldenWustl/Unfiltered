@@ -125,6 +125,7 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 });
 
 // Function to create a peer connection
+// Function to create a peer connection
 async function createPeerConnection() {
   if (!localStream) {
     console.error("Local stream is not available when creating peer connection.");
@@ -134,11 +135,16 @@ async function createPeerConnection() {
   console.log("Creating RTCPeerConnection...");
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
-  // Add local stream tracks to the peer connection
-  for (let track of localStream.getTracks()) {
-    console.log("Adding track to peer connection:", track);
-    peerConnection.addTrack(track, localStream);
-  }
+  // Add local stream tracks to the peer connection, only if they aren't already added
+  localStream.getTracks().forEach(track => {
+    const sender = peerConnection.getSenders().find(s => s.track === track);
+    if (!sender) {
+      console.log("Adding track to peer connection:", track);
+      peerConnection.addTrack(track, localStream);
+    } else {
+      console.log("Track already added to peer connection, skipping:", track);
+    }
+  });
 
   // Handle ICE candidate
   peerConnection.onicecandidate = (event) => {
@@ -171,6 +177,7 @@ async function createPeerConnection() {
   // Create offer only after tracks are added
   socket.emit("readyToCreateOffer");
 }
+
 
 // Handle ICE candidates correctly
 socket.on('candidate', async (candidate) => {
