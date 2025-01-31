@@ -20,11 +20,6 @@ const iceServers = [
     credential: "yNKdn0DH6LknYKXq",
   },
   {
-    urls: "turn:global.relay.metered.ca:80?transport=tcp",
-    username: "24f50eaa40fe5b3385c2413b",
-    credential: "yNKdn0DH6LknYKXq",
-  },
-  {
     urls: "turn:global.relay.metered.ca:443",
     username: "24f50eaa40fe5b3385c2413b",
     credential: "yNKdn0DH6LknYKXq",
@@ -163,7 +158,7 @@ async function createPeerConnection() {
   // Handle remote stream
   remoteStream = new MediaStream();
   remoteVideo.srcObject = remoteStream;
-  
+
   peerConnection.ontrack = (event) => {
     console.log("ontrack event fired!");
     event.streams[0].getTracks().forEach(track => {
