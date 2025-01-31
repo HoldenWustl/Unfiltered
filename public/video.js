@@ -161,7 +161,7 @@ async function createPeerConnection() {
   // Handle remote stream properly
   remoteStream = new MediaStream(); // Create a new remote stream
   remoteVideo.srcObject = remoteStream; // Set it to the video element
-  
+
   peerConnection.ontrack = (event) => {
     console.log("ontrack event fired!", event);
     if (!remoteStream) {
@@ -184,8 +184,27 @@ async function createPeerConnection() {
   }));
 
   // Create offer only after tracks are added
-  socket.emit("readyToCreateOffer");
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+
+  // Send offer to the signaling server
+  socket.emit("offer", offer);
+
+  console.log("Offer created and sent");
 }
+
+// Handle receiving answer
+socket.on('answer', async (answer) => {
+  console.log("Received answer:", answer);
+  await peerConnection.setRemoteDescription(answer);
+});
+
+// Handle receiving ICE candidates
+socket.on('candidate', (candidate) => {
+  console.log("Received ICE candidate:", candidate);
+  peerConnection.addIceCandidate(candidate).catch(e => console.error(e));
+});
+
 
 
 
