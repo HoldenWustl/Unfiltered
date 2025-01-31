@@ -81,6 +81,13 @@ socket.on('pairedForVideo', async (otherUser) => {
   if (!peerConnection) {
     console.log("Creating peer connection...");
     createPeerConnection(); // Create the peer connection only after stream is ready
+    console.log("Adding tracks to peer connection...");
+    localStream.getTracks().forEach(track => {
+      if (!peerConnection.getSenders().some(sender => sender.track === track)) {
+        console.log("Adding track:", track);
+        peerConnection.addTrack(track, localStream);
+      }
+    });
     console.log("Creating offer...");
     createOffer(); // Create and send the offer to the other user
   }
@@ -134,12 +141,6 @@ function createPeerConnection() {
   console.log("Creating RTCPeerConnection...");
   peerConnection = new RTCPeerConnection({ iceServers: iceServers });
 
-  // Add local stream tracks to the peer connection
-  localStream.getTracks().forEach(track => {
-    console.log("Adding track to peer connection:", track);
-    peerConnection.addTrack(track, localStream);
-  });
-
   // Handle ICE candidate
   peerConnection.onicecandidate = (event) => {
     console.log("ICE candidate event:", event);
@@ -154,12 +155,27 @@ function createPeerConnection() {
   remoteVideo.srcObject = remoteStream; // Set it to the video element
   
   peerConnection.ontrack = (event) => {
-    console.log("Received remote track:", event);
+    console.log("ontrack event fired!", event);
+    if (!remoteStream) {
+      remoteStream = new MediaStream();
+      remoteVideo.srcObject = remoteStream;
+    }
     event.streams[0].getTracks().forEach(track => {
       console.log("Adding track to remote stream:", track);
       remoteStream.addTrack(track);
     });
   };
+
+  // Wait for the tracks to be added before creating the offer
+  localStream.getTracks().forEach(track => {
+    if (!peerConnection.getSenders().some(sender => sender.track === track)) {
+      console.log("Adding track:", track);
+      peerConnection.addTrack(track, localStream);
+    }
+  });
+
+  // Create offer only after tracks are added
+  socket.emit("readyToCreateOffer");
 }
 
 // Handle ICE candidates correctly
@@ -176,7 +192,6 @@ socket.on('candidate', async (candidate) => {
     iceCandidateQueue.push(candidate);
   }
 });
-
 
 // Function to create and send an offer
 async function createOffer() {
