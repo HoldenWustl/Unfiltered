@@ -116,7 +116,6 @@ io.on('connection', (socket) => {
 
       user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age });
       user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age });
-      
     } else {
       socket.emit('waitingForVideoPair', false);
     }
