@@ -174,20 +174,20 @@ function createPeer() {
   });
 
   // Handle incoming calls (when other user calls you)
-  peer.on('call', async (call) => {
-    console.log("Incoming call...");
-    
-    // Answer the call with the local stream
-    if (localStream) {
-      call.answer(localStream);  // Answer and send local stream
-      
-      // When the remote stream is received, attach it to the remote video element
+  peer.on('call', (call) => {
+  console.log("Incoming call...");
+  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then((stream) => {
+      call.answer(stream);  // Answer the call with the local stream
       call.on('stream', (remoteStream) => {
-        console.log("Remote stream received!");
-        remoteVideo.srcObject = remoteStream;  // Display remote video
+        console.log("Remote stream received on mobile!");
+        remoteVideo.srcObject = remoteStream;
+        remoteVideo.play().catch(e => console.error("Video play failed:", e));
       });
-    }
-  });
+    })
+    .catch(e => console.error("Failed to get media:", e));
+});
+
 }
 
 
