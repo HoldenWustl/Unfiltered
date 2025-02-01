@@ -169,6 +169,7 @@ let peer; // Initialize PeerJS peer object
 function createPeer() {
   // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
+    config: { iceServers: iceServers },
     host: 'localhost',  // Local server address
     port: 9000,         // PeerJS server listens on port 9000
     path: '/myapp',     // Make sure this matches the path you used in the server
