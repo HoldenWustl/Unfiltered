@@ -106,7 +106,7 @@ if (!stream) return;  // Ensure we have a stream before proceeding
 
 console.log("Calling peer...");
 const call = peer.call(otherUserName, stream, {
-  metadata: { videoCodec: "H264" } // Force mobile-friendly video codec
+  metadata: { videoCodec: "VP8" } // Changed to VP8 for better mobile support
 });
 
 call.on('stream', async (remoteStream) => {
@@ -121,7 +121,6 @@ call.on('stream', async (remoteStream) => {
 });
 
 });
-
 
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
@@ -174,20 +173,12 @@ function createPeer() {
     host: 'localhost',  // Local server address
     port: 9000,         // PeerJS server listens on port 9000
     path: '/myapp',     // Make sure this matches the path you used in the server
-    secure: false,      // Use false since we're running locally (no SSL certificate)
+    secure: false,      // Set secure: true for production
   });
 
   // Handle PeerJS connection open event
   peer.on('open', (id) => {
     console.log('Peer open with ID:', id);
-    // Now you can make the call to the other user after peer is open
-    const call = peer.call(otherUserName, localStream, {
-  metadata: { videoCodec: "H264" }  // Tell PeerJS to use H.264
-});
-    call.on('stream', (remoteStream) => {
-      console.log("Remote stream received!");
-      remoteVideo.srcObject = remoteStream;  // Set the remote video stream to your element
-    });
   });
 
   // Handle incoming calls (when other user calls you)
@@ -204,25 +195,8 @@ function createPeer() {
     })
     .catch(e => console.error("Failed to get media:", e));
 });
-
 }
 
-
-function setupPeerConnection(conn) {
-  conn.on('open', () => {
-    console.log("Connection established with:", conn.peer);
-  });
-
-  conn.on('data', (data) => {
-    console.log("Received data:", data);
-  });
-
-  conn.on('close', () => {
-    console.log("Connection closed.");
-  });
-}
-
-// Function to show waiting for match symbol
 function showWaitingForMatch() {
   console.log("Showing waiting for match...");
   document.getElementById("loading-symbol").style.display = "block";
