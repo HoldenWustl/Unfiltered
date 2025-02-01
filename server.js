@@ -123,8 +123,10 @@ io.on('connection', (socket) => {
       user1.partner = user2;
       user2.partner = user1;
 
-      user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age });
-      user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age });
+      setTimeout(() => {
+        user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age });
+        user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age });
+      }, 1000);  // 1-second delay before emitting the event
     } else {
       socket.emit('waitingForVideoPair', false);
     }
