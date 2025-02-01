@@ -97,11 +97,11 @@ io.on('connection', (socket) => {
 
 let videoQueue = [];
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
+io.on("connection", (socket) => {
+  console.log("A user connected");
 
   // Handle user joining the video chat
-  socket.on('joinVideoChat', ({ userName, age }) => {
+  socket.on("joinVideoChat", ({ userName, age }) => {
     socket.isRefreshing = false;
     socket.userName = userName;
     socket.age = age;
@@ -114,80 +114,84 @@ io.on('connection', (socket) => {
       user1.partner = user2;
       user2.partner = user1;
 
-      user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age });
-      user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age });
+      user1.emit("pairedForVideo", { userName: user2.userName, age: user2.age });
+      user2.emit("pairedForVideo", { userName: user1.userName, age: user1.age });
+
+      // 🔹 Add Refresh Logic Here
+      console.log(`Matched: ${user1.userName} & ${user2.userName}. Refreshing...`);
+
+      // Tell user1 to refresh immediately
+      user1.emit("refreshNow");
+
+      // Wait 5 seconds, then tell user2 to refresh
+      setTimeout(() => {
+        user2.emit("refreshNow");
+      }, 5000);
     } else {
-      socket.emit('waitingForVideoPair', false);
+      socket.emit("waitingForVideoPair", false);
     }
   });
 
+  // Handle user refreshing
+  socket.on("refresh", () => {
+    socket.isRefreshing = true;
+  });
+
   // Handle user leaving the video chat
-  socket.on('leaveVideoChat', () => {
-    // Ensure user is removed from the queue on leave
-    videoQueue = videoQueue.filter(s => s !== socket);
-  
+  socket.on("leaveVideoChat", () => {
+    videoQueue = videoQueue.filter((s) => s !== socket);
+
     if (socket.partner) {
-      socket.partner.emit('videoUserLeft');
+      socket.partner.emit("videoUserLeft");
       socket.partner.partner = null;
-  
-      // Only push partner back to the queue if it's empty
-      if (videoQueue.length === 0) {
+
+      if (!videoQueue.includes(socket.partner)) {
         videoQueue.push(socket.partner);
-        socket.partner.emit('waitingForVideoPair', false);
+        socket.partner.emit("waitingForVideoPair", false);
       }
     }
-  
-    // Reset the partner reference
+
     socket.partner = null;
   });
 
   // Handle user disconnecting
-  socket.on('disconnect', () => {
-    // Remove user from the video queue
-    videoQueue = videoQueue.filter(s => s !== socket);
-  
+  socket.on("disconnect", () => {
+    videoQueue = videoQueue.filter((s) => s !== socket);
+
     if (socket.isRefreshing) {
-      // Skip further processing if it is a refresh
       return;
     }
-  
-    // Handle partner-related logic
+
     if (socket.partner) {
-      // Inform the partner that the user has left
-      socket.partner.emit('videoUserLeft');
+      socket.partner.emit("videoUserLeft");
       socket.partner.partner = null;
-  
-      // Only push partner back to the queue if it's empty
-      if (videoQueue.length === 0) {
+
+      if (!videoQueue.includes(socket.partner)) {
         videoQueue.push(socket.partner);
-        socket.partner.emit('waitingForVideoPair', false);
+        socket.partner.emit("waitingForVideoPair", false);
       }
     }
-  
-    // Reset the socket's partner
+
     socket.partner = null;
   });
 
   // Relay WebRTC signaling messages
-  socket.on('offer', (offer) => {
+  socket.on("offer", (offer) => {
     if (socket.partner) {
-      socket.partner.emit('offer', offer);
+      socket.partner.emit("offer", offer);
     }
   });
 
-  socket.on('answer', (answer) => {
+  socket.on("answer", (answer) => {
     if (socket.partner) {
-      socket.partner.emit('answer', answer);
+      socket.partner.emit("answer", answer);
     }
   });
 
-  socket.on('candidate', (candidate) => {
+  socket.on("candidate", (candidate) => {
     if (socket.partner) {
-      socket.partner.emit('candidate', candidate);
+      socket.partner.emit("candidate", candidate);
     }
-  });
-  socket.on('refresh', () => {
-    socket.isRefreshing = true;
   });
 });
 
