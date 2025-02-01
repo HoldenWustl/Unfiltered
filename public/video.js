@@ -270,6 +270,11 @@ async function createOffer() {
   }
 }
 
+socket.on("refreshNow", () => {
+  console.log("Refreshing page...");
+  location.reload();
+});
+
 function showWaitingForMatch() {
   console.log("Showing waiting for match...");
   document.getElementById("loading-symbol").style.display = "block";
