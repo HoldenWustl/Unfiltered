@@ -1,11 +1,26 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const { PeerServer } = require('peer');
+
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-const { PeerServer } = require('peer');
+
+
+const port = process.env.PORT || 9000;
+
+const peerServer = PeerServer({ port, path: '/myapp' });
+
+app.use('/', (req, res) => {
+  res.send("PeerJS Server is running.");
+});
+
+app.listen(port, () => {
+  console.log(`PeerJS Server is running on port ${port}`);
+});
+
 
 // Store connected users and their paired information
 let users = [];  // Active users in the system, waiting or paired
@@ -94,11 +109,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const peerServer = PeerServer({ 
-  port: 9000, 
-  path: '/myapp', // URL path for PeerJS server
-  debug: true 
-});
+
 
 app.get('/video', (req, res) => {
   res.sendFile(__dirname + '/video.html');
