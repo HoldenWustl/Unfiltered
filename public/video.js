@@ -98,7 +98,10 @@ socket.on('pairedForVideo', async (otherUser) => {
   const stream = await getUserMediaWithPermissions();
   if (!stream) return;  // Don't continue if stream is null
 
-  const call = peer.call(otherUserName, stream);
+  const call = peer.call(otherUserName, stream, {
+  metadata: { videoCodec: "H264" }  // Tell PeerJS to use H.264
+});
+
   call.on('stream', (remoteStream) => {
   console.log("Remote stream received!");
   
@@ -166,7 +169,9 @@ function createPeer() {
   peer.on('open', (id) => {
     console.log('Peer open with ID:', id);
     // Now you can make the call to the other user after peer is open
-    const call = peer.call(otherUserName, localStream);
+    const call = peer.call(otherUserName, localStream, {
+  metadata: { videoCodec: "H264" }  // Tell PeerJS to use H.264
+});
     call.on('stream', (remoteStream) => {
       console.log("Remote stream received!");
       remoteVideo.srcObject = remoteStream;  // Set the remote video stream to your element
