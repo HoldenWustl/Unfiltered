@@ -166,36 +166,33 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 let peer; // Initialize PeerJS peer object
 
 function createPeer() {
-  // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
+    host: 'https://unfiltered-22as.onrender.com', // Replace with your Render deployment URL
+    port: 443, // Use 443 for HTTPS
+    path: '/myapp',
+    secure: true, // Ensure it's secure
     config: { iceServers: myIceServers },
-    serialization: "json",
-    host: 'localhost',  // Local server address
-    port: 9000,         // PeerJS server listens on port 9000
-    path: '/myapp',     // Make sure this matches the path you used in the server
-    secure: false,      // Set secure: true for production
   });
 
-  // Handle PeerJS connection open event
   peer.on('open', (id) => {
     console.log('Peer open with ID:', id);
   });
 
-  // Handle incoming calls (when other user calls you)
   peer.on('call', (call) => {
-  console.log("Incoming call...");
-  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then((stream) => {
-      call.answer(stream);  // Answer the call with the local stream
-      call.on('stream', (remoteStream) => {
-        console.log("Remote stream received on mobile!");
-        remoteVideo.srcObject = remoteStream;
-        remoteVideo.play().catch(e => console.error("Video play failed:", e));
-      });
-    })
-    .catch(e => console.error("Failed to get media:", e));
-});
+    console.log("Incoming call...");
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        call.answer(stream);  // Answer the call with the local stream
+        call.on('stream', (remoteStream) => {
+          console.log("Remote stream received!");
+          remoteVideo.srcObject = remoteStream;
+          remoteVideo.play().catch(e => console.error("Video play failed:", e));
+        });
+      })
+      .catch(e => console.error("Failed to get media:", e));
+  });
 }
+
 
 function showWaitingForMatch() {
   console.log("Showing waiting for match...");
