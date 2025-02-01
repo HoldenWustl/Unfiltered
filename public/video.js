@@ -101,11 +101,12 @@ socket.on('pairedForVideo', async (otherUser) => {
   const call = peer.call(otherUserName, stream);
   call.on('stream', (remoteStream) => {
   console.log("Remote stream received!");
-  remoteVideo.srcObject = remoteStream;
-
-  // Try playing the video & catch any autoplay errors
-  remoteVideo.play().catch((e) => console.error("Video play failed:", e));
-  });
+  
+  setTimeout(() => {
+    remoteVideo.srcObject = remoteStream;
+    remoteVideo.play().catch(e => console.error("Video play failed:", e));
+  }, 500);  // Delay ensures video element is ready
+});
 });
 
 
