@@ -10,7 +10,7 @@ let peerConnection = null;
 const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 let iceCandidateQueue = [];
-const iceServers = [
+const myIceServers = [
   {
     urls: "stun:stun.relay.metered.ca:80",
   },
@@ -169,7 +169,8 @@ let peer; // Initialize PeerJS peer object
 function createPeer() {
   // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
-    config: { iceServers: iceServers },
+    config: { iceServers: myIceServers },
+    serialization: "json",
     host: 'localhost',  // Local server address
     port: 9000,         // PeerJS server listens on port 9000
     path: '/myapp',     // Make sure this matches the path you used in the server
