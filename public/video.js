@@ -254,6 +254,11 @@ socket.on('answer', async (answer) => {
 
 // Function to create and send an offer
 async function createOffer() {
+  if (peerConnection && peerConnection.signalingState !== "stable") {
+    console.log("Already in progress. Skipping new offer.");
+    return;
+  }
+  
   if (!localStream) {
     console.error("Local stream is still not available when creating offer.");
     return;
