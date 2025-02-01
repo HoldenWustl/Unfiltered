@@ -11,10 +11,8 @@ const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
 let iceCandidateQueue = [];
-
 let localStreamReady = false;
 
-// Start the camera for the local stream
 async function startCamera() {
   try {
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -127,6 +125,7 @@ async function createPeerConnection() {
     }
   };
 
+  // Set up remote stream
   remoteStream = new MediaStream();
   remoteVideo.srcObject = remoteStream;
 
