@@ -96,20 +96,24 @@ socket.on('pairedForVideo', async (otherUser) => {
 
   // Once peer is created, initiate the call to the other user
   const stream = await getUserMediaWithPermissions();
-  if (!stream) return;  // Don't continue if stream is null
+if (!stream) return;  // Ensure we have a stream before proceeding
 
-  const call = peer.call(otherUserName, stream, {
-  metadata: { videoCodec: "H264" }  // Tell PeerJS to use H.264
+console.log("Calling peer...");
+const call = peer.call(otherUserName, stream, {
+  metadata: { videoCodec: "H264" } // Force mobile-friendly video codec
 });
 
-  call.on('stream', (remoteStream) => {
+call.on('stream', async (remoteStream) => {
   console.log("Remote stream received!");
+  remoteVideo.srcObject = remoteStream;
   
-  setTimeout(() => {
-    remoteVideo.srcObject = remoteStream;
-    remoteVideo.play().catch(e => console.error("Video play failed:", e));
-  }, 500);  // Delay ensures video element is ready
+  try {
+    await remoteVideo.play();
+  } catch (e) {
+    console.error("Video play failed:", e);
+  }
 });
+
 });
 
 
