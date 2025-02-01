@@ -233,3 +233,8 @@ function hideWaitingForMatch() {
   document.getElementById("loading-symbol").style.display = "none";
 }
 
+peer.on('iceCandidate', (candidate) => {
+  if (candidate) {
+    peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+  }
+});
