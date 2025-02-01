@@ -260,9 +260,11 @@ async function createOffer() {
   }
   
   if (!localStream) {
-    console.error("Local stream is still not available when creating offer.");
-    return;
+    console.error("Local stream is still not available. Retrying...");
+    await ensureLocalStream();  // Assuming ensureLocalStream() fetches the stream.
+    return createOffer();  // Retry after the stream is ready.
   }
+  
 
   try {
     console.log("Creating offer...");
