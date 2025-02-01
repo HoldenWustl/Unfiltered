@@ -94,6 +94,9 @@ io.on('connection', (socket) => {
 });
 
 
+app.get('/video', (req, res) => {
+  res.sendFile(__dirname + '/video.html');
+});
 
 let videoQueue = [];
 
