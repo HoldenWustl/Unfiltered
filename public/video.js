@@ -54,6 +54,16 @@ async function startCamera() {
     alert("Could not access camera/microphone. Please allow permissions.");
   }
 }
+async function getUserMediaWithPermissions() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    return stream;
+  } catch (err) {
+    console.error("User denied media permissions:", err);
+    alert("Please enable camera and microphone access.");
+    return null;
+  }
+}
 
 // Ensure local stream is ready before proceeding with the connection
 async function ensureLocalStream() {
@@ -85,7 +95,9 @@ socket.on('pairedForVideo', async (otherUser) => {
   }
 
   // Once peer is created, initiate the call to the other user
+  const stream = await getUserMediaWithPermissions();
   const call = peer.call(otherUserName, localStream);
+  if (!stream) return;
   call.on('stream', (remoteStream) => {
     console.log("Remote stream received!");
     remoteVideo.srcObject = remoteStream;  // Display remote video
