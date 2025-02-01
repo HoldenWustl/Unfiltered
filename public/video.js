@@ -37,6 +37,12 @@ const iceServers = [
 ];
 
 let localStreamReady = false;
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    console.log("Resuming video...");
+    remoteVideo.play().catch(e => console.error("Failed to resume:", e));
+  }
+});
 
 // Start the camera for the local stream
 async function startCamera() {
