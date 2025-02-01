@@ -121,13 +121,7 @@ io.on("connection", (socket) => {
       console.log(`Matched: ${user1.userName} & ${user2.userName}. Refreshing...`);
 
       // Tell user1 to refresh immediately
-      user1.emit("refreshNow");
-
-      // Wait 5 seconds, then tell user2 to refresh
-      setTimeout(() => {
-        user2.emit("refreshNow");
-      }, 5000);
-    } else {
+      else {
       socket.emit("waitingForVideoPair", false);
     }
   });
