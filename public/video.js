@@ -102,25 +102,30 @@ socket.on('pairedForVideo', async (otherUser) => {
 
   // Once peer is created, initiate the call to the other user
   const stream = await getUserMediaWithPermissions();
-if (!stream) return;  // Ensure we have a stream before proceeding
+  if (!stream) return;  // Ensure we have a stream before proceeding
 
-console.log("Calling peer...");
-const call = peer.call(otherUserName, stream, {
-  metadata: { videoCodec: "VP8" } // Changed to VP8 for better mobile support
+  console.log("Calling peer...");
+  const call = peer.call(otherUserName, stream, {
+    metadata: { videoCodec: "VP8" } // Changed to VP8 for better mobile support
+  });
+
+  call.on('stream', (remoteStream) => {
+    console.log("Remote stream received!");
+    remoteVideo.srcObject = remoteStream;
+    
+    try {
+      remoteVideo.play();
+    } catch (e) {
+      console.error("Video play failed:", e);
+    }
+  });
+
+  call.on('close', () => {
+    console.log('Call ended.');
+    remoteVideo.srcObject = null;
+  });
 });
 
-call.on('stream', async (remoteStream) => {
-  console.log("Remote stream received!");
-  remoteVideo.srcObject = remoteStream;
-  
-  try {
-    await remoteVideo.play();
-  } catch (e) {
-    console.error("Video play failed:", e);
-  }
-});
-
-});
 
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
@@ -181,19 +186,20 @@ function createPeer() {
   });
 
   // Handle incoming calls (when other user calls you)
-  peer.on('call', (call) => {
+ peer.on('call', (call) => {
   console.log("Incoming call...");
   navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then((stream) => {
       call.answer(stream);  // Answer the call with the local stream
       call.on('stream', (remoteStream) => {
-        console.log("Remote stream received on mobile!");
+        console.log("Remote stream received on callee!");
         remoteVideo.srcObject = remoteStream;
         remoteVideo.play().catch(e => console.error("Video play failed:", e));
       });
     })
     .catch(e => console.error("Failed to get media:", e));
 });
+
 }
 
 function showWaitingForMatch() {
