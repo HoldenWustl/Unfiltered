@@ -10,6 +10,7 @@ let peerConnection = null;
 const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 let iceCandidateQueue = [];
+
 const myIceServers = [
   {
     urls: "stun:stun.relay.metered.ca:80",
@@ -102,30 +103,25 @@ socket.on('pairedForVideo', async (otherUser) => {
 
   // Once peer is created, initiate the call to the other user
   const stream = await getUserMediaWithPermissions();
-  if (!stream) return;  // Ensure we have a stream before proceeding
+if (!stream) return;  // Ensure we have a stream before proceeding
 
-  console.log("Calling peer...");
-  const call = peer.call(otherUserName, stream, {
-    metadata: { videoCodec: "VP8" } // Changed to VP8 for better mobile support
-  });
-
-  call.on('stream', (remoteStream) => {
-    console.log("Remote stream received!");
-    remoteVideo.srcObject = remoteStream;
-    
-    try {
-      remoteVideo.play();
-    } catch (e) {
-      console.error("Video play failed:", e);
-    }
-  });
-
-  call.on('close', () => {
-    console.log('Call ended.');
-    remoteVideo.srcObject = null;
-  });
+console.log("Calling peer...");
+const call = peer.call(otherUserName, stream, {
+  metadata: { videoCodec: "VP8" } // Changed to VP8 for better mobile support
 });
 
+call.on('stream', async (remoteStream) => {
+  console.log("Remote stream received!");
+  remoteVideo.srcObject = remoteStream;
+  
+  try {
+    await remoteVideo.play();
+  } catch (e) {
+    console.error("Video play failed:", e);
+  }
+});
+
+});
 
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
@@ -174,10 +170,11 @@ function createPeer() {
   // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
     config: { iceServers: myIceServers },
-    port: 443,
-    host: 'peerjs-server-production-1731.up.railway.app',  // Local server address
+    serialization: "json",
+    host: 'localhost',  // Local server address
+    port: 9000,         // PeerJS server listens on port 9000
     path: '/myapp',     // Make sure this matches the path you used in the server
-    secure: true,      // Set secure: true for production
+    secure: false,      // Set secure: true for production
   });
 
   // Handle PeerJS connection open event
@@ -186,20 +183,20 @@ function createPeer() {
   });
 
   // Handle incoming calls (when other user calls you)
- peer.on('call', (call) => {
+  peer.on('call', (call) => {
   console.log("Incoming call...");
   navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then((stream) => {
       call.answer(stream);  // Answer the call with the local stream
       call.on('stream', (remoteStream) => {
-        console.log("Remote stream received on callee!");
+        console.log("Remote stream received on mobile!");
         remoteVideo.srcObject = remoteStream;
         remoteVideo.play().catch(e => console.error("Video play failed:", e));
       });
+
     })
     .catch(e => console.error("Failed to get media:", e));
 });
-
 }
 
 function showWaitingForMatch() {
