@@ -169,6 +169,7 @@ function createPeer() {
   // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
     config: { iceServers: myIceServers },
+    port: 443,
     host: 'peerjs-server-production-1731.up.railway.app',  // Local server address
     path: '/myapp',     // Make sure this matches the path you used in the server
     secure: true,      // Set secure: true for production
