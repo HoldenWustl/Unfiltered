@@ -169,13 +169,14 @@ let peer; // Initialize PeerJS peer object
 function createPeer() {
   // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
-    config: { iceServers: myIceServers },
-    serialization: "json",
-    host: 'localhost',  // Local server address
-    port: 9000,         // PeerJS server listens on port 9000
-    path: '/myapp',     // Make sure this matches the path you used in the server
-    secure: false,      // Set secure: true for production
-  });
+  config: { iceServers: myIceServers },
+  serialization: "json",
+  host: 'peerjs-server-production-1731.up.railway.app',  // Correct URL
+  port: 443,
+  path: '/myapp',  // Same path as server
+  secure: true,  // Secure connection
+});
+
 
   // Handle PeerJS connection open event
   peer.on('open', (id) => {
