@@ -5,7 +5,7 @@ const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-const { PeerServer } = require('peer');
+
 
 // Store connected users and their paired information
 let users = [];  // Active users in the system, waiting or paired
@@ -94,11 +94,6 @@ io.on('connection', (socket) => {
   });
 });
 
-const peerServer = PeerServer({ 
-  port: 9000, 
-  path: '/myapp', // URL path for PeerJS server
-  debug: true 
-});
 
 app.get('/video', (req, res) => {
   res.sendFile(__dirname + '/video.html');
