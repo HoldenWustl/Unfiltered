@@ -121,19 +121,6 @@ socket.on('pairedForVideo', async (otherUser) => {
 });
 
 
-call.on('stream', async (remoteStream) => {
-  console.log("Remote stream received!");
-  remoteVideo.srcObject = remoteStream;
-  
-  try {
-    await remoteVideo.play();
-  } catch (e) {
-    console.error("Video play failed:", e);
-  }
-});
-
-});
-
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
   setTimeout(() => {
