@@ -95,20 +95,31 @@ socket.on('pairedForVideo', async (otherUser) => {
   otherUserAge = otherUser.age;
   document.getElementById("status").textContent = `Randomly matched with ${otherUserName}, Age: ${otherUserAge}`;
 
-  // Create peer connection if not already created
+  // Ensure the peer is created before calling
   if (!peer) {
-    console.log("Creating peer...");
-    createPeer();  // Create peer and initiate connection
+    console.log("Peer not ready, creating...");
+    createPeer();
   }
 
-  // Once peer is created, initiate the call to the other user
-  const stream = await getUserMediaWithPermissions();
-if (!stream) return;  // Ensure we have a stream before proceeding
+  if (peer) {
+    // Ensure we have the stream before calling
+    const stream = await getUserMediaWithPermissions();
+    if (!stream) return;
 
-console.log("Calling peer...");
-const call = peer.call(otherUserName, stream, {
-  metadata: { videoCodec: "VP8" } // Changed to VP8 for better mobile support
+    console.log("Calling peer...");
+    const call = peer.call(otherUserName, stream, {
+      metadata: { videoCodec: "VP8" } // VP8 for better mobile support
+    });
+
+    call.on('stream', (remoteStream) => {
+      console.log("Remote stream received!");
+      remoteVideo.srcObject = remoteStream;
+
+      remoteVideo.play().catch(e => console.error("Video play failed:", e));
+    });
+  }
 });
+
 
 call.on('stream', async (remoteStream) => {
   console.log("Remote stream received!");
