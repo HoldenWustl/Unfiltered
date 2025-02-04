@@ -36,7 +36,7 @@ const myIceServers = [
     credential: "yNKdn0DH6LknYKXq",
   },
 ];
-
+createPeer();
 let localStreamReady = false;
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
@@ -90,36 +90,32 @@ document.getElementById("status").textContent = "Finding someone...";
 socket.on('pairedForVideo', async (otherUser) => {
   await ensureLocalStream();
   console.log('Paired for video with:', otherUser);
-  hideWaitingForMatch();
+  
   otherUserName = otherUser.userName;
   otherUserAge = otherUser.age;
+  let otherPeerId = otherUser.peerId;  // Ensure the server shares PeerJS ID
+
   document.getElementById("status").textContent = `Randomly matched with ${otherUserName}, Age: ${otherUserAge}`;
 
-  // Ensure the peer is created before calling
   if (!peer) {
-    console.log("Peer not ready, creating...");
     createPeer();
   }
 
-  if (peer) {
-    // Ensure we have the stream before calling
+  peer.on('open', async (id) => {
+    console.log("Calling peer:", otherPeerId);
+    
     const stream = await getUserMediaWithPermissions();
     if (!stream) return;
 
-    console.log("Calling peer...");
-    const call = peer.call(otherUserName, stream, {
-      metadata: { videoCodec: "VP8" } // VP8 for better mobile support
-    });
-
+    const call = peer.call(otherPeerId, stream);
+    
     call.on('stream', (remoteStream) => {
       console.log("Remote stream received!");
       remoteVideo.srcObject = remoteStream;
-
       remoteVideo.play().catch(e => console.error("Video play failed:", e));
     });
-  }
+  });
 });
-
 
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
