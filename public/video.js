@@ -10,7 +10,6 @@ let peerConnection = null;
 const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 let iceCandidateQueue = [];
-
 const myIceServers = [
   {
     urls: "stun:stun.relay.metered.ca:80",
@@ -36,14 +35,8 @@ const myIceServers = [
     credential: "yNKdn0DH6LknYKXq",
   },
 ];
-createPeer();
+
 let localStreamReady = false;
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    console.log("Resuming video...");
-    remoteVideo.play().catch(e => console.error("Failed to resume:", e));
-  }
-});
 
 // Start the camera for the local stream
 async function startCamera() {
@@ -90,32 +83,31 @@ document.getElementById("status").textContent = "Finding someone...";
 socket.on('pairedForVideo', async (otherUser) => {
   await ensureLocalStream();
   console.log('Paired for video with:', otherUser);
-  
+  hideWaitingForMatch();
   otherUserName = otherUser.userName;
   otherUserAge = otherUser.age;
-  let otherPeerId = otherUser.peerId;  // Ensure the server shares PeerJS ID
-
   document.getElementById("status").textContent = `Randomly matched with ${otherUserName}, Age: ${otherUserAge}`;
 
+  // Create peer connection if not already created
   if (!peer) {
-    createPeer();
+    console.log("Creating peer...");
+    createPeer();  // Create peer and initiate connection
   }
 
-  peer.on('open', async (id) => {
-    console.log("Calling peer:", otherPeerId);
-    
-    const stream = await getUserMediaWithPermissions();
-    if (!stream) return;
+  // Once peer is created, initiate the call to the other user
+  const stream = await getUserMediaWithPermissions();
+  if (!stream) return;  // Don't continue if stream is null
 
-    const call = peer.call(otherPeerId, stream);
-    
-    call.on('stream', (remoteStream) => {
-      console.log("Remote stream received!");
-      remoteVideo.srcObject = remoteStream;
-      remoteVideo.play().catch(e => console.error("Video play failed:", e));
-    });
+  const call = peer.call(otherUserName, stream);
+  call.on('stream', (remoteStream) => {
+  console.log("Remote stream received!");
+  remoteVideo.srcObject = remoteStream;
+
+  // Try playing the video & catch any autoplay errors
+  remoteVideo.play().catch((e) => console.error("Video play failed:", e));
   });
 });
+
 
 // Waiting for someone to join
 socket.on('waitingForVideoPair', (reconnecting) => {
@@ -163,37 +155,57 @@ let peer; // Initialize PeerJS peer object
 function createPeer() {
   // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
-  config: { iceServers: myIceServers },
-  serialization: "json",
-  host: 'peerjs-server-production-1731.up.railway.app',  // Correct URL
-  port: 443,
-  path: '/myapp',  // Same path as server
-  secure: true,  // Secure connection
-});
-
+    config: { iceServers: myIceServers },
+    host: 'localhost',  // Local server address
+    port: 9000,         // PeerJS server listens on port 9000
+    path: '/myapp',     // Make sure this matches the path you used in the server
+    secure: false,      // Use false since we're running locally (no SSL certificate)
+  });
 
   // Handle PeerJS connection open event
   peer.on('open', (id) => {
     console.log('Peer open with ID:', id);
+    // Now you can make the call to the other user after peer is open
+    const call = peer.call(otherUserName, localStream);
+    call.on('stream', (remoteStream) => {
+      console.log("Remote stream received!");
+      remoteVideo.srcObject = remoteStream;  // Set the remote video stream to your element
+    });
   });
 
   // Handle incoming calls (when other user calls you)
-  peer.on('call', (call) => {
-  console.log("Incoming call...");
-  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then((stream) => {
-      call.answer(stream);  // Answer the call with the local stream
+  peer.on('call', async (call) => {
+    console.log("Incoming call...");
+    
+    // Answer the call with the local stream
+    if (localStream) {
+      call.answer(localStream);  // Answer and send local stream
+      
+      // When the remote stream is received, attach it to the remote video element
       call.on('stream', (remoteStream) => {
-        console.log("Remote stream received on mobile!");
-        remoteVideo.srcObject = remoteStream;
-        remoteVideo.play().catch(e => console.error("Video play failed:", e));
+        console.log("Remote stream received!");
+        remoteVideo.srcObject = remoteStream;  // Display remote video
       });
-
-    })
-    .catch(e => console.error("Failed to get media:", e));
-});
+    }
+  });
 }
 
+
+function setupPeerConnection(conn) {
+  conn.on('open', () => {
+    console.log("Connection established with:", conn.peer);
+  });
+
+  conn.on('data', (data) => {
+    console.log("Received data:", data);
+  });
+
+  conn.on('close', () => {
+    console.log("Connection closed.");
+  });
+}
+
+// Function to show waiting for match symbol
 function showWaitingForMatch() {
   console.log("Showing waiting for match...");
   document.getElementById("loading-symbol").style.display = "block";
@@ -203,3 +215,4 @@ function hideWaitingForMatch() {
   console.log("Hiding waiting for match...");
   document.getElementById("loading-symbol").style.display = "none";
 }
+
