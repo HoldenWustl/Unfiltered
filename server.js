@@ -5,7 +5,7 @@ const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-
+const { PeerServer } = require('peer');
 
 // Store connected users and their paired information
 let users = [];  // Active users in the system, waiting or paired
@@ -94,6 +94,11 @@ io.on('connection', (socket) => {
   });
 });
 
+const peerServer = PeerServer({ 
+  port: 9000, 
+  path: '/myapp', // URL path for PeerJS server
+  debug: true 
+});
 
 app.get('/video', (req, res) => {
   res.sendFile(__dirname + '/video.html');
@@ -118,12 +123,8 @@ io.on('connection', (socket) => {
       user1.partner = user2;
       user2.partner = user1;
 
-            // Emit the pairedForVideo events with a 1-second delay
-      setTimeout(() => {
-        user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age });
-        user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age });
-      }, 1000);  // 1-second delay before emitting the event
-
+      user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age });
+      user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age });
     } else {
       socket.emit('waitingForVideoPair', false);
     }
@@ -198,8 +199,6 @@ io.on('connection', (socket) => {
   socket.on('refresh', () => {
     socket.isRefreshing = true;
   });
-
-  
 });
 
 
