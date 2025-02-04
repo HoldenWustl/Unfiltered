@@ -203,6 +203,9 @@ io.on('connection', (socket) => {
 
 
 // Start the server on port 3000
-server.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+const port = process.env.PORT || 10000; // Default to 10000 if PORT isn't set
+
+server.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
+
