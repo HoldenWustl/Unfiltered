@@ -13,6 +13,7 @@ let peerConnection = null;
 const localVideo = document.getElementById("local-video");
 const remoteVideo = document.getElementById("remote-video");
 let iceCandidateQueue = [];
+let forcedReload = false;
 const myIceServers = [
   {
     urls: "stun:stun.relay.metered.ca:80",
@@ -134,6 +135,7 @@ socket.on('videoUserLeft', () => {
     peer.destroy();
   }
   remoteVideo.srcObject = null;
+  forcedReload = true
   setTimeout(() => {
     location.reload();
   }, 1000);
@@ -141,9 +143,12 @@ socket.on('videoUserLeft', () => {
 
 // When the user refreshes the page
 window.addEventListener("beforeunload", () => {
-    console.log("User is leaving the chat...");
+    if (!forcedReload) {
+      console.log("User is leaving the chat...");
     socket.emit("leaveVideoChat");
     sessionStorage.setItem("kicked", "true"); // Store flag in sessionStorage
+    }
+    
 });
 window.addEventListener("load", () => {
     if (sessionStorage.getItem("kicked") === "true") {
