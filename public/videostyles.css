@@ -55,7 +55,7 @@ body {
   width: 100%;
   max-width: 1200px;
   position: absolute;
-  top: 25%; /* Position the videos closer to the center */
+  top: 30%; /* Position the videos closer to the center */
 }
 
 /* Larger video sizes */
@@ -160,7 +160,6 @@ button:active {
     flex-direction: column;
     align-items: center;
     gap: 10px; /* Reduce spacing for better fit */
-    position: relative; /* Ensure videos stay within the screen */
     padding: 10px; /* Add some padding to prevent overlap */
   }
 
@@ -185,7 +184,7 @@ button:active {
 
   #status {
     display:block;
-    top: 0%; /* Adjust position of status text */
+    top: 10%;
   }
 
  
