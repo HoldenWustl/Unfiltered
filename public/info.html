@@ -279,7 +279,11 @@
   <script>
 
     sessionStorage.removeItem("kicked");
-
+    const userForm = document.getElementById('name');
+    const savedValue = sessionStorage.getItem('name');
+    if (savedValue) {
+      userForm.value = savedValue; // Set the input field to the saved value
+    }
     // Age slider functionality
     const ageSlider = document.getElementById('age');
     const ageValue = document.getElementById('age-display');
@@ -325,6 +329,7 @@
         alert("Please enter your name before starting the chat!");
     } else {
         // If name input is filled, redirect to the chat page (chat.html)
+      sessionStorage.setItem('name', nameInput);
         window.location.href = `chat.html?userName=${encodeURIComponent(nameInput.trim())}`; 
     }
 }
@@ -338,6 +343,7 @@ function startVideo() {
         alert("Please enter your name before starting the chat!");
     } else {
         // If name input is filled, redirect to the chat page (chat.html)
+      sessionStorage.setItem('name', nameInput);
         window.location.href = `video.html?userName=${encodeURIComponent(nameInput.trim())}&age=${encodeURIComponent(ageInput)}`;
     }
 }
