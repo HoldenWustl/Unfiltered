@@ -55,20 +55,43 @@ body {
   width: 100%;
   max-width: 1200px;
   position: absolute;
-  top: 30%; /* Position the videos closer to the center */
+  top: 25%; /* Position the videos closer to the center */
 }
 
 /* Larger video sizes */
 video {
-  border: 8px solid #fff;
+  border: 0.5rem solid transparent;
+  animation: border-angle-rotate 2s infinite linear;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 400px; /* Larger video size */
   height: auto; /* Larger video size */
   object-fit: cover;
+  background: linear-gradient(white, white) padding-box,
+      conic-gradient(
+          from var(--border-angle),
+          oklch(100% 100% 0deg),
+          oklch(100% 100% 45deg),
+          oklch(100% 100% 90deg),
+          oklch(100% 100% 135deg),
+          oklch(100% 100% 180deg),
+          oklch(100% 100% 225deg),
+          oklch(100% 100% 270deg),
+          oklch(100% 100% 315deg),
+          oklch(100% 100% 360deg)
+        )
+        border-box;
 }
-
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes border-angle-rotate {
+  from { --border-angle: 0deg; }
+  to { --border-angle: 360deg; }
+}
 /* Add a better border effect when the user is actively in a call */
 .video-container .active-video {
   border-color: #25f6b0;
@@ -132,7 +155,7 @@ button:active {
 
 /* Ensure videos stack on top of each other on small screens */
 /* Ensure videos stack on top of each other on small screens */
-@media (max-width: 768px) {
+@media (max-width: 806px) {
   .video-container {
     flex-direction: column;
     align-items: center;
