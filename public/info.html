@@ -267,6 +267,10 @@
   </div>
 
   <script>
+    window.addEventListener("load", () => {
+    sessionStorage.removeItem("kicked");
+    });
+
     // Age slider functionality
     const ageSlider = document.getElementById('age');
     const ageValue = document.getElementById('age-display');
