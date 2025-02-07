@@ -147,7 +147,6 @@ window.addEventListener("beforeunload", () => {
 });
 window.addEventListener("load", () => {
     if (sessionStorage.getItem("kicked") === "true") {
-        sessionStorage.removeItem("kicked"); // Clear flag
         window.location.href = "info.html"; // Redirect them
     }
 });
