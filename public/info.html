@@ -16,7 +16,17 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      background-repeat: repeat;
+      animation: moveBackground 10s linear infinite;
     }
+    @keyframes moveBackground {
+  0% {
+    background-position: 0 0; /* Starting position */
+  }
+  100% {
+    background-position: 100% 100%; /* Ending position */
+  }
+}
     .back-btn {
       background-color: #e11d48;
       color: white;
