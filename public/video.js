@@ -153,12 +153,7 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 let peer; // Initialize PeerJS peer object
 
 function createPeer() {
-  const isAlreadyInChat = sessionStorage.getItem('inVideoChat');
-  if (isAlreadyInChat) {
-  alert('You are already in a video chat session in this tab.');
-  return; // Exit early if the user is already in a chat
-}
-  sessionStorage.setItem('inVideoChat', 'true');
+  
   // Initialize PeerJS with your server configuration
   peer = new Peer(userName, {
   config: { iceServers: myIceServers },
@@ -196,8 +191,7 @@ function createPeer() {
     }
   });
   peer.on('close', () => {
-  // Once the peer connection is closed, remove the in-chat flag
-  sessionStorage.removeItem('inVideoChat');
+
 });
 }
 
