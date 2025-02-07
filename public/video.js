@@ -141,8 +141,7 @@ socket.on('videoUserLeft', () => {
 
 // When the user refreshes the page
 window.addEventListener('beforeunload', () => {
-  console.log('User is refreshing the page...');
-  socket.emit('refresh');
+  socket.emit("leaveVideoChat");
 });
 
 // Leave chat handler
