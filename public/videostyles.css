@@ -186,12 +186,14 @@ button:active {
   #status {
     display:block;
     top: 10%;
+    font-size: 30px;
   }
 
  
 }
 @media (max-width: 380px) {
   #status {
+    font-size: 16px;
     top: 5%;
   }
 }
