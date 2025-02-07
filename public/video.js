@@ -1,3 +1,14 @@
+// Check if user is already in a call
+if (sessionStorage.getItem("inCall") === "true") {
+    alert("You are already in a call. Please close other tabs.");
+    window.location.href = "index.html"; // Redirect them back
+} else {
+    // Mark user as in a call
+    sessionStorage.setItem("inCall", "true");
+}
+
+
+
 var socket = io.connect();
 const urlParams = new URLSearchParams(window.location.search);
 const userName = urlParams.get('userName') || 'User';
@@ -147,6 +158,7 @@ document.getElementById("leave-btn").addEventListener("click", () => {
   console.log("User is leaving the chat...");
   socket.emit("leaveVideoChat");
   window.location.href = "info.html";
+  sessionStorage.removeItem("inCall");
 });
 
 // Function to create a PeerJS peer and handle communication
