@@ -154,14 +154,7 @@ window.addEventListener("pageshow", function () {
     }
     }
 });
-window.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden" && !forcedReload) {
-        console.log("User is leaving the chat...");
-       console.log("User is leaving the chat...");
-  socket.emit("leaveVideoChat");
-  window.location.href = "info.html";
-    }
-});
+
 // When the user refreshes the page
 window.addEventListener("beforeunload", () => {
     if (!forcedReload) {
