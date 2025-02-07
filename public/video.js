@@ -141,6 +141,19 @@ socket.on('videoUserLeft', () => {
   }, 1000);
 });
 
+window.addEventListener("pageshow", function () {
+    const entries = performance.getEntriesByType("navigation");
+    if (entries.length > 0 && entries[0].type === "reload") {
+        console.log("Page was refreshed!");
+        // Trigger your custom function
+        if (!forcedReload) {
+      console.log("User is leaving the chat...");
+    socket.emit("leaveVideoChat");
+    sessionStorage.setItem("kicked", "true"); // Store flag in sessionStorage
+    }
+    }
+});
+
 // When the user refreshes the page
 window.addEventListener("beforeunload", () => {
     if (!forcedReload) {
