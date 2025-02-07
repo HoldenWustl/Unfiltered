@@ -162,6 +162,7 @@ button:active {
     align-items: center;
     gap: 10px; /* Reduce spacing for better fit */
     padding: 10px; /* Add some padding to prevent overlap */
+    margin-top: 50px;
   }
 
   .video-wrapper {
