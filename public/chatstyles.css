@@ -4,8 +4,17 @@ body {
   background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); /* A light texture */
   margin: 0;
   padding: 0;
+  background-repeat: repeat;
+  animation: moveBackground 10s linear infinite; 
 }
-
+@keyframes moveBackground {
+  0% {
+    background-position: 0 0; /* Starting position */
+  }
+  100% {
+    background-position: 100% 100%; /* Ending position */
+  }
+}
 .chat-container {
   width: 100%;
   max-width: 600px;
@@ -87,6 +96,10 @@ body {
   overflow-wrap: break-word; /* Ensure long words break and do not overflow */
   display: block; /* Ensure each message is its own block */
   margin-bottom: 10px; /* Add space between messages */
+  transition: transform 0.3s ease;
+}
+.chat-message:hover {
+  transform: scale(1.1); /* Slightly enlarge the element (5% larger) */
 }
 
 .chat-message.user {
