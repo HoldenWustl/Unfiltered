@@ -140,11 +140,18 @@ socket.on('videoUserLeft', () => {
 });
 
 // When the user refreshes the page
-window.addEventListener('beforeunload', () => {
-  console.log("User is leaving the chat...");
-  socket.emit("leaveVideoChat");
-  window.location.href = "info.html";
+window.addEventListener("beforeunload", () => {
+    console.log("User is leaving the chat...");
+    socket.emit("leaveVideoChat");
+    sessionStorage.setItem("kicked", "true"); // Store flag in sessionStorage
 });
+window.addEventListener("load", () => {
+    if (sessionStorage.getItem("kicked") === "true") {
+        sessionStorage.removeItem("kicked"); // Clear flag
+        window.location.href = "info.html"; // Redirect them
+    }
+});
+
 
 // Leave chat handler
 document.getElementById("leave-btn").addEventListener("click", () => {
