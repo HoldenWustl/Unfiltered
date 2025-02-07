@@ -148,24 +148,21 @@ window.addEventListener("pageshow", function () {
         // Trigger your custom function
         if (!forcedReload) {
       console.log("User is leaving the chat...");
-    socket.emit("leaveVideoChat");
-    sessionStorage.setItem("kicked", "true"); // Store flag in sessionStorage
+    setTimeout(() => leaveChat(), 500);
     }
     }
 });
 window.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden" && !forcedReload) {
         console.log("User is leaving the chat...");
-        socket.emit("leaveVideoChat");
-        sessionStorage.setItem("kicked", "true"); 
+        setTimeout(() => leaveChat(), 500);
     }
 });
 // When the user refreshes the page
 window.addEventListener("beforeunload", () => {
     if (!forcedReload) {
       console.log("User is leaving the chat...");
-    socket.emit("leaveVideoChat");
-    sessionStorage.setItem("kicked", "true"); // Store flag in sessionStorage
+    setTimeout(() => leaveChat(), 500);
     }
     
 });
@@ -183,7 +180,10 @@ document.getElementById("leave-btn").addEventListener("click", () => {
   window.location.href = "info.html";
 
 });
-
+function leaveChat() {
+    sessionStorage.setItem("kicked", "true");
+    socket.emit("leaveVideoChat");
+}
 // Function to create a PeerJS peer and handle communication
 let peer; // Initialize PeerJS peer object
 
