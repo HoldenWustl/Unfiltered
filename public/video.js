@@ -90,7 +90,7 @@ socket.on('pairedForVideo', async (otherUser) => {
   hideWaitingForMatch();
   otherUserName = otherUser.userName;
   otherUserAge = otherUser.age;
-  document.getElementById("status").textContent = 'Unfiltered matched you!;
+  document.getElementById("status").textContent = 'Unfiltered matched you!';
   document.getElementById("caption2").innerHTML = `Name: ${otherUserName}<br>Age: ${otherUserAge}`;
 
 
