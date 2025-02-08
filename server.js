@@ -139,7 +139,6 @@ io.on('connection', (socket) => {
   socket.on('leaveVideoChat', () => {
     // Ensure user is removed from the queue on leave
     videoQueue = videoQueue.filter(s => s !== socket);
-    updateOnlineCount(); 
   
     if (socket.partner) {
       socket.partner.emit('videoUserLeft');
@@ -160,6 +159,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     // Remove user from the video queue
     videoQueue = videoQueue.filter(s => s !== socket);
+    onlineUsers.delete(socket.userId);
     updateOnlineCount(); 
     if (socket.isRefreshing) {
       // Skip further processing if it's a refresh
