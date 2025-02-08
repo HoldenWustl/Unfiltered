@@ -166,7 +166,9 @@ button:active {
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Ensure videos stack on top of each other on small screens */
+.caption{
+  font-weight: 600;
+}
 /* Ensure videos stack on top of each other on small screens */
 @media (max-width: 806px) {
   .video-container {
