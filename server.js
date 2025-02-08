@@ -105,12 +105,14 @@ app.get('/video', (req, res) => {
 });
 
 let videoQueue = [];
-
+const onlineUsers = new Set();
 io.on('connection', (socket) => {
   console.log('A user connected');
-  function updateOnlineCount() {
-    io.emit('onlineCount', io.engine.clientsCount); // Count all connected clients
-}
+  socket.userId = socket.handshake.headers['user-id'] || Math.random().toString(36).substr(2, 9);
+    onlineUsers.add(socket.userId);
+    function updateOnlineCount() {
+      io.emit('onlineCount', onlineUsers.size); // Send unique user count
+  }
   updateOnlineCount(); 
   // Handle user joining the video chat
   socket.on('joinVideoChat', ({ userName, age }) => {
