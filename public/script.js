@@ -60,15 +60,3 @@ function scrollToSection(sectionId) {
   // Scroll to the target position
   window.scrollTo({ top: targetPosition, behavior: 'smooth' });
 }
-
-const socket = io({
-    extraHeaders: { 'user-id': sessionStorage.getItem('userId') || Math.random().toString(36).substr(2, 9) }
-});
-
-if (!sessionStorage.getItem('userId')) {
-    sessionStorage.setItem('userId', socket.io.opts.extraHeaders['user-id']);
-}
-
-socket.on('onlineCount', (count) => {
-    document.getElementById("online-count").innerText = `${count} people online`;
-});
