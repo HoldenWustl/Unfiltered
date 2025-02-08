@@ -78,7 +78,7 @@ async function ensureLocalStream() {
 }
 
 startCamera();
-
+document.getElementById("caption1").innerHTML = `Name: ${userName}<br>Age: ${age}`;
 // Emit to server to join the video chat
 socket.emit('joinVideoChat', { userName, age });
 document.getElementById("status").textContent = "Finding someone...";
@@ -90,7 +90,9 @@ socket.on('pairedForVideo', async (otherUser) => {
   hideWaitingForMatch();
   otherUserName = otherUser.userName;
   otherUserAge = otherUser.age;
-  document.getElementById("status").textContent = `Randomly matched with ${otherUserName}, Age: ${otherUserAge}`;
+  document.getElementById("status").textContent = 'Unfiltered matched you!;
+  document.getElementById("caption2").innerHTML = `Name: ${otherUserName}<br>Age: ${otherUserAge}`;
+
 
   // Create peer connection if not already created
   if (!peer) {
