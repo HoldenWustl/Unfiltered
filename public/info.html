@@ -350,6 +350,13 @@ function startVideo() {
 }
 
   </script>
-
+   <script src="https://cdn.jsdelivr.net/gh/ezshine/oneline.js@1.0.0/oneline.js"></script>
+  <script>
+    // Listen for updates from Oneline (info page)
+    new Oneline("info").on("OnelineUpdate", (e) => {
+      const userCount = e.detail.count;
+      localStorage.setItem("info-count", userCount); // Update info-count in localStorage
+    });
+  </script>
 </body>
 </html>
