@@ -105,15 +105,10 @@ app.get('/video', (req, res) => {
 });
 
 let videoQueue = [];
-const onlineUsers = new Set();
+
 io.on('connection', (socket) => {
   console.log('A user connected');
-  socket.userId = socket.handshake.headers['user-id'] || Math.random().toString(36).substr(2, 9);
-    onlineUsers.add(socket.userId);
-    function updateOnlineCount() {
-      io.emit('onlineCount', onlineUsers.size); // Send unique user count
-  }
-  updateOnlineCount(); 
+ 
   // Handle user joining the video chat
   socket.on('joinVideoChat', ({ userName, age }) => {
     socket.isRefreshing = false;
@@ -159,8 +154,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     // Remove user from the video queue
     videoQueue = videoQueue.filter(s => s !== socket);
-    onlineUsers.delete(socket.userId);
-    updateOnlineCount(); 
+    
     if (socket.isRefreshing) {
       // Skip further processing if it's a refresh
       return;
