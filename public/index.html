@@ -109,30 +109,10 @@
   <script src="script.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ezshine/oneline.js@1.0.0/oneline.js"></script>
 <script>
-  // Set initial values in localStorage
-  localStorage.setItem("index-count", 0);
-  localStorage.setItem("info-count", 0);
-
-  // Listen for updates from Oneline (index page)
-  new Oneline("unfiltered").on("OnelineUpdate", (e) => {
-    const userCount = e.detail.count;
-    localStorage.setItem("index-count", userCount); // Update index-count in localStorage
-    updateOnlineCount(); // Immediately update the online count on the page
-  });
-
-  // Function to update the total online count
-  function updateOnlineCount() {
-    const indexCount = parseInt(localStorage.getItem('index-count')) || 0;
-    const infoCount = parseInt(localStorage.getItem('info-count')) || 0;
-    const totalCount = indexCount + infoCount;
-    document.getElementById('online-count').textContent = totalCount;
-  }
-
-  // Periodically check localStorage to sync the online count
-  setInterval(updateOnlineCount, 1000);
-
-  // Initial call to update online count when the page loads
-  updateOnlineCount();
+  new Oneline("index").on("OnelineUpdate", (e) => {
+      const userCount = e.detail.count;
+      document.getElementById('online-count').textContent=`Online Users: ${userCount}`;
+    });
 </script>
 </body>
 </html>
