@@ -60,3 +60,9 @@ function scrollToSection(sectionId) {
   // Scroll to the target position
   window.scrollTo({ top: targetPosition, behavior: 'smooth' });
 }
+
+const socket = io(); // Connect to the server
+
+socket.on('onlineCount', (count) => {
+    document.getElementById("online-count").innerText = `${count} people online`;
+});
