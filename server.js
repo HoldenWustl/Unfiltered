@@ -108,7 +108,10 @@ let videoQueue = [];
 
 io.on('connection', (socket) => {
   console.log('A user connected');
-
+  function updateOnlineCount() {
+    io.emit('onlineCount', io.engine.clientsCount); // Count all connected clients
+}
+  updateOnlineCount(); 
   // Handle user joining the video chat
   socket.on('joinVideoChat', ({ userName, age }) => {
     socket.isRefreshing = false;
@@ -134,6 +137,7 @@ io.on('connection', (socket) => {
   socket.on('leaveVideoChat', () => {
     // Ensure user is removed from the queue on leave
     videoQueue = videoQueue.filter(s => s !== socket);
+    updateOnlineCount(); 
   
     if (socket.partner) {
       socket.partner.emit('videoUserLeft');
@@ -154,7 +158,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     // Remove user from the video queue
     videoQueue = videoQueue.filter(s => s !== socket);
-  
+    updateOnlineCount(); 
     if (socket.isRefreshing) {
       // Skip further processing if it's a refresh
       return;
