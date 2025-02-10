@@ -239,28 +239,61 @@
       gap: 2rem;
       margin: 2rem;
     }
+    
     .leaderboard-container {
       width: 35%;
-      background-color: #f4f4f9;
+      background: linear-gradient(135deg, #ffffff, #f4f4f9);
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      border: 1px solid #ddd;
     }
+    
     h3 {
       text-align: center;
-      font-size: 1.5rem;
-      color: #333;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 1rem;
     }
     
     #leaderboard-list {
       list-style-type: none;
       padding: 0;
       margin-top: 1rem;
+      white-space: nowrap;
     }
     
     #leaderboard-list li {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      font-size: 1rem;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background-color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
     }
+    
+    #leaderboard-list li:hover {
+      transform: scale(1.05);
+      background-color: #e9e9f0;
+    }
+    
+    #leaderboard-list li span {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ff9800;
+    }
+    
+    /* Add star icon after the score */
+    #leaderboard-list li span::after {
+      content: " ★";
+      color: #ffcc00;
+      font-size: 1.2rem;
+      margin-left: 5px;
+    }
+    
