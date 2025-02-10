@@ -238,6 +238,7 @@
       justify-content: space-between;
       gap: 2rem;
       margin: 2rem;
+    overflow-x: auto;
     }
     
     .leaderboard-container {
