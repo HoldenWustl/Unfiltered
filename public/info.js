@@ -68,7 +68,6 @@ function startVideo() {
     }
 }
 
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
@@ -100,7 +99,7 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
 
     users.reverse().forEach(user => {
       const li = document.createElement("li");
-      li.textContent = `${user.name}: ${user.points} points`;
+      li.innerHTML = `${user.name}: <span>${user.points}</span>`;
       leaderboardList.appendChild(li);
     });
   }
@@ -155,3 +154,4 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
       }
     });
   }
+  
