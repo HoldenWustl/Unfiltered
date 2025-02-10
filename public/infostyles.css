@@ -242,7 +242,7 @@
     }
     
     .leaderboard-container {
-      width: 35%;
+      width: auto;
       background: linear-gradient(135deg, #ffffff, #f4f4f9);
       padding: 20px;
       border-radius: 15px;
