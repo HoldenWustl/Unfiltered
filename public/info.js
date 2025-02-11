@@ -38,6 +38,7 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
   // Function to update the leaderboard UI
 
 // Function to update the leaderboard UI
+// Function to update the leaderboard UI
 function updateLeaderboard(snapshot, filterDevice = false) {
   leaderboardList.innerHTML = ""; // Clear current list
 
@@ -64,12 +65,17 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     ? rankedUsers.filter(user => user.deviceId === deviceId)
     : rankedUsers;
 
-  // Step 4: Display only the top 5 (ignoring ties beyond 5)
+  // Step 4: Determine display limits
   let displayedCount = 0;
   let lastRank = 0;
+  let extraUsers = 0;
+  const maxUsersToShow = 5; // Limit for all-users leaderboard
 
   for (const user of filteredUsers) {
-    if (displayedCount >= 5 && user.rank > lastRank) break; // Stop once we hit 5 distinct ranks
+    if (!filterDevice && displayedCount >= maxUsersToShow && user.rank > lastRank) {
+      extraUsers++; // Count extra users not shown
+      continue; // Stop displaying new ranks after limit
+    }
 
     const li = document.createElement("li");
     li.innerHTML = `${user.rank}. ${user.name} <span>${user.points}</span>`;
@@ -83,7 +89,16 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     displayedCount++;
     lastRank = user.rank;
   }
+
+  // Step 5: Show "And X more users" if there are extra users
+  if (!filterDevice && extraUsers > 0) {
+    const moreUsersDiv = document.createElement("div");
+    moreUsersDiv.classList.add("more-users");
+    moreUsersDiv.textContent = `And ${extraUsers} more users...`;
+    leaderboardList.appendChild(moreUsersDiv);
+  }
 }
+
 
 
 
