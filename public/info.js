@@ -41,9 +41,9 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
       users.push({ name: data.name, points: data.points });
     });
 
-    users.reverse().forEach(user => {
+    users.reverse().forEach((user, index) => {
       const li = document.createElement("li");
-      li.innerHTML = `${user.name} <span>${user.points}</span>`;
+      li.innerHTML = `${index + 1}. ${user.name} <span>${user.points}</span>`;
       leaderboardList.appendChild(li);
     });
   }
