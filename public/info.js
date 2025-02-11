@@ -18,6 +18,10 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
   const db = getDatabase(app);
   const leaderboardRef = ref(db, "leaderboard");
   const deviceId = getDeviceId();
+  const allUsersTab = document.getElementById("all-users-tab");
+  const deviceUsersTab = document.getElementById("device-users-tab");
+  const leaderboardList = document.getElementById("leaderboard-list");
+
 
   function getDeviceId() {
     // Check if a device ID already exists
@@ -31,14 +35,15 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
 }
 
   // Function to update the leaderboard UI
-  function updateLeaderboard(snapshot) {
-    const leaderboardList = document.getElementById("leaderboard-list");
+  function updateLeaderboard(snapshot, filterDevice=false) {
     leaderboardList.innerHTML = ""; // Clear current list
 
     const users = [];
     snapshot.forEach(childSnapshot => {
       const data = childSnapshot.val();
-      users.push({ name: data.name, points: data.points });
+      if (!filterDevice || data.deviceId === deviceId) {
+        users.push({ name: data.name, points: data.points });
+      }
     });
 
     users.reverse().forEach((user, index) => {
@@ -46,6 +51,7 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
       li.innerHTML = `${index + 1}. ${user.name} <span>${user.points}</span>`;
       leaderboardList.appendChild(li);
     });
+    
   }
 
   // Listen for changes and update leaderboard
@@ -130,8 +136,14 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
     });
   }
   
+  function loadLeaderboard(filterDevice = false) {
+    get(leaderboardRef).then(snapshot => {
+      updateLeaderboard(snapshot, filterDevice);
+    }).catch(error => console.error("Error fetching leaderboard:", error));
+  }
 
-  const nameInput = document.getElementById("name");
+
+const nameInput = document.getElementById("name");
 const starCountDiv = document.getElementById("star-count");
 
 // Example deviceId (this could come from the user's session or be dynamically assigned)
@@ -160,4 +172,18 @@ nameInput.addEventListener("input", function () {
   }
   
 });
-addUser("Teste",400);
+
+allUsersTab.addEventListener("click", () => {
+  allUsersTab.classList.add("active");
+  deviceUsersTab.classList.remove("active");
+  loadLeaderboard(false);
+});
+
+deviceUsersTab.addEventListener("click", () => {
+  deviceUsersTab.classList.add("active");
+  allUsersTab.classList.remove("active");
+  loadLeaderboard(true);
+});
+
+// Initial Load (All Users by Default)
+loadLeaderboard(false);
