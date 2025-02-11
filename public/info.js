@@ -220,4 +220,5 @@ deviceUsersTab.addEventListener("click", () => {
 
 // Initial Load (All Users by Default)
 loadLeaderboard(false);
-addUser("Dylan",50);
+addUser("Serious",500);
+addUser("Tuber",40);
