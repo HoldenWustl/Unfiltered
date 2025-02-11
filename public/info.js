@@ -35,24 +35,31 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
 }
 
   // Function to update the leaderboard UI
-  function updateLeaderboard(snapshot, filterDevice=false) {
-    leaderboardList.innerHTML = ""; // Clear current list
+  function updateLeaderboard(snapshot, filterDevice = false) {
+  leaderboardList.innerHTML = ""; // Clear current list
+  let rank = 0;
+  const users = [];
 
-    const users = [];
-    snapshot.forEach(childSnapshot => {
-      const data = childSnapshot.val();
-      if (!filterDevice || data.deviceId === deviceId) {
-        users.push({ name: data.name, points: data.points });
-      }
-    });
+  snapshot.forEach(childSnapshot => {
+    const data = childSnapshot.val();
+    if (!filterDevice || data.deviceId === deviceId) {
+      users.push({ name: data.name, points: data.points, deviceId: data.deviceId });
+    }
+  });
 
-    users.reverse().forEach((user, index) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${index + 1}. ${user.name} <span>${user.points}</span>`;
-      leaderboardList.appendChild(li);
-    });
-    
-  }
+  users.reverse().forEach((user) => {
+    rank++; // Increment rank
+    const li = document.createElement("li");
+    li.innerHTML = `${rank}. ${user.name} <span>${user.points}</span>`;
+
+    // Highlight if user's deviceId matches ours (ONLY for the all-users leaderboard)
+    if (!filterDevice && user.deviceId === deviceId) {
+      li.classList.add("highlight");
+    }
+
+    leaderboardList.appendChild(li);
+  });
+}
 
   // Listen for changes and update leaderboard
   onValue(query(leaderboardRef, orderByChild("points"), limitToLast(10)), updateLeaderboard);
