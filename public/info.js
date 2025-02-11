@@ -35,24 +35,39 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
 }
 
   // Function to update the leaderboard UI
-  function updateLeaderboard(snapshot, filterDevice = false) {
+  // Function to update the leaderboard UI
+function updateLeaderboard(snapshot, filterDevice = false) {
   leaderboardList.innerHTML = ""; // Clear current list
-  let rank = 0;
-  const users = [];
 
+  // Step 1: Collect and sort users by points (highest first)
+  const users = [];
   snapshot.forEach(childSnapshot => {
     const data = childSnapshot.val();
-    if (!filterDevice || data.deviceId === deviceId) {
-      users.push({ name: data.name, points: data.points, deviceId: data.deviceId });
-    }
+    users.push({ name: data.name, points: data.points, deviceId: data.deviceId });
   });
 
-  users.reverse().forEach((user) => {
-    rank++; // Increment rank
-    const li = document.createElement("li");
-    li.innerHTML = `${rank}. ${user.name} <span>${user.points}</span>`;
+  users.sort((a, b) => b.points - a.points); // Sort by points descending
 
-    // Highlight if user's deviceId matches ours (ONLY for the all-users leaderboard)
+  // Step 2: Assign ranks based on sorted position
+  let rank = 1;
+  const rankedUsers = users.map((user, index) => {
+    if (index > 0 && users[index].points < users[index - 1].points) {
+      rank = index + 1; // Adjust rank only when points decrease
+    }
+    return { ...user, rank };
+  });
+
+  // Step 3: If filtering, only include matching deviceId users
+  const filteredUsers = filterDevice
+    ? rankedUsers.filter(user => user.deviceId === deviceId)
+    : rankedUsers;
+
+  // Step 4: Display the users with their original all-users ranking
+  filteredUsers.forEach(user => {
+    const li = document.createElement("li");
+    li.innerHTML = `${user.rank}. ${user.name} <span>${user.points}</span>`;
+
+    // Highlight users that match our deviceId (only in all-users leaderboard)
     if (!filterDevice && user.deviceId === deviceId) {
       li.classList.add("highlight");
     }
@@ -60,6 +75,7 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
     leaderboardList.appendChild(li);
   });
 }
+
 
   // Listen for changes and update leaderboard
   onValue(query(leaderboardRef, orderByChild("points"), limitToLast(10)), updateLeaderboard);
