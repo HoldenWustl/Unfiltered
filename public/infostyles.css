@@ -40,6 +40,9 @@
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       max-width: 400px;
+      display: flex;
+      flex-direction: column;
+        align-items: center;
       width: 100%;
     }
 
@@ -302,5 +305,29 @@
       color: #ffcc00;
       font-size: 1.2rem;
       margin-left: 5px;
+    }
+    #star-count {
+      font-size: 36px;                /* Make the text bigger */
+      color: #FFD700;                 /* Gold color for the star */
+      font-weight: bold;              /* Make it bold */
+      text-align: center;             /* Center the text */
+      margin: 20px;                   /* Add some space around it */
+      padding: 10px;                  /* Padding for a neat look */
+      border-radius: 10px;            /* Round the corners */
+      background: linear-gradient(45deg, #FF6F61, #FFB600); /* Gradient background */
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* Glowing effect */
+      display: inline-block;          /* Align it nicely */
+        width: 20%;
+      transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
+    }
+    
+    #star-count:hover {
+      transform: scale(1.1);          /* Slightly enlarge when hovered */
+      box-shadow: 0 0 30px rgba(255, 215, 0, 1); /* Stronger glow on hover */
+    }
+    
+    #star-count:active {
+      transform: scale(0.95);         /* Slightly shrink when clicked */
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); /* Slight glow */
     }
     
