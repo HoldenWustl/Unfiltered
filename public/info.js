@@ -36,6 +36,8 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
 
   // Function to update the leaderboard UI
   // Function to update the leaderboard UI
+
+// Function to update the leaderboard UI
 function updateLeaderboard(snapshot, filterDevice = false) {
   leaderboardList.innerHTML = ""; // Clear current list
 
@@ -62,8 +64,13 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     ? rankedUsers.filter(user => user.deviceId === deviceId)
     : rankedUsers;
 
-  // Step 4: Display the users with their original all-users ranking
-  filteredUsers.forEach(user => {
+  // Step 4: Display only the top 5 (ignoring ties beyond 5)
+  let displayedCount = 0;
+  let lastRank = 0;
+
+  for (const user of filteredUsers) {
+    if (displayedCount >= 5 && user.rank > lastRank) break; // Stop once we hit 5 distinct ranks
+
     const li = document.createElement("li");
     li.innerHTML = `${user.rank}. ${user.name} <span>${user.points}</span>`;
 
@@ -73,8 +80,11 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     }
 
     leaderboardList.appendChild(li);
-  });
+    displayedCount++;
+    lastRank = user.rank;
+  }
 }
+
 
 
   // Listen for changes and update leaderboard
