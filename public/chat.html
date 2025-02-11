@@ -8,16 +8,21 @@
     <link rel="icon" href="favicon-32x32.png" type="image/x-icon">
 </head>
 <body>
+    <div class="chat-envelope">
     <div class="chat-container">
         <!-- Header with user's name -->
         <div class="chat-header">
             <h2>ChatRoom</h2>
             <button id="back-btn" onclick="goBack()">Back</button>
+            
         </div>
+
+       
 
         <!-- Chat Messages Display -->
         <div id="chat-messages" class="chat-messages">
             <!-- Chat messages will go here -->
+            <button id="game-btn" onclick="toggleGameMenu()">+</button>
         </div>
 
         <!-- Chat Input -->
@@ -27,6 +32,13 @@
             <button id="send-message-btn" onclick="sendMessage()">Send</button>
         </div>
     </div>
+    <div id="game-menu" class="game-menu">
+        <div class="game-item" onclick="startGame('21')">
+            <img src="blackjack-icon.png" alt="21 Game" />
+            <span>21 (Blackjack)</span>
+        </div>
+    </div>
+</div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="chat.js"></script>
     
