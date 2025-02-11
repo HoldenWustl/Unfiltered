@@ -5,7 +5,7 @@ body {
   margin: 0;
   padding: 0;
   background-repeat: repeat;
-  animation: moveBackground 10s linear infinite; 
+  animation: moveBackground 10s linear infinite;
 }
 @keyframes moveBackground {
   0% {
@@ -15,10 +15,11 @@ body {
     background-position: 100% 100%; /* Ending position */
   }
 }
+
 .chat-container {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
+  position: relative;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -27,7 +28,14 @@ body {
   flex-direction: column;
   height: 90vh;
 }
-
+.chat-envelope{
+  display:flex;
+  flex-direction: row;
+  align-content: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+}
 .chat-header {
   display: flex;
   justify-content: space-between;
@@ -59,6 +67,7 @@ body {
   color: #777;          /* Use a subtle color */
   margin-top: 10px;     /* Add some space above */
   margin-bottom: 10px;  /* Add some space below */
+  max-width: 100%;
 }
 
 .sender-name {
@@ -80,7 +89,9 @@ body {
   flex-direction: column;
   flex-grow: 1;
   overflow-y: scroll;
+  overflow-x: hidden;
   margin-bottom: 20px;
+  position: relative;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -101,7 +112,6 @@ body {
 .chat-message:hover {
   transform: scale(1.1); /* Slightly enlarge the element (5% larger) */
 }
-
 .chat-message.user {
   background-color: #ff6a00;
   color: white;
@@ -193,4 +203,56 @@ body {
   #char-count{
     margin-left: 0;
   }
+}
+
+#game-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 10px;
+  height: 50px;
+  width: 50px;
+}
+
+#game-btn:hover {
+  background-color: #45a049;
+}
+
+.game-menu {
+  display: none;
+  position: relative;
+  top: 50px;
+  right: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.game-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.game-item:hover {
+  background-color: #f4f4f4;
+}
+
+.game-item img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 }
