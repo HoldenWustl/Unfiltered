@@ -18,6 +18,16 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
   const db = getDatabase(app);
   const leaderboardRef = ref(db, "leaderboard");
 
+   function getDeviceId() {
+    // Check if a device ID already exists
+    let deviceId = localStorage.getItem("deviceId");
+    if (!deviceId) {
+        // Generate a new random device ID and store it
+        deviceId = `device-${crypto.randomUUID()}`;
+        localStorage.setItem("deviceId", deviceId);
+    }
+    return deviceId;
+}
   // Function to update the leaderboard UI
   function updateLeaderboard(snapshot) {
     const leaderboardList = document.getElementById("leaderboard-list");
@@ -41,12 +51,13 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
 
   // Function to add/update user score
   function addUser(username, points) {
+    const deviceId = getDeviceId();
     const userRef = ref(db, `leaderboard/${username}`);
 
     // Check if user already exists
     get(userRef).then(snapshot => {
       if (!snapshot.exists()) {
-        set(userRef, { name: username, points })
+        set(userRef, { name: username, points, deviceId })
           .then(() => console.log(`${username} added with ${points} points.`))
           .catch(error => console.error("Error adding user:", error));
       } else {
