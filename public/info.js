@@ -160,3 +160,4 @@ nameInput.addEventListener("input", function () {
   }
   
 });
+addUser("Teste",400);
