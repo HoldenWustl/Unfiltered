@@ -92,10 +92,10 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
   // Step 5: Show "And X more users" if there are extra users
   if (!filterDevice && extraUsers > 0) {
-    const moreUsersDiv = document.createElement("div");
-    moreUsersDiv.classList.add("more-users");
-    moreUsersDiv.textContent = `And ${extraUsers} more users...`;
-    leaderboardList.appendChild(moreUsersDiv);
+    const moreUsersLi = document.createElement("li");
+    moreUsersLi.classList.add("more-users");
+    moreUsersLi.textContent = `And ${extraUsers} more users...`;
+    leaderboardList.appendChild(moreUsersLi);
   }
 }
 
