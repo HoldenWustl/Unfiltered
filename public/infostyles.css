@@ -346,4 +346,24 @@
       transform: scale(0.95);         /* Slightly shrink when clicked */
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); /* Slight glow */
     }
+
+.leaderboard-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    
+    .leaderboard-tabs button {
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      background: #ddd;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    
+    .leaderboard-tabs button.active {
+      background: #333;
+      color: white;
+    }
     
