@@ -127,3 +127,21 @@ socket.on('disconnected', () => {
 
 // Initialize the character count display
 updateCharCount();
+
+// Function to toggle the game menu visibility
+function toggleGameMenu() {
+  const gameMenu = document.getElementById('game-menu');
+  gameMenu.style.display = gameMenu.style.display === 'block' ? 'none' : 'block';
+}
+
+// Function to handle starting a game (in this case, '21' - Blackjack)
+function startGame(gameName) {
+  // You can send a message or trigger the game logic here
+  if (gameName === '21') {
+      socket.emit('startGame', { game: '21', user: userName });
+      appendMessage(`${userName} has started a game of 21 (Blackjack)!`, 'neutral');
+  }
+  
+  // Close the menu after selecting a game
+  toggleGameMenu();
+}
