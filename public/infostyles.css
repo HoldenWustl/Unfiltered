@@ -281,7 +281,6 @@
       border-radius: 8px;
       font-size: 1.1rem;
       font-weight: 600;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
       background-color: rgba(255, 255, 255, 0.8);
       margin-bottom: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -292,7 +291,24 @@
       transform: scale(1.05);
       background-color: #e9e9f0;
     }
-    
+    #leaderboard-list li:hover::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: #ff7e5f;
+      bottom: -3px;
+      left: 0;
+      animation: slide 0.3s ease;
+    }
+    @keyframes slide {
+      from {
+          width: 0;
+      }
+      to {
+          width: 100%;
+      }
+  }
     #leaderboard-list li span {
       font-size: 1.2rem;
       font-weight: bold;
@@ -317,7 +333,7 @@
       background: linear-gradient(45deg, #FF6F61, #FFB600); /* Gradient background */
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* Glowing effect */
       display: inline-block;          /* Align it nicely */
-        width: 20%;
+      width: auto;
       transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
     }
     
