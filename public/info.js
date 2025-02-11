@@ -1,7 +1,7 @@
-   
+
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -17,8 +17,9 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const leaderboardRef = ref(db, "leaderboard");
+  const deviceId = getDeviceId();
 
-   function getDeviceId() {
+  function getDeviceId() {
     // Check if a device ID already exists
     let deviceId = localStorage.getItem("deviceId");
     if (!deviceId) {
@@ -28,6 +29,7 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
     }
     return deviceId;
 }
+
   // Function to update the leaderboard UI
   function updateLeaderboard(snapshot) {
     const leaderboardList = document.getElementById("leaderboard-list");
@@ -51,9 +53,8 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
 
   // Function to add/update user score
   function addUser(username, points) {
-    const deviceId = getDeviceId();
     const userRef = ref(db, `leaderboard/${username}`);
-
+    const deviceId = getDeviceId();
     // Check if user already exists
     get(userRef).then(snapshot => {
       if (!snapshot.exists()) {
@@ -98,34 +99,64 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
     });
   }
 
-function getUserPointsByDeviceId(name, deviceId) {
-  // Reference to the leaderboard
-  const leaderboardRef = ref(db, "leaderboard");
-
-  return new Promise((resolve, reject) => {
-    // Query the leaderboard to find the user with the given name and deviceId
-    const userQuery = query(leaderboardRef, orderByChild("name"), equalTo(name));
-    
-    get(userQuery).then(snapshot => {
-      if (snapshot.exists()) {
-        let userPoints = 0; // Default to 0
-
-        snapshot.forEach(childSnapshot => {
-          const userData = childSnapshot.val();
-          // Check if the deviceId matches
-          if (userData.deviceId === deviceId) {
-            userPoints = userData.points;
-          }
-        });
-
-        // Resolve with the points (either found or 0)
-        resolve(userPoints);
-      } else {
-        resolve(0); // If the snapshot is empty, return 0
-      }
-    }).catch(error => {
-      reject("Error fetching user data: " + error);
+  function getUserPointsByDeviceId(name, deviceId) {
+    // Reference to the leaderboard
+    const leaderboardRef = ref(db, "leaderboard");
+  
+    return new Promise((resolve, reject) => {
+      // Query the leaderboard to find the user with the given name and deviceId
+      const userQuery = query(leaderboardRef, orderByChild("name"), equalTo(name));
+      
+      get(userQuery).then(snapshot => {
+        if (snapshot.exists()) {
+          let userPoints = 0; // Default to 0
+  
+          snapshot.forEach(childSnapshot => {
+            const userData = childSnapshot.val();
+            // Check if the deviceId matches
+            if (userData.deviceId === deviceId) {
+              userPoints = userData.points;
+            }
+          });
+  
+          // Resolve with the points (either found or 0)
+          resolve(userPoints);
+        } else {
+          resolve(0); // If the snapshot is empty, return 0
+        }
+      }).catch(error => {
+        reject("Error fetching user data: " + error);
+      });
     });
-  });
-}
+  }
+  
 
+  const nameInput = document.getElementById("name");
+const starCountDiv = document.getElementById("star-count");
+
+// Example deviceId (this could come from the user's session or be dynamically assigned)
+ // Replace this with the actual deviceId logic
+
+// Event listener for real-time input
+nameInput.addEventListener("input", function () {
+  const name = nameInput.value.trim();
+
+  // Only search if the name has characters
+  if (name) {
+    // Fetch user points and update star count
+    getUserPointsByDeviceId(name, deviceId)
+      .then(points => {
+        // Update the star-count div with the user's points and display the star symbol
+        starCountDiv.innerHTML = `${points} &#9733;`;  // Show points followed by the star symbol
+      })
+      .catch(error => {
+        // Handle any errors, maybe update the count as 0 if an error occurs
+        starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 with the star symbol
+        console.error(error);
+      });
+  } else {
+    // Clear the star count if there's no input
+    starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 with the star symbol when input is empty
+  }
+  
+});
