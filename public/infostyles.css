@@ -386,4 +386,8 @@
   background-color: rgba(255, 215, 0, 0.3) !important;
   animation: goldShimmer 2s infinite alternate ease-in-out;
 }
+.more-users{
+    margin-top: 20px;
+    background-color: lightgrey;
+}
 
