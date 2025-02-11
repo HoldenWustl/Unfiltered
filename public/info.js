@@ -97,4 +97,35 @@ import { getDatabase, ref, onValue, set, update, orderByChild, query, limitToLas
       }
     });
   }
-  
+
+function getUserPointsByDeviceId(name, deviceId) {
+  // Reference to the leaderboard
+  const leaderboardRef = ref(db, "leaderboard");
+
+  return new Promise((resolve, reject) => {
+    // Query the leaderboard to find the user with the given name and deviceId
+    const userQuery = query(leaderboardRef, orderByChild("name"), equalTo(name));
+    
+    get(userQuery).then(snapshot => {
+      if (snapshot.exists()) {
+        let userPoints = 0; // Default to 0
+
+        snapshot.forEach(childSnapshot => {
+          const userData = childSnapshot.val();
+          // Check if the deviceId matches
+          if (userData.deviceId === deviceId) {
+            userPoints = userData.points;
+          }
+        });
+
+        // Resolve with the points (either found or 0)
+        resolve(userPoints);
+      } else {
+        resolve(0); // If the snapshot is empty, return 0
+      }
+    }).catch(error => {
+      reject("Error fetching user data: " + error);
+    });
+  });
+}
+
