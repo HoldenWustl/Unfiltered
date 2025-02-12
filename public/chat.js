@@ -140,7 +140,7 @@ function startGame(gameName) {
     const gameInvite = {
       game: '21',
       user: userName,
-      imageUrl: 'icon/21-icon.png', // Replace with actual image URL
+      imageUrl: 'icons/21-icon.png', // Replace with actual image URL
     };
 
     // Send game invite to the other user
