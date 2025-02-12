@@ -68,7 +68,52 @@ io.on('connection', (socket) => {
     }
   });
   
+  socket.on('startGame', (data) => {
+    console.log(`Game invite from ${data.user} for ${data.game}`);
+  
+    // Find the paired user
+    const pair = pairs.find(p => p.socket1 === socket || p.socket2 === socket);
+    if (pair) {
+      const recipientSocket = pair.socket1 === socket ? pair.socket2 : pair.socket1;
+      const otherUser = pair.socket1 === socket ? pair.socket2.userName : pair.socket1.userName;
+  
+      // Send the game invite to both the sender and the receiver
+      recipientSocket.emit('startGame', { 
+        ...data, 
+        otherUser: otherUser 
+      });
+  
+      // Also notify the sender (so they can see the invite as well)
+      socket.emit('startGame', { 
+        ...data, 
+        otherUser: otherUser 
+      });
+    } else {
+      // If no pair, send a neutral message to the sender
+      socket.emit('startGame', { 
+        game: '21', 
+        user: data.user, 
+        otherUser: null, 
+        message: 'Wait for match!' 
+      });
+    }
+  });
 
+socket.on('gameResponse', (data) => {
+  console.log(`${data.user} ${data.accepted ? 'accepted' : 'rejected'} the game`);
+
+  // Find the paired user
+  const pair = pairs.find(p => p.socket1 === socket || p.socket2 === socket);
+  if (pair) {
+      const recipientSocket = pair.socket1 === socket ? pair.socket2 : pair.socket1;
+      
+      // Notify the sender about the response
+      recipientSocket.emit('gameResponse', data);
+
+      // Notify the sender if the game was accepted/rejected
+      socket.emit('gameResponse', data);
+  }
+});
   // Disconnect event
   socket.on('disconnect', () => {
     console.log('A user disconnected');
