@@ -136,12 +136,63 @@ function toggleGameMenu() {
 
 // Function to handle starting a game (in this case, '21' - Blackjack)
 function startGame(gameName) {
-  // You can send a message or trigger the game logic here
   if (gameName === '21') {
-      socket.emit('startGame', { game: '21', user: userName });
-      appendMessage(`${userName} has started a game of 21 (Blackjack)!`, 'neutral');
+    const gameInvite = {
+      game: '21',
+      user: userName,
+      imageUrl: 'icon/21-icon.png', // Replace with actual image URL
+    };
+
+    // Send game invite to the other user
+    socket.emit('startGame', gameInvite);
   }
-  
-  // Close the menu after selecting a game
-  toggleGameMenu();
 }
+
+socket.on('startGame', (data) => {
+  const isSender = data.user === userName;
+  const inviteContainer = document.createElement('div');
+  inviteContainer.classList.add('game-invite');
+
+  // If there is a neutral message (waiting for pair), display it
+  if (data.message) {
+    appendMessage(data.message, "neutral");
+  } else {
+    // Show the game invite message
+    inviteContainer.innerHTML = `
+      <p>${isSender ? `Inviting ${otherUserName} to play <strong>21 (Blackjack)</strong>` : `${data.user} has invited you to play <strong>21 (Blackjack)</strong>`}!</p>
+      <img src="${data.imageUrl}" alt="Blackjack" class="game-image">
+      <div class="invite-buttons">
+        <button class="accept-btn" ${isSender ? 'disabled' : ''} style="${isSender ? 'opacity: 0.5; cursor: not-allowed;' : ''}">Accept</button>
+        <button class="reject-btn" ${isSender ? 'disabled' : ''} style="${isSender ? 'opacity: 0.5; cursor: not-allowed;' : ''}">Reject</button>
+      </div>
+    `;
+    chatMessages.appendChild(inviteContainer);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // If player B, allow them to accept/reject
+    if (!isSender) {
+      inviteContainer.querySelector('.accept-btn').addEventListener('click', () => {
+          socket.emit('gameResponse', { accepted: true, game: '21', user: userName });
+      });
+
+      inviteContainer.querySelector('.reject-btn').addEventListener('click', () => {
+          socket.emit('gameResponse', { accepted: false, game: '21', user: userName });
+      });
+    }
+  }
+});
+
+// Remove game invite from both users when game is accepted or rejected
+socket.on('removeGameInvite', () => {
+  document.querySelectorAll('.game-invite').forEach(invite => invite.remove());
+});
+
+// Handle game response (accepted/rejected) - notify both users
+socket.on('gameResponse', (data) => {
+  const message = `${data.user} ${data.accepted ? 'accepted' : 'rejected'} the game.`;
+  appendMessage(message, "neutral");
+
+  // Remove the game invite message after decision
+  document.querySelectorAll('.game-invite').forEach(invite => invite.remove());
+});
+
