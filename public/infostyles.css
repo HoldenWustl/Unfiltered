@@ -361,6 +361,7 @@
       background: #ddd;
       font-weight: bold;
       transition: 0.2s;
+      white-space: nowrap;
     }
     
     .leaderboard-tabs button.active {
