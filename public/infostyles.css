@@ -370,21 +370,20 @@
     }
     @keyframes goldShimmer {
   0% {
-    background-color: rgba(255, 215, 0, 0.3);
+    background-color: rgba(255, 215, 0, 0);
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
   }
   50% {
-    background-color: rgba(255, 215, 0, 0.5);
+    background-color: rgba(255, 215, 0, 0.3);
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
   }
   100% {
-    background-color: rgba(255, 215, 0, 0.3);
+    background-color: rgba(255, 215, 0, 0);
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
   }
 }
 
 .highlight {
-  background-color: rgba(255, 215, 0, 0.3) !important;
   animation: goldShimmer 2s infinite alternate ease-in-out;
 }
 .more-users{
