@@ -164,12 +164,14 @@ let numOpponentCards = 1;
 let stand = false;
 let bust = false;
 let opponentTotal;
-
+let checkedWin = false;
 function resetVariables(){
 opponentCardHTML = ''; // Default to an empty string
 numOpponentCards = 1;
 stand = false;
-bust = false;}
+bust = false;
+checkedWin = false;
+}
 
 socket.on('startGame', (data) => {
   const existingGame = document.querySelector('.game');
@@ -333,7 +335,16 @@ function handleStand(over21) {
     cards: myCards
   });
   if(numOpponentCards==100){
+    console.log("Checking win");
+    checkWin();
+  }
+}
+function checkWin(){
+  
+  if (!checkedWin){
     console.log("Game Done");
+    checkedWin = true;
+  
     let myTotal = calculateCardTotal(myCards);
     if (myTotal > 21 && opponentTotal > 21) {
       appendMessage("Game is a tie!", "neutral");
@@ -349,8 +360,7 @@ function handleStand(over21) {
       appendMessage("Game is a tie!", "neutral");
   }
   document.querySelector('.game').classList.add('old');  
-  }
-}
+}}
 
 socket.on('opponentStood', (data) => {
   let opponentTotalDiv = document.querySelector('.opponent-total'); // Check if it already exists
@@ -364,22 +374,8 @@ socket.on('opponentStood', (data) => {
   numOpponentCards = 100;
   opponentTotal = data.total;
   if (stand){
-    console.log("Game Done");
-    let myTotal = calculateCardTotal(myCards);
-    if (myTotal > 21 && opponentTotal > 21) {
-      appendMessage("Game is a tie!", "neutral");
-  } else if (myTotal > 21) {
-      appendMessage(`${otherUserName} is the winner!`, "neutral");
-  } else if (opponentTotal > 21) {
-      appendMessage(`${userName} is the winner!`, "neutral");
-  } else if (myTotal > opponentTotal) {
-      appendMessage(`${userName} is the winner!`, "neutral");
-  } else if (opponentTotal > myTotal) {
-      appendMessage(`${otherUserName} is the winner!`, "neutral");
-  } else {
-      appendMessage("Game is a tie!", "neutral");
-  }
-  document.querySelector('.game').classList.add('old');  
+    console.log("Checking win");
+    checkWin();
   }
 });
 
