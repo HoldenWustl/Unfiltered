@@ -51,49 +51,34 @@ io.on('connection', (socket) => {
     }
   });
 
+  function findOpponent(socket) {
+    const pair = pairs.find(p => p.socket1 === socket || p.socket2 === socket);
+    return pair ? (pair.socket1 === socket ? pair.socket2 : pair.socket1) : null;
+  }
+  
+
   // When a user sends a message
   socket.on('sendMessage', (message) => {
-    console.log(`Received message from ${socket.id}: ${message}`);
-    
-    // Find the paired user and broadcast the message
-    const pair = pairs.find(p => p.socket1 === socket || p.socket2 === socket);
-    if (pair) {
-      const recipientSocket = pair.socket1 === socket ? pair.socket2 : pair.socket1;
-      console.log(`Sending message to socket: ${recipientSocket.id}`);  // Debug line
-      
-      // Send message to the paired user
+    const recipientSocket = findOpponent(socket);
+    if (recipientSocket){
       recipientSocket.emit('receiveMessage', message);
-    } else {
-      console.log('No pair found for this user');
     }
   });
   
   socket.on('startGame', (data) => {
     console.log(`Game invite from ${data.user} for ${data.game}`);
-  
-    // Find the paired user
-    const pair = pairs.find(p => p.socket1 === socket || p.socket2 === socket);
-    if (pair) {
-      const recipientSocket = pair.socket1 === socket ? pair.socket2 : pair.socket1;
-      const otherUser = pair.socket1 === socket ? pair.socket2.userName : pair.socket1.userName;
-  
+    const recipientSocket = findOpponent(socket);
+
+    if (recipientSocket) {
       // Send the game invite to both the sender and the receiver
-      recipientSocket.emit('startGame', { 
-        ...data, 
-        otherUser: otherUser 
-      });
-  
+      recipientSocket.emit('startGame', data); // Specify event name
+      socket.emit('startGame', data); // Sender also gets confirmation
       // Also notify the sender (so they can see the invite as well)
-      socket.emit('startGame', { 
-        ...data, 
-        otherUser: otherUser 
-      });
     } else {
       // If no pair, send a neutral message to the sender
       socket.emit('startGame', { 
         game: '21', 
-        user: data.user, 
-        otherUser: null, 
+        user: data.user,
         message: 'Wait for match!' 
       });
     }
@@ -103,15 +88,36 @@ socket.on('gameResponse', (data) => {
   console.log(`${data.user} ${data.accepted ? 'accepted' : 'rejected'} the game`);
 
   // Find the paired user
-  const pair = pairs.find(p => p.socket1 === socket || p.socket2 === socket);
-  if (pair) {
-      const recipientSocket = pair.socket1 === socket ? pair.socket2 : pair.socket1;
-      
-      // Notify the sender about the response
+  const recipientSocket = findOpponent(socket);
+  if (recipientSocket) {
       recipientSocket.emit('gameResponse', data);
-
-      // Notify the sender if the game was accepted/rejected
       socket.emit('gameResponse', data);
+  }
+});
+
+
+socket.on('getCards', (data) => {
+  const recipientSocket = findOpponent(socket);
+  // Check if a pair exists (both users are matched)
+  if (recipientSocket) {
+    recipientSocket.emit('updateGameState', { 
+      opponentCards: data.cards
+    });
+    socket.emit('updateGameState', { 
+      opponentCards: null
+    });
+  }
+});
+
+socket.on('playerStood', (data) => {
+  const recipientSocket = findOpponent(socket);
+  
+  // Check if a pair exists (both users are matched)
+  if (recipientSocket) {
+    recipientSocket.emit('opponentStood', {
+      total: data.total,
+      cards: data.cards
+    });
   }
 });
   // Disconnect event
@@ -247,10 +253,9 @@ io.on('connection', (socket) => {
 });
 
 
-// Start the server on port 3000
+// Start the4erver on port 10000
 const port = process.env.PORT || 10000; // Default to 10000 if PORT isn't set
 
 server.listen(port, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
