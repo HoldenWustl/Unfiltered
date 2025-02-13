@@ -7,6 +7,9 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const { PeerServer } = require('peer');
 
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 125 * 1000;
+
 // Store connected users and their paired information
 let users = [];  // Active users in the system, waiting or paired
 let pairs = [];  // Paired users
