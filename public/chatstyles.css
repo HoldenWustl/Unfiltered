@@ -66,7 +66,7 @@ body {
   font-style: italic;   /* Make it look more neutral */
   color: #777;          /* Use a subtle color */
   margin-top: 10px;     /* Add some space above */
-  margin-bottom: -10px;  /* Add some space below */
+  margin-bottom: 10px;  /* Add some space below */
   max-width: 100%;
 }
 
@@ -154,11 +154,23 @@ body {
   margin-left: 10px;
   transition: background-color 0.3s ease;
 }
+#game-btn {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
 
 #send-message-btn:hover {
   background-color: #ff4500;
 }
-
+#game-btn:hover {
+  background-color: darkcyan;
+}
 @media screen and (max-width: 768px) {
   body {
     overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -205,20 +217,8 @@ body {
   }
 }
 
-#game-btn {
-  background-color: green;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  margin-left: 10px;
-  transition: background-color 0.3s ease;
-}
 
-#game-btn:hover {
-  background-color: darkcyan;
-}
+
 
 .game-menu {
   display: none;
@@ -251,6 +251,7 @@ body {
   height: 24px;
   margin-right: 10px;
 }
+
 .game-invite {
   margin: 10px 0;
   padding: 10px;
@@ -294,3 +295,82 @@ body {
   cursor: not-allowed;
 }
 
+
+/* Game container styling */
+.game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  gap: 20px;  /* Creates space between opponent's and player's card */
+}
+.game-container{
+  display: flex;
+  gap: 40px;
+}
+/* Player and opponent cards styling */
+.player-cards, .opponent-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 45%;  /* Adjust the width for the left and right cards */
+}
+
+.player-cards .card, .opponent-cards .card {
+  background-color: white;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  width: auto;
+  margin-top: 10px;
+}
+
+h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* Style for the action buttons (Hit and Stand) */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 20px; /* Space between the two buttons */
+}
+
+.hit-button, .stand-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.hit-button:hover, .stand-button:hover {
+  background-color: #0056b3;
+}
+
+.hit-button:active, .stand-button:active {
+  background-color: #003f7d;
+}
+
+/* Style the total score display */
+.total {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 18px;
+}
