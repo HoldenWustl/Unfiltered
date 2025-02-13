@@ -198,28 +198,29 @@ const starCountDiv = document.getElementById("star-count");
  // Replace this with the actual deviceId logic
 
 // Event listener for real-time input
-nameInput.addEventListener("input", function () {
+function updateStarCount() {
   const name = nameInput.value.trim();
 
   // Only search if the name has characters
   if (name) {
-    // Fetch user points and update star count
     getUserPointsByDeviceId(name, deviceId)
       .then(points => {
-        // Update the star-count div with the user's points and display the star symbol
-        starCountDiv.innerHTML = `${points} &#9733;`;  // Show points followed by the star symbol
+        starCountDiv.innerHTML = `${points} &#9733;`;  // Show points with the star symbol
       })
       .catch(error => {
-        // Handle any errors, maybe update the count as 0 if an error occurs
         starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 with the star symbol
         console.error(error);
       });
   } else {
-    // Clear the star count if there's no input
-    starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 with the star symbol when input is empty
+    starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 when input is empty
   }
-  
-});
+}
+
+// Run on input event
+nameInput.addEventListener("input", updateStarCount);
+
+// Run once when the page loads
+document.addEventListener("DOMContentLoaded", updateStarCount);
 
 allUsersTab.addEventListener("click", () => {
   allUsersTab.classList.add("active");
