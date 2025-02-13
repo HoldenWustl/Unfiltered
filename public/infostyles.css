@@ -384,7 +384,7 @@
 }
 
 .highlight {
-  animation: goldShimmer 2s infinite alternate ease-in-out;
+  animation: goldShimmer 4s infinite alternate ease-in-out;
 }
 .more-users{
     margin-top: 20px;
