@@ -203,7 +203,7 @@ const starCountDiv = document.getElementById("star-count");
 
 // Example deviceId (this could come from the user's session or be dynamically assigned)
  // Replace this with the actual deviceId logic
-
+export let currentStars = 0;
 // Event listener for real-time input
 function updateStarCount() {
   const name = nameInput.value.trim();
@@ -212,13 +212,16 @@ function updateStarCount() {
   if (name) {
     getUserPointsByDeviceId(name, deviceId)
       .then(points => {
+        currentStars = points;
         starCountDiv.innerHTML = `${points} &#9733;`;  // Show points with the star symbol
       })
       .catch(error => {
+        currentStars = 0;
         starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 with the star symbol
         console.error(error);
       });
   } else {
+    currentStars = 0;
     starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 when input is empty
   }
 }
