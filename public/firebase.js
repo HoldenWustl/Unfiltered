@@ -1,7 +1,7 @@
 
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
+import { remove, equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -62,9 +62,10 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     return { ...user, rank };
   });
 
-  // Step 3: If filtering, only include matching deviceId users
+  // Step 3: If filtering, only include users from this device
+  const deviceId = getDeviceId();
   const filteredUsers = filterDevice
-    ? rankedUsers.filter(user => user.deviceId === getDeviceId()) // Use getDeviceId() dynamically
+    ? rankedUsers.filter(user => user.deviceId === deviceId)
     : rankedUsers;
 
   // Step 4: Determine display limits
@@ -82,9 +83,14 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     const li = document.createElement("li");
     li.innerHTML = `${user.rank}. ${user.name} <span>${user.points}</span>`;
 
-    // Highlight users that match our deviceId (only in all-users leaderboard)
-    if (!filterDevice && user.deviceId === getDeviceId()) {
-      li.classList.add("highlight");
+    // If filtering for the device, add an "x" button to remove users
+    if (filterDevice) {
+      const removeBtn = document.createElement("button");
+      removeBtn.textContent = "❌";
+      removeBtn.classList.add("remove-btn");
+      removeBtn.onclick = () => removeUser(user.name);
+
+      li.appendChild(removeBtn);
     }
 
     leaderboardList.appendChild(li);
@@ -100,6 +106,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     leaderboardList.appendChild(moreUsersLi);
   }
 }
+
 
 
 
@@ -298,3 +305,33 @@ document.addEventListener("updatePoints", (event) => {
 }, 500);
 
 });
+
+function removeUser(name) {
+  const deviceId = getDeviceId();
+  const leaderboardRef = ref(db, "leaderboard");
+
+  // Query to find the user with the matching name and deviceId
+  const userQuery = query(leaderboardRef, orderByChild("name"), equalTo(name));
+
+  get(userQuery).then(snapshot => {
+    if (snapshot.exists()) {
+      snapshot.forEach(childSnapshot => {
+        const userData = childSnapshot.val();
+        if (userData.deviceId === deviceId) {
+          // Remove the user from the database
+          remove(childSnapshot.ref)
+            .then(() => {
+              console.log(`${name} (device ${deviceId}) removed successfully.`);
+              // Re-fetch leaderboard data and update only the "Your Device" tab
+              get(leaderboardRef).then(updatedSnapshot => {
+                updateLeaderboard(updatedSnapshot, true); // Ensure filtering remains active
+              });
+            })
+            .catch(error => console.error("Error removing user:", error));
+        }
+      });
+    } else {
+      console.log(`User ${name} not found.`);
+    }
+  }).catch(error => console.error("Error fetching user data:", error));
+}
