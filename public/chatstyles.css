@@ -382,6 +382,7 @@ h3 {
   font-weight: bold;              /* Make it bold */
   text-align: center;             /* Center the text */
   margin-right: auto;                   /* Add some space around it */
+  margin-top: auto;
   padding: 10px;                  /* Padding for a neat look */
   border-radius: 10px;            /* Round the corners */
   background: linear-gradient(45deg, #FF6F61, #FFB600); /* Gradient background */
