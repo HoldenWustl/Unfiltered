@@ -4,7 +4,25 @@ const socket = io();
 const urlParams = new URLSearchParams(window.location.search);
 const userName = urlParams.get('userName') || 'User'; // Default to 'User' if not found
 let isPaired = false;
-// Get the user's name from the URL query string (set default value if missing)
+
+function getStarCount() {
+  const starCountDiv = document.getElementById("star-count");
+  if (starCountDiv) {
+    const starCountText = starCountDiv.innerHTML.trim();
+    const starCount = parseInt(starCountText.replace("★", "").trim(), 10);
+    
+    if (!isNaN(starCount)) {
+      console.log("Star Count:", starCount);
+      return starCount; // Return valid star count
+    }
+  }
+  return null; // Return null if not ready
+}
+
+let allowStarCountPass = true;
+let otherStarCount;
+const otherStarBlock = document.getElementById('other-star-count');
+
 socket.emit('joinChat', userName);
 document.querySelector('.chat-header h2').textContent = "Finding someone...";
 
@@ -15,14 +33,30 @@ socket.on('paired', (name) => {
   otherUserName = name;
   appendMessage(`${name} has joined the chat.`, 'neutral');
 });
-
+socket.on('gotStar',(star) =>{
+  
+  console.log("Other Star Count: ",star);
+  if(allowStarCountPass){
+  socket.emit('giveStar', getStarCount());
+  allowStarCountPass = false;
+  otherStarCount = star;
+  otherStarBlock.innerHTML = `${otherStarCount} &#9733;`;}
+});
 // Handle waiting for a pair
 socket.on('waitingForPair', () => {
   document.querySelector('.chat-header h2').textContent = "Waiting for someone to join...";
 });
 
-
+// Check every 100ms until starCount is loaded
+const checkStarCount = setInterval(() => {
+  const starCount = getStarCount();
+  if (starCount !== null) {
+    clearInterval(checkStarCount); // Stop checking
+    socket.emit('giveStar', starCount); // Emit only after star count is ready
+  }
+}, 100);
 // DOM elements
+
 const chatMessages = document.getElementById('chat-messages');
 const messageInput = document.getElementById('message-input');
 const sendMessageBtn = document.getElementById('send-message-btn');
