@@ -166,9 +166,12 @@ updateCharCount();
 function toggleGameMenu() {
   const gameMenu = document.getElementById('game-menu');
   gameMenu.style.display = gameMenu.style.display === 'flex' ? 'none' : 'flex';
-  wagerSlider.min = 0
-  wagerSlider.max = Math.min(getStarCount(), otherStarCount);
 }
+
+setInterval(() => {
+  wagerSlider.min = 0;
+  wagerSlider.max = Math.min(getStarCount(), otherStarCount);
+}, 500); // Adjust the interval as needed
 
 // Function to handle starting a game (in this case, '21' - Blackjack)
 function sendGameInvite(gameName) {
