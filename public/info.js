@@ -1,4 +1,6 @@
- sessionStorage.removeItem("kicked");
+import { currentStars } from "./firebase.js";
+
+sessionStorage.removeItem("kicked");
     const userForm = document.getElementById('name');
     const savedValue = sessionStorage.getItem('name');
     if (savedValue) {
