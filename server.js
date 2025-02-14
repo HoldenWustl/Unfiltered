@@ -59,7 +59,12 @@ io.on('connection', (socket) => {
     return pair ? (pair.socket1 === socket ? pair.socket2 : pair.socket1) : null;
   }
   
-
+  socket.on('giveStar',(stars)=>{
+    const recipientSocket = findOpponent(socket);
+    if (recipientSocket){
+      recipientSocket.emit('gotStar',stars);
+    }
+  });
   // When a user sends a message
   socket.on('sendMessage', (message) => {
     const recipientSocket = findOpponent(socket);
