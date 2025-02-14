@@ -131,7 +131,7 @@ updateCharCount();
 // Function to toggle the game menu visibility
 function toggleGameMenu() {
   const gameMenu = document.getElementById('game-menu');
-  gameMenu.style.display = gameMenu.style.display === 'block' ? 'none' : 'block';
+  gameMenu.style.display = gameMenu.style.display === 'flex' ? 'none' : 'flex';
 }
 
 // Function to handle starting a game (in this case, '21' - Blackjack)
