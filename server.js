@@ -6,10 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 const { PeerServer } = require('peer');
-
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 125 * 1000;
-
 // Store connected users and their paired information
 let users = [];  // Active users in the system, waiting or paired
 let pairs = [];  // Paired users
@@ -37,11 +35,13 @@ io.on('connection', (socket) => {
       const pair = users.find(user => user.socket !== socket);
       if (pair) {
         pairedUserName = pair.userName;
-
+       
         // Notify both users that they've been paired
         socket.emit('paired', pairedUserName);  // Send the other user's name to the first user
+        
         pair.socket.emit('paired', userName);  // Send the current user's name to the second user
-
+        //socket.emit('gotStar',pairedStars);
+        
         // Add this pair to the pairs list
         pairs.push({ socket1: socket, socket2: pair.socket });
 
@@ -261,7 +261,7 @@ io.on('connection', (socket) => {
 });
 
 
-// Start the4erver on port 10000
+// Start the server on port 10000
 const port = process.env.PORT || 10000; // Default to 10000 if PORT isn't set
 
 server.listen(port, '0.0.0.0', () => {
