@@ -82,7 +82,10 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
     const li = document.createElement("li");
     li.innerHTML = `${user.rank}. ${user.name} <span>${user.points}</span>`;
+    if (!filterDevice && user.deviceId === getDeviceId()) {
 
+      li.classList.add("highlight");
+    }
     // If filtering for the device, add an "x" button to remove users
     if (filterDevice) {
       const removeBtn = document.createElement("button");
