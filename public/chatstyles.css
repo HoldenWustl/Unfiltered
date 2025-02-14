@@ -374,3 +374,17 @@ h3 {
   text-align: center;
   font-size: 18px;
 }
+
+#star-count {
+  font-size: 36px;                /* Make the text bigger */
+  color: #FFD700;                 /* Gold color for the star */
+  font-weight: bold;              /* Make it bold */
+  text-align: center;             /* Center the text */
+  margin-right: auto;                   /* Add some space around it */
+  padding: 10px;                  /* Padding for a neat look */
+  border-radius: 10px;            /* Round the corners */
+  background: linear-gradient(45deg, #FF6F61, #FFB600); /* Gradient background */
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* Glowing effect */
+  display: inline-block;          /* Align it nicely */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
+}
