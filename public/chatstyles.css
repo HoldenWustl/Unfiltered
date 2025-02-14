@@ -222,6 +222,7 @@ body {
 
 .game-menu {
   display: none;
+  flex-direction: column;
   position: relative;
   top: 50px;
   right: 10px;
