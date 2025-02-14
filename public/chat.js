@@ -496,6 +496,6 @@ wagerAmount.textContent = wagerSlider.value;
 // Listen for changes on the slider
 wagerSlider.addEventListener('input', function() {
     wagerAmount.textContent = wagerSlider.value;
-    wagerSlider.min = Math.min(getStarCount(), otherStarCount);
-wagerSlider.max = Math.max(getStarCount(), otherStarCount);
+    wagerSlider.min = 0
+    wagerSlider.max = Math.min(getStarCount(), otherStarCount);
 });
