@@ -158,6 +158,8 @@ socket.on('disconnected', () => {
   alert('The other user has disconnected. Please wait while we find a new user for you.');
   appendMessage(`${otherUserName} has left the chat.`, 'neutral');
   socket.emit('joinChat', userName); // Re-attempt pairing
+  otherStarCount = 0;
+  otherStarBlock.innerHTML = `0 &#9733;`;
 });
 
 // Initialize the character count display
