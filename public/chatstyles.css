@@ -226,12 +226,12 @@ body {
   position: relative;
   top: 50px;
   right: 10px;
-  background-color: white;
-  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border: 1px inset black;
   border-radius: 8px;
   width: 200px;
   max-height: 300px;
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -240,11 +240,16 @@ body {
   align-items: center;
   padding: 10px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  border-radius: 8px; /* Rounded corners for a softer look */
+  background-color: #ffffff; /* Keep the default background white */
 }
 
 .game-item:hover {
-  background-color: #f4f4f4;
+  background-color: #FFB600; /* A strong color that contrasts well with white */
+  color: #fff; /* White text on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow to make the item "pop" */
+  transform: scale(1.05); /* Slightly enlarge the item on hover for emphasis */
 }
 
 .game-item img {
@@ -376,17 +381,39 @@ h3 {
   font-size: 18px;
 }
 
-#star-count {
+.star-block {
   font-size: 36px;                /* Make the text bigger */
   color: #FFD700;                 /* Gold color for the star */
   font-weight: bold;              /* Make it bold */
   text-align: center;             /* Center the text */
-  margin-right: auto;                   /* Add some space around it */
-  margin-top: auto;
+  width: auto;
   padding: 10px;                  /* Padding for a neat look */
   border-radius: 10px;            /* Round the corners */
+  font-size: 20px;
   background: linear-gradient(45deg, #FF6F61, #FFB600); /* Gradient background */
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* Glowing effect */
-  display: inline-block;          /* Align it nicely */
   transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
+}
+
+.starContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+}
+.star-caption{
+  margin-top: 10px;               /* Add some space between the star block and the caption */
+  font-size: 18px;                /* Adjust the size of the caption */
+  font-weight: normal;            /* Normal weight for caption */
+  text-align: center; 
+  font-family: 'Lobster', cursive; 
+}
+#starContainer-1{
+  right: 5px;
+  left: auto;
+}
+#starContainer-2{
+  left: 5px;
+  right: auto;
 }
