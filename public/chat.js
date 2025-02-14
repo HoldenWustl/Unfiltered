@@ -166,6 +166,8 @@ updateCharCount();
 function toggleGameMenu() {
   const gameMenu = document.getElementById('game-menu');
   gameMenu.style.display = gameMenu.style.display === 'flex' ? 'none' : 'flex';
+  wagerSlider.min = 0
+  wagerSlider.max = Math.min(getStarCount(), otherStarCount);
 }
 
 // Function to handle starting a game (in this case, '21' - Blackjack)
@@ -175,6 +177,7 @@ function sendGameInvite(gameName) {
       game: '21',
       user: userName,
       imageUrl: 'icons/21-icon.png', // Replace with actual image URL
+      wager: getWager()
     };
 
     // Send game invite to the other user
@@ -199,12 +202,15 @@ let stand = false;
 let bust = false;
 let opponentTotal;
 let checkedWin = false;
+let gameWager = 0;
+
 function resetVariables(){
 opponentCardHTML = ''; // Default to an empty string
 numOpponentCards = 1;
 stand = false;
 bust = false;
 checkedWin = false;
+gameWager = 0;
 }
 
 socket.on('startGame', (data) => {
@@ -214,14 +220,14 @@ socket.on('startGame', (data) => {
   const isSender = data.user === userName;
   const inviteContainer = document.createElement('div');
   inviteContainer.classList.add('game-invite');
-
+  gameWager = data.wager;
   // If there is a neutral message (waiting for pair), display it
   if (data.message) {
     appendMessage(data.message, "neutral");
   } else {
     // Show the game invite message
     inviteContainer.innerHTML = `
-      <p>${isSender ? `Inviting ${otherUserName} to play <strong>21 (Blackjack)</strong>` : `${data.user} has invited you to play <strong>21 (Blackjack)</strong>`}!</p>
+      <p>${isSender ? `Inviting ${otherUserName} to play <strong>21 (Blackjack)</strong>` : `${data.user} has invited you to play <strong>21 (Blackjack)</strong>`}! Wager = ${data.wager}★!</p>
       <img src="${data.imageUrl}" alt="Blackjack" class="game-image">
       <div class="invite-buttons">
         <button class="accept-btn" ${isSender ? 'disabled' : ''} style="${isSender ? 'opacity: 0.5; cursor: not-allowed;' : ''}">Accept</button>
@@ -374,26 +380,40 @@ function handleStand(over21) {
   }
 }
 function checkWin(){
-  
+  allowStarCountPass = true;
   if (!checkedWin){
     console.log("Game Done");
     checkedWin = true;
-  
     let myTotal = calculateCardTotal(myCards);
     if (myTotal > 21 && opponentTotal > 21) {
       appendMessage("Game is a tie!", "neutral");
   } else if (myTotal > 21) {
-      appendMessage(`${otherUserName} is the winner!`, "neutral");
+      appendMessage(`${otherUserName} wins ${gameWager}★!`, "neutral");
+      document.dispatchEvent(new CustomEvent("updatePoints", {
+        detail: { name: userName, points: -1*gameWager }
+      }));
   } else if (opponentTotal > 21) {
-      appendMessage(`${userName} is the winner!`, "neutral");
+      appendMessage(`${userName} wins ${gameWager}★!`, "neutral");
+      document.dispatchEvent(new CustomEvent("updatePoints", {
+        detail: { name: userName, points: gameWager }
+      }));
   } else if (myTotal > opponentTotal) {
-      appendMessage(`${userName} is the winner!`, "neutral");
+      appendMessage(`${userName} wins ${gameWager}★!`, "neutral");
+      document.dispatchEvent(new CustomEvent("updatePoints", {
+        detail: { name: userName, points: gameWager }
+      }));
   } else if (opponentTotal > myTotal) {
-      appendMessage(`${otherUserName} is the winner!`, "neutral");
+      appendMessage(`${otherUserName} wins ${gameWager}★!`, "neutral");
+      document.dispatchEvent(new CustomEvent("updatePoints", {
+        detail: { name: userName, points: -1*gameWager }
+      }));
   } else {
       appendMessage("Game is a tie!", "neutral");
   }
   document.querySelector('.game').classList.add('old');  
+  setTimeout(() => {
+    socket.emit('giveStar', getStarCount());
+}, 1100);
 }}
 
 socket.on('opponentStood', (data) => {
@@ -491,11 +511,14 @@ const wagerAmount = document.getElementById('wager-amount');
 
 
 // Update the display to reflect the initial value of the slider
-wagerAmount.textContent = wagerSlider.value;
+wagerAmount.textContent = `${wagerSlider.value} ★`;
 
 // Listen for changes on the slider
 wagerSlider.addEventListener('input', function() {
     wagerAmount.textContent = `${wagerSlider.value} ★`;
-    wagerSlider.min = 0
-    wagerSlider.max = Math.min(getStarCount(), otherStarCount);
+    
 });
+
+function getWager() {
+  return parseInt(wagerSlider.value, 10); // Ensures it returns a number
+}
