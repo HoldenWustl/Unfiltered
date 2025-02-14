@@ -483,3 +483,19 @@ function setButtonsState(enabled) {
       }
   }
 }
+
+const wagerSlider = document.getElementById('wager-slider');
+const wagerAmount = document.getElementById('wager-amount');
+
+// Set the min and max values for the slider based on myStars and otherStars
+
+
+// Update the display to reflect the initial value of the slider
+wagerAmount.textContent = wagerSlider.value;
+
+// Listen for changes on the slider
+wagerSlider.addEventListener('input', function() {
+    wagerAmount.textContent = wagerSlider.value;
+    wagerSlider.min = Math.min(getStarCount(), otherStarCount);
+wagerSlider.max = Math.max(getStarCount(), otherStarCount);
+});
