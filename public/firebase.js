@@ -102,7 +102,6 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
 
 
-
   // Listen for changes and update leaderboard
   if (infopage){
   onValue(query(leaderboardRef, orderByChild("points"), limitToLast(10)), updateLeaderboard);}
@@ -204,7 +203,12 @@ const starCountDiv = document.getElementById("star-count");
 
 // Event listener for real-time input
 function updateStarCount() {
-  const name = nameInput.value.trim();
+  let name;
+  if(infopage){
+  name = nameInput.value.trim();}
+  else{
+    name = userName;
+  }
 
   // Only search if the name has characters
   if (name) {
@@ -225,6 +229,7 @@ function updateStarCount() {
 if (infopage){
 nameInput.addEventListener("input", updateStarCount);
 }
+
 // Run once when the page loads
 if (infopage){
 document.addEventListener("DOMContentLoaded", updateStarCount);}
@@ -261,3 +266,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+updateStarCount();
