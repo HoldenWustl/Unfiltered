@@ -1,3 +1,5 @@
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
@@ -142,21 +144,40 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     });
   }
   function incrementUserScore(username, amount) {
-    const userRef = ref(db, `leaderboard/${username}`);
-
-    get(userRef).then(snapshot => {
+    const deviceId = getDeviceId();
+    const leaderboardRef = ref(db, "leaderboard");
+  
+    get(leaderboardRef).then(snapshot => {
       if (snapshot.exists()) {
-        const currentPoints = snapshot.val().points;
-        const newPoints = currentPoints + amount;
-
-        update(userRef, { points: newPoints })
-          .then(() => console.log(`${username}'s score increased by ${amount} to ${newPoints}.`))
-          .catch(error => console.error("Error incrementing score:", error));
+        let userKey = null;
+        let currentPoints = 0;
+  
+        snapshot.forEach(childSnapshot => {
+          const userData = childSnapshot.val();
+  
+          // Find the correct user entry by matching both name and deviceId
+          if (userData.name === username && userData.deviceId === deviceId) {
+            userKey = childSnapshot.key;
+            currentPoints = userData.points;
+          }
+        });
+  
+        if (userKey) {
+          const userRef = ref(db, `leaderboard/${userKey}`);
+          const newPoints = currentPoints + amount;
+  
+          update(userRef, { points: newPoints })
+            .then(() => console.log(`${username} (Device: ${deviceId})'s score increased by ${amount} to ${newPoints}.`))
+            .catch(error => console.error("Error incrementing score:", error));
+        } else {
+          console.log(`${username} (Device: ${deviceId}) does not exist.`);
+        }
       } else {
-        console.log(`${username} does not exist.`);
+        console.log("Leaderboard is empty.");
       }
-    });
+    }).catch(error => console.error("Error fetching leaderboard data:", error));
   }
+  
 
   function getUserPointsByDeviceId(name, deviceId) {
     // Reference to the leaderboard
@@ -267,3 +288,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 updateStarCount();
+
+document.addEventListener("updatePoints", (event) => {
+  console.log("Updated points!");
+  const { name, points } = event.detail; // Extract values
+  incrementUserScore(name,points);
+  setTimeout(() => {
+    updateStarCount();
+}, 500);
+
+});
