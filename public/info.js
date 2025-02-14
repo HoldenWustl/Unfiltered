@@ -21,7 +21,13 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
   const allUsersTab = document.getElementById("all-users-tab");
   const deviceUsersTab = document.getElementById("device-users-tab");
   const leaderboardList = document.getElementById("leaderboard-list");
-
+  let infopage;
+  if (leaderboardList){
+    infopage = true;
+  }
+  else{
+    infopage = false;
+  }
 
   function getDeviceId() {
     // Check if a device ID already exists
@@ -103,7 +109,8 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
 
   // Listen for changes and update leaderboard
-  onValue(query(leaderboardRef, orderByChild("points"), limitToLast(10)), updateLeaderboard);
+  if (infopage){
+  onValue(query(leaderboardRef, orderByChild("points"), limitToLast(10)), updateLeaderboard);}
 
   // Function to add/update user score
   function addUser(username, points) {
@@ -217,24 +224,25 @@ function updateStarCount() {
 }
 
 // Run on input event
+if (infopage){
 nameInput.addEventListener("input", updateStarCount);
-
+}
 // Run once when the page loads
-document.addEventListener("DOMContentLoaded", updateStarCount);
-
+if (infopage){
+document.addEventListener("DOMContentLoaded", updateStarCount);}
+if (infopage){
 allUsersTab.addEventListener("click", () => {
   allUsersTab.classList.add("active");
   deviceUsersTab.classList.remove("active");
   loadLeaderboard(false);
-});
-
+});}
+if (infopage){
 deviceUsersTab.addEventListener("click", () => {
   deviceUsersTab.classList.add("active");
   allUsersTab.classList.remove("active");
   loadLeaderboard(true);
-});
+});}
 
 // Initial Load (All Users by Default)
-loadLeaderboard(false);
-addUser("Serious",500);
-addUser("Tuber",40);
+if (infopage){
+loadLeaderboard(false);}
