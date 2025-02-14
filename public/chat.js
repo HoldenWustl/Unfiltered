@@ -28,6 +28,7 @@ document.querySelector('.chat-header h2').textContent = "Finding someone...";
 
 // Handle pairing event
 socket.on('paired', (name) => {
+  allowStarCountPass = true;
   isPaired = true;
   document.querySelector('.chat-header h2').textContent = `Chatting with ${name}`;
   otherUserName = name;
