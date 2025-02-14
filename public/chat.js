@@ -20,7 +20,7 @@ function getStarCount() {
 }
 
 let allowStarCountPass = true;
-let otherStarCount;
+let otherStarCount = 0;
 const otherStarBlock = document.getElementById('other-star-count');
 
 socket.emit('joinChat', userName);
