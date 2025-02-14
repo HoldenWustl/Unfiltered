@@ -6,6 +6,8 @@
     <title>Chat</title>
     <link rel="stylesheet" href="chatstyles.css">
     <link rel="icon" href="favicon-32x32.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <div class="chat-envelope">
@@ -20,11 +22,11 @@
        
 
         <!-- Chat Messages Display -->
+         
         <div id="chat-messages" class="chat-messages">
             <!-- Chat messages will go here -->
             
-        </div>
-
+    </div>
         <!-- Chat Input -->
         <div class="chat-input-container">
             <input type="text" id="message-input" placeholder="Type a message..." maxlength="200"  />
@@ -38,16 +40,25 @@
             <img src="icons/21-icon.png" alt="21 Game" />
             <span>21 (Blackjack)</span>
         </div>
-        <div id="star-count">
-            My Stars
+        <div class="starContainer" id="starContainer-1">
+            <div id="star-count" class="star-block"> 
+            </div>
+            <div class="star-caption">
+                My Stars
+            </div>
+        </div>
+        <div class="starContainer" id="starContainer-2">
+            <div id="other-star-count" class="star-block">
+            </div>
+            <div class="star-caption">
+                Their Stars
+            </div>
         </div>
     </div>
 </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="firebase.js" type="module"></script>
     <script src="chat.js"></script>
-    
-
 
 </body>
 </html>
