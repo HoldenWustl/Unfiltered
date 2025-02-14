@@ -1,4 +1,4 @@
-import { currentStars } from "./firebase.js";
+
 
 sessionStorage.removeItem("kicked");
     const userForm = document.getElementById('name');
@@ -17,7 +17,7 @@ sessionStorage.removeItem("kicked");
    
 
     function updateAgeValue() {
-     console.log(currentStars);
+     
       let age = parseInt(document.getElementById("age").value); // Get the age value and parse it as an integer
 
   if (age === 40) {
