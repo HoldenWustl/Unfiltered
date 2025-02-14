@@ -1,5 +1,3 @@
-
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
@@ -40,10 +38,6 @@ import { equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, l
     return deviceId;
 }
 
-  // Function to update the leaderboard UI
-  // Function to update the leaderboard UI
-
-// Function to update the leaderboard UI
 // Function to update the leaderboard UI
 function updateLeaderboard(snapshot, filterDevice = false) {
   leaderboardList.innerHTML = ""; // Clear current list
@@ -68,7 +62,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
   // Step 3: If filtering, only include matching deviceId users
   const filteredUsers = filterDevice
-    ? rankedUsers.filter(user => user.deviceId === deviceId)
+    ? rankedUsers.filter(user => user.deviceId === getDeviceId()) // Use getDeviceId() dynamically
     : rankedUsers;
 
   // Step 4: Determine display limits
@@ -87,7 +81,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     li.innerHTML = `${user.rank}. ${user.name} <span>${user.points}</span>`;
 
     // Highlight users that match our deviceId (only in all-users leaderboard)
-    if (!filterDevice && user.deviceId === deviceId) {
+    if (!filterDevice && user.deviceId === getDeviceId()) {
       li.classList.add("highlight");
     }
 
@@ -108,25 +102,30 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
 
 
+
   // Listen for changes and update leaderboard
   if (infopage){
   onValue(query(leaderboardRef, orderByChild("points"), limitToLast(10)), updateLeaderboard);}
 
   // Function to add/update user score
   function addUser(username, points) {
-    const userRef = ref(db, `leaderboard/${username}`);
     const deviceId = getDeviceId();
-    // Check if user already exists
+    const userKey = `${deviceId}_${username}`; // Unique key combining deviceId and username
+    const userRef = ref(db, `leaderboard/${userKey}`);
+
+    // Check if the specific deviceId + username combo already exists
     get(userRef).then(snapshot => {
-      if (!snapshot.exists()) {
-        set(userRef, { name: username, points, deviceId })
-          .then(() => console.log(`${username} added with ${points} points.`))
-          .catch(error => console.error("Error adding user:", error));
-      } else {
-        console.log(`${username} already exists.`);
-      }
-    });
-  }
+        if (!snapshot.exists()) {
+            // If the combination is unique, add the user
+            set(userRef, { name: username, points, deviceId })
+                .then(() => console.log(`${username} added with ${points} points.`))
+                .catch(error => console.error("Error adding user:", error));
+        } else {
+            console.log(`User ${username} already exists on this device.`);
+        }
+    }).catch(error => console.error("Error checking user:", error));
+}
+
 
   // Function to update an existing user's score
   function setUserScore(username, newPoints) {
@@ -165,17 +164,15 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     const leaderboardRef = ref(db, "leaderboard");
   
     return new Promise((resolve, reject) => {
-      // Query the leaderboard to find the user with the given name and deviceId
-      const userQuery = query(leaderboardRef, orderByChild("name"), equalTo(name));
-      
-      get(userQuery).then(snapshot => {
+      get(leaderboardRef).then(snapshot => {
         if (snapshot.exists()) {
           let userPoints = 0; // Default to 0
   
           snapshot.forEach(childSnapshot => {
             const userData = childSnapshot.val();
-            // Check if the deviceId matches
-            if (userData.deviceId === deviceId) {
+  
+            // Check if both name and deviceId match
+            if (userData.name === name && userData.deviceId === deviceId) {
               userPoints = userData.points;
             }
           });
@@ -190,6 +187,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
       });
     });
   }
+  
   
   function loadLeaderboard(filterDevice = false) {
     get(leaderboardRef).then(snapshot => {
@@ -246,3 +244,20 @@ deviceUsersTab.addEventListener("click", () => {
 // Initial Load (All Users by Default)
 if (infopage){
 loadLeaderboard(false);}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const startChatBtn = document.querySelector(".start-chat-btn");
+
+  if (startChatBtn) {
+      startChatBtn.addEventListener("click", () => {
+        const nameInput = document.getElementById('name').value;
+
+        // Check if the name input is empty
+        if (nameInput.trim() !== "") {
+          console.log("New user added!");
+            addUser(nameInput,0);
+        }
+      });
+  }
+});
+
