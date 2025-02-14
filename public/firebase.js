@@ -43,7 +43,6 @@ import { remove, equalTo, getDatabase, ref, onValue, set, update, orderByChild, 
 // Function to update the leaderboard UI
 function updateLeaderboard(snapshot, filterDevice = false) {
   leaderboardList.innerHTML = ""; // Clear current list
-
   // Step 1: Collect and sort users by points (highest first)
   const users = [];
   snapshot.forEach(childSnapshot => {
@@ -70,14 +69,15 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
   // Step 4: Determine display limits
   let displayedCount = 0;
-  let lastRank = 0;
   let extraUsers = 0;
   const maxUsersToShow = 5; // Limit for all-users leaderboard
 
-  for (const user of filteredUsers) {
-    if (!filterDevice && displayedCount >= maxUsersToShow && user.rank > lastRank) {
-      extraUsers++; // Count extra users not shown
-      continue; // Stop displaying new ranks after limit
+  for (let i = 0; i < filteredUsers.length; i++) {
+    const user = filteredUsers[i];
+    if (!filterDevice && displayedCount >= maxUsersToShow) {
+
+      extraUsers++; // Count extra users beyond the limit
+      continue;
     }
 
     const li = document.createElement("li");
@@ -98,7 +98,6 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
     leaderboardList.appendChild(li);
     displayedCount++;
-    lastRank = user.rank;
   }
 
   // Step 5: Show "And X more users" if there are extra users
@@ -109,7 +108,6 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     leaderboardList.appendChild(moreUsersLi);
   }
 }
-
 
 
 
