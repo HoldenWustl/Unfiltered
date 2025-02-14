@@ -391,3 +391,29 @@
     background-color: lightgrey;
 }
 
+.remove-btn {
+      background-color: #ff4d4d; /* Red color for delete */
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      margin-left: 5px;
+    }
+    
+    .remove-btn:hover {
+      background-color: #cc0000; /* Darker red on hover */
+      transform: scale(1.1); /* Slight pop effect */
+    }
+    
+    .remove-btn:active {
+      background-color: #a30000; /* Even darker red when clicked */
+      transform: scale(0.95); /* Slight shrink effect */
+    }
