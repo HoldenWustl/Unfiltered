@@ -67,6 +67,10 @@ header {
 }
 
 .about-container {
+  display:flex;
+  flex-direction:column;
+  flex-wrap: wrap;
+  align-content: center;
   max-width: 800px;
   margin: 0 auto;
   color: #333;
