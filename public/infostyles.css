@@ -417,3 +417,64 @@
       background-color: #a30000; /* Even darker red when clicked */
       transform: scale(0.95); /* Slight shrink effect */
     }
+
+.daily-reward-container {
+  width: auto;
+  background: linear-gradient(135deg, #ffffff, #f4f4f9);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ddd;
+  text-align: center;
+  font-weight: 600;
+  height: fit-content;
+}
+
+.reward-amount {
+  font-size: 30px;
+  font-weight: bold;
+  color: orange;
+  margin: 10px 0;
+}
+
+#claim-reward-btn {
+  background: linear-gradient(45deg, #ff512f, #dd2476);
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  animation: bounce 1.5s ease infinite;
+}
+
+#claim-reward-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.4);
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+#claim-reward-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  animation: none; /* Stop the bouncing animation */
+}
