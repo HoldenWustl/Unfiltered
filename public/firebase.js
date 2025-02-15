@@ -1,5 +1,3 @@
-
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { remove, equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
@@ -365,7 +363,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Handle button click
   button.addEventListener('click', function() {
-    
+    if(nameInput.value.trim()){
 
     // Save today's date in localStorage to prevent claiming again today
     const currentDate = new Date().toISOString().split('T')[0];
@@ -382,5 +380,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   this.innerText = 'Reward Claimed';
   this.disabled = true;
+    }
   });
 });
