@@ -289,7 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check if the name input is empty
         if (nameInput.trim() !== "") {
           console.log("New user added!");
-            addUser(nameInput,0);
+            addUser(nameInput,50);
         }
       });
   }
