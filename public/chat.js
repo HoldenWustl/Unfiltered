@@ -21,6 +21,7 @@ function getStarCount() {
 
 let allowStarCountPass = true;
 let otherStarCount = 0;
+let checkStarCount;
 const otherStarBlock = document.getElementById('other-star-count');
 
 socket.emit('joinChat', userName);
@@ -49,7 +50,7 @@ socket.on('waitingForPair', () => {
 });
 
 // Check every 100ms until starCount is loaded
-const checkStarCount = setInterval(() => {
+checkStarCount = setInterval(() => {
   const starCount = getStarCount();
   if (starCount !== null) {
     clearInterval(checkStarCount); // Stop checking
@@ -148,6 +149,9 @@ messageInput.addEventListener('input', updateCharCount);
 
 // Function to go back to the previous page (index.html)
 function goBack() {
+  document.dispatchEvent(new CustomEvent("updatePoints", {
+    detail: { name: userName, points: -1*gameWager }
+  }));
   window.location.href = "info.html"; // Change to the appropriate page if needed
 }
 
@@ -157,9 +161,15 @@ socket.on('disconnected', () => {
   document.querySelector('.chat-header h2').textContent = 'Finding someone...';
   alert('The other user has disconnected. Please wait while we find a new user for you.');
   appendMessage(`${otherUserName} has left the chat.`, 'neutral');
+  
   socket.emit('joinChat', userName); // Re-attempt pairing
   otherStarCount = 0;
+  wagerAmount.textContent =  `0 &#9733;`;
   otherStarBlock.innerHTML = `0 &#9733;`;
+  if (currentlyInGame){
+    checkWin();
+    
+  }
 });
 
 // Initialize the character count display
@@ -169,8 +179,8 @@ updateCharCount();
 function toggleGameMenu() {
   const gameMenu = document.getElementById('game-menu');
   gameMenu.style.display = gameMenu.style.display === 'flex' ? 'none' : 'flex';
+  
 }
-
 setInterval(() => {
   wagerSlider.min = 0;
   wagerSlider.max = Math.min(getStarCount(), otherStarCount);
@@ -209,6 +219,7 @@ let bust = false;
 let opponentTotal;
 let checkedWin = false;
 let gameWager = 0;
+let currentlyInGame = false;
 
 function resetVariables(){
 opponentCardHTML = ''; // Default to an empty string
@@ -217,6 +228,7 @@ stand = false;
 bust = false;
 checkedWin = false;
 gameWager = 0;
+currentlyInGame = false;
 }
 
 socket.on('startGame', (data) => {
@@ -270,7 +282,7 @@ socket.on('gameResponse', (data) => {
   // Remove the game invite message after decision
   document.querySelectorAll('.game-invite').forEach(invite => invite.remove());
   if (data.accepted){
-    
+    currentlyInGame = true;
     const game = document.createElement('div');
     game.classList.add('game');
     game.innerHTML = '';
@@ -387,6 +399,7 @@ function handleStand(over21) {
 }
 function checkWin(){
   allowStarCountPass = true;
+  currentlyInGame = false;
   if (!checkedWin){
     console.log("Game Done");
     checkedWin = true;
@@ -414,12 +427,19 @@ function checkWin(){
         detail: { name: userName, points: -1*gameWager }
       }));
   } else {
-      appendMessage("Game is a tie!", "neutral");
+    if (myTotal==opponentTotal){
+      appendMessage("Game is a tie!", "neutral");}
+      else{
+        appendMessage(`${otherUserName} has left the game. You win ${gameWager}★!`, "neutral");
+        document.dispatchEvent(new CustomEvent("updatePoints", {
+          detail: { name: userName, points: gameWager }
+        }));
+      }
   }
   document.querySelector('.game').classList.add('old');  
   setTimeout(() => {
     socket.emit('giveStar', getStarCount());
-}, 1100);
+}, 2000);
 }}
 
 socket.on('opponentStood', (data) => {
@@ -442,7 +462,11 @@ socket.on('opponentStood', (data) => {
 
 setInterval(() => {
   if (numOpponentCards >= myCards.length) {
-      setButtonsState(true);
+      if (currentlyInGame){
+      setButtonsState(true);}
+      else{
+        setButtonsState(false);
+      }
   } else {
       setButtonsState(false);
   }
