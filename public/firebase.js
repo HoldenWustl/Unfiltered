@@ -112,6 +112,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
 
 
+
   // Listen for changes and update leaderboard
   if (infopage){
   onValue(query(leaderboardRef, orderByChild("points"), limitToLast(10)), updateLeaderboard);}
@@ -289,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check if the name input is empty
         if (nameInput.trim() !== "") {
           console.log("New user added!");
-            addUser(nameInput,50);
+            addUser(nameInput,10);
         }
       });
   }
@@ -336,3 +337,50 @@ function removeUser(name) {
     }
   }).catch(error => console.error("Error fetching user data:", error));
 }
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const button = document.getElementById('claim-reward-btn');
+
+  // Function to check if the button should be enabled
+  function checkRewardStatus() {
+    const lastClaimDate = localStorage.getItem('lastClaimDate');
+    const currentDate = new Date().toISOString().split('T')[0]; // Get the date in YYYY-MM-DD format
+
+    if (lastClaimDate === currentDate) {
+      button.disabled = true; // Disable the button if the reward was already claimed today
+      button.innerText = 'Reward Claimed'; // Change the text to show reward has been claimed
+    } else {
+      button.disabled = false; // Enable the button if it's a new day
+      button.innerText = 'Claim Reward'; // Reset the text to the original one
+    }
+  }
+
+  // Check the reward status when the page loads
+  checkRewardStatus();
+
+  // Handle button click
+  button.addEventListener('click', function() {
+    
+
+    // Save today's date in localStorage to prevent claiming again today
+    const currentDate = new Date().toISOString().split('T')[0];
+    localStorage.setItem('lastClaimDate', currentDate);
+
+    // Disable the button and change the text
+    addUser(nameInput.value.trim(),10);
+  setTimeout(() => {
+    incrementUserScore(nameInput.value.trim(),10);
+}, 200);
+  setTimeout(() => {
+    updateStarCount();
+}, 500);
+
+  this.innerText = 'Reward Claimed';
+  this.disabled = true;
+  });
+});
