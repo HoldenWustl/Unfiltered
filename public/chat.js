@@ -164,7 +164,7 @@ socket.on('disconnected', () => {
   
   socket.emit('joinChat', userName); // Re-attempt pairing
   otherStarCount = 0;
-  wagerAmount.textContent =  `0 &#9733;`;
+  wagerAmount.innerHTML =  `0 &#9733;`;
   otherStarBlock.innerHTML = `0 &#9733;`;
   if (currentlyInGame){
     checkWin();
