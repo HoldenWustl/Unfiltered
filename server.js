@@ -85,7 +85,7 @@ io.on('connection', (socket) => {
     } else {
       // If no pair, send a neutral message to the sender
       socket.emit('startGame', { 
-        game: '21', 
+        game: data.game, 
         user: data.user,
         message: 'Wait for match!' 
       });
