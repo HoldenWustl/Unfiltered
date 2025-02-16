@@ -359,12 +359,14 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Check the reward status when the page loads
-  checkRewardStatus();
+  if(infopage){
+  checkRewardStatus();}
 
   // Handle button click
+  if (infopage){
   button.addEventListener('click', function() {
-    if(nameInput.value.trim()){
-
+    
+      if(nameInput.value.trim()){
     // Save today's date in localStorage to prevent claiming again today
     const currentDate = new Date().toISOString().split('T')[0];
     localStorage.setItem('lastClaimDate', currentDate);
@@ -380,6 +382,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   this.innerText = 'Reward Claimed';
   this.disabled = true;
-    }
-  });
+}
+  });}
 });
