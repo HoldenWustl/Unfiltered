@@ -167,6 +167,7 @@ socket.on('disconnected', () => {
   wagerAmount.innerHTML =  `0 &#9733;`;
   otherStarBlock.innerHTML = `0 &#9733;`;
   if (currentlyInGame){
+    opponentTotal = 0;
     checkWin();
     
   }
@@ -227,6 +228,10 @@ let opponentTotal;
 let checkedWin = false;
 let gameWager = 0;
 let currentlyInGame = false;
+let currentGame = '';
+let playedClashCard;
+let clashCard = 0;
+let myPoints = 0;
 
 function resetVariables(){
 opponentCardHTML = ''; // Default to an empty string
@@ -236,6 +241,9 @@ bust = false;
 checkedWin = false;
 gameWager = 0;
 currentlyInGame = false;
+currentGame = '';
+clashCard = 0;
+myPoints = 0;
 }
 
 socket.on('startGame', (data) => {
@@ -293,15 +301,23 @@ socket.on('gameResponse', (data) => {
     const game = document.createElement('div');
     game.classList.add('game');
     game.innerHTML = '';
+    currentGame = data.game;
     chatMessages.appendChild(game);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    if(data.game=='21'){
     myCards = [];
     addCard();
     socket.emit("getCards",{cards:myCards});
+    }
+    if(data.game=='Card Clash'){
+      myCards = [1,2,3,4,5];
+      socket.emit("getCards",{cards:myCards});
+    }
   }
 });
 
 socket.on('updateGameState', (data) => {
+  if(currentGame=='21'){
   // Get the game div or create it if it doesn't exist
   const gameDiv = document.querySelector('.game');
 
@@ -375,9 +391,101 @@ function checkStand() {
   }
 }
 checkStand();
+  }
+  if(currentGame=='Card Clash'){
+    if(data.opponentCards){
+    const gameDiv = document.querySelector('.game');
+    gameDiv.innerHTML = ''; // Clear previous content
 
+    // Create player cards section
+    const playerCardsDiv = document.createElement('div');
+    playerCardsDiv.classList.add('player-cards');
+    playerCardsDiv.innerHTML = '<h3>Your Cards</h3>';
+    opponentTotal = data.opponentPoints;
+    myCards.forEach((card, index) => {
+        const cardEl = document.createElement('button');
+        cardEl.classList.add('card');
+        cardEl.textContent = card;
+        cardEl.onclick = () => playCard(card, index);
+        playerCardsDiv.appendChild(cardEl);
+    });
+    const playerPointsEl = document.createElement('p');
+    playerPointsEl.classList.add('points');
+    
+    playerCardsDiv.appendChild(playerPointsEl);
 
+    gameDiv.appendChild(playerCardsDiv);
+
+    // Create opponent cards section (hide values)
+    const opponentCardsDiv = document.createElement('div');
+    opponentCardsDiv.classList.add('opponent-cards');
+    opponentCardsDiv.innerHTML = '<h3>Opponent’s Cards</h3>';
+
+    if (data.opponentCards) {
+        data.opponentCards.forEach((card) => {
+            const cardEl = document.createElement('div');
+            cardEl.classList.add('card', 'opponent-card');
+            cardEl.textContent = card; 
+            opponentCardsDiv.appendChild(cardEl);
+        });
+    }
+
+    const opponentPointsEl = document.createElement('p');
+    opponentPointsEl.classList.add('points');
+    opponentPointsEl.textContent = `Points: ${data.opponentPoints || 0}`;
+    opponentCardsDiv.appendChild(opponentPointsEl);
+
+    gameDiv.appendChild(opponentCardsDiv);
+    setTimeout(() => {
+      playedClashCard = false;
+      playerPointsEl.textContent = `Points: ${myPoints || 0}`;
+      if(myCards.length==0){
+        checkWin();
+      }
+  }, 20);
+
+  
+   
+  }}
 });
+
+function playCard(card, index) {
+  clashCard = card;
+  playedClashCard = true;
+  socket.emit('playCard', card);
+  myCards.splice(index, 1);
+
+  // Disable all cards & add "selected" effect to the chosen one
+  document.querySelectorAll('.player-cards .card').forEach((el, i) => {
+      el.disabled = true;
+      if (i === index) {
+          el.classList.add('selected'); // Add a class instead of removing the element
+      }
+  });
+}
+
+
+socket.on('gotClashPlay', (data) => {
+    let wait = playedClashCard;
+  const waitForPlay = setInterval(() => {
+      if (playedClashCard) {
+          clearInterval(waitForPlay); // Stop checking once the card is played
+
+          if (clashCard > data.opponentCard) {
+              myPoints ++;}
+              
+                if(!wait){setTimeout(() => { socket.emit("getCards", { cards: myCards, points: myPoints });
+                
+              }, 100); }
+                else{socket.emit("getCards", { cards: myCards, points: myPoints });}
+          
+      }
+  }, 100); // Check every 100ms
+});
+
+
+
+
 
 
 function handleStand(over21) {
@@ -410,7 +518,13 @@ function checkWin(){
   if (!checkedWin){
     console.log("Game Done");
     checkedWin = true;
-    let myTotal = calculateCardTotal(myCards);
+    let myTotal;
+    if(currentGame=="21"){
+      myTotal = calculateCardTotal(myCards);
+    }
+    if(currentGame=="Card Clash"){
+      myTotal = myPoints;
+    }
     if (myTotal > 21 && opponentTotal > 21) {
       appendMessage("Game is a tie!", "neutral");
   } else if (myTotal > 21) {
@@ -448,6 +562,7 @@ function checkWin(){
     socket.emit('giveStar', getStarCount());
 }, 2000);
 }}
+
 
 socket.on('opponentStood', (data) => {
   let opponentTotalDiv = document.querySelector('.opponent-total'); // Check if it already exists
