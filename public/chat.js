@@ -188,15 +188,23 @@ setInterval(() => {
 
 // Function to handle starting a game (in this case, '21' - Blackjack)
 function sendGameInvite(gameName) {
+  let gameInvite;
   if (gameName === '21') {
-    const gameInvite = {
+     gameInvite = {
       game: '21',
       user: userName,
       imageUrl: 'icons/21-icon.png', // Replace with actual image URL
       wager: getWager()
+    };}
+  if (gameName === 'cardClash') {
+    gameInvite = {
+      game: 'Card Clash',
+      user: userName,
+      imageUrl: 'icons/21-icon.png', // Replace with actual image URL
+      wager: getWager()
     };
+  }
 
-    // Send game invite to the other user
     const existingGame = document.querySelector('.game');
 
 if (!existingGame) {
@@ -209,7 +217,6 @@ if (!existingGame) {
 }
 // If a game div exists and isn't marked as "old", do nothing.
 
-  }
 }
 
 let opponentCardHTML = ''; // Default to an empty string
@@ -245,8 +252,8 @@ socket.on('startGame', (data) => {
   } else {
     // Show the game invite message
     inviteContainer.innerHTML = `
-      <p>${isSender ? `Inviting ${otherUserName} to play <strong>21 (Blackjack)</strong>` : `${data.user} has invited you to play <strong>21 (Blackjack)</strong>`}! Wager = ${data.wager}★!</p>
-      <img src="${data.imageUrl}" alt="Blackjack" class="game-image">
+      <p>${isSender ? `Inviting ${otherUserName}` : `${data.user} has invited you`} to play <strong>${data.game}</strong>! Wager = ${data.wager}★!</p>
+      <img src="${data.imageUrl}" class="game-image">
       <div class="invite-buttons">
         <button class="accept-btn" ${isSender ? 'disabled' : ''} style="${isSender ? 'opacity: 0.5; cursor: not-allowed;' : ''}">Accept</button>
         <button class="reject-btn" ${isSender ? 'disabled' : ''} style="${isSender ? 'opacity: 0.5; cursor: not-allowed;' : ''}">Reject</button>
@@ -258,11 +265,11 @@ socket.on('startGame', (data) => {
     // If player B, allow them to accept/reject
     if (!isSender) {
       inviteContainer.querySelector('.accept-btn').addEventListener('click', () => {
-          socket.emit('gameResponse', { accepted: true, game: '21', user: userName });
+          socket.emit('gameResponse', { accepted: true, game: data.game, user: userName });
       });
 
       inviteContainer.querySelector('.reject-btn').addEventListener('click', () => {
-          socket.emit('gameResponse', { accepted: false, game: '21', user: userName });
+          socket.emit('gameResponse', { accepted: false, game: data.game, user: userName });
       });
     }
   }
