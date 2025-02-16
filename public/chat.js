@@ -200,7 +200,7 @@ function sendGameInvite(gameName) {
     gameInvite = {
       game: 'Card Clash',
       user: userName,
-      imageUrl: 'icons/21-icon.png', // Replace with actual image URL
+      imageUrl: 'icons/cardclash-icon.png', // Replace with actual image URL
       wager: getWager()
     };
   }
