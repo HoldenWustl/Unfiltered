@@ -109,13 +109,26 @@ socket.on('getCards', (data) => {
   // Check if a pair exists (both users are matched)
   if (recipientSocket) {
     recipientSocket.emit('updateGameState', { 
-      opponentCards: data.cards
+      opponentCards: data.cards,
+      opponentPoints: data.points || 0
     });
     socket.emit('updateGameState', { 
       opponentCards: null
     });
   }
 });
+
+
+
+
+socket.on('playCard', (data) => {
+  const recipientSocket = findOpponent(socket);
+  if(recipientSocket){
+    recipientSocket.emit('gotClashPlay',{opponentCard:data});
+  }
+});
+
+
 
 socket.on('playerStood', (data) => {
   const recipientSocket = findOpponent(socket);
@@ -261,7 +274,6 @@ io.on('connection', (socket) => {
 });
 
 
-// Start the server on port 10000
 const port = process.env.PORT || 10000; // Default to 10000 if PORT isn't set
 
 server.listen(port, '0.0.0.0', () => {
