@@ -489,3 +489,18 @@ h3 {
   background: rgba(255, 87, 34, 0.1);
   border-radius: 6px;
 }
+
+.player-cards .card {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.player-cards .card:hover {
+  transform: scale(1.1);
+}
+
+.card.selected {
+  background-color: #888; /* Grey out the card */
+  opacity: 0.6; /* Make it slightly faded */
+  border: 2px solid gold; /* Highlight the selection */
+}
