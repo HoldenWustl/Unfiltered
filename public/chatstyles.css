@@ -499,10 +499,21 @@ h3 {
   transform: scale(1.1);
 }
 
+
 .card.selected {
-  background-color: #888; /* Grey out the card */
-  opacity: 0.6; /* Make it slightly faded */
-  border: 2px solid gold; /* Highlight the selection */
+  background-color: #f0f0f0; /* Lighter grey background for better contrast */
+  opacity: 0.9; /* Slightly less faded for better visibility */
+  border: 2px solid #ffd700; /* Gold border to highlight the selection */
+  border-radius: 8px; /* Rounded corners for a smoother appearance */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+  transform: scale(1.05); /* Slight zoom effect to indicate selection */
+  transition: all 0.2s ease; /* Smooth transition for all changes */
+}
+
+/* Optional: add hover effect to make it interactive */
+.card.selected:hover {
+  transform: scale(1.08); /* Slight zoom on hover to emphasize the selection */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Darker shadow when hovered */
 }
 
 
