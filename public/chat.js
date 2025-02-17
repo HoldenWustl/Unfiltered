@@ -12,7 +12,7 @@ function getStarCount() {
     const starCount = parseInt(starCountText.replace("★", "").trim(), 10);
     
     if (!isNaN(starCount)) {
-      console.log("Star Count:", starCount);
+
       return starCount; // Return valid star count
     }
   }
@@ -36,13 +36,10 @@ socket.on('paired', (name) => {
   appendMessage(`${name} has joined the chat.`, 'neutral');
 });
 socket.on('gotStar',(star) =>{
-  
-  console.log("Other Star Count: ",star);
-  if(allowStarCountPass){
   socket.emit('giveStar', getStarCount());
   allowStarCountPass = false;
   otherStarCount = star;
-  otherStarBlock.innerHTML = `${otherStarCount} &#9733;`;}
+  otherStarBlock.innerHTML = `${otherStarCount} &#9733;`;
 });
 // Handle waiting for a pair
 socket.on('waitingForPair', () => {
@@ -56,7 +53,7 @@ checkStarCount = setInterval(() => {
     clearInterval(checkStarCount); // Stop checking
     socket.emit('giveStar', starCount); // Emit only after star count is ready
   }
-}, 100);
+}, 10);
 // DOM elements
 
 const chatMessages = document.getElementById('chat-messages');
@@ -167,7 +164,7 @@ socket.on('disconnected', () => {
   wagerAmount.innerHTML =  `0 &#9733;`;
   otherStarBlock.innerHTML = `0 &#9733;`;
   if (currentlyInGame){
-    opponentTotal = 0;
+    opponentTotal = -1;
     checkWin();
     
   }
@@ -202,6 +199,14 @@ function sendGameInvite(gameName) {
       game: 'Card Clash',
       user: userName,
       imageUrl: 'icons/cardclash-icon.png', // Replace with actual image URL
+      wager: getWager()
+    };
+  }
+  if (gameName === 'pickPass') {
+    gameInvite = {
+      game: "Pick n' Pass",
+      user: userName,
+      imageUrl: 'icons/pickpass-icon.png', // Replace with actual image URL
       wager: getWager()
     };
   }
@@ -244,6 +249,7 @@ currentlyInGame = false;
 currentGame = '';
 clashCard = 0;
 myPoints = 0;
+playedClashCard = false;
 }
 
 socket.on('startGame', (data) => {
@@ -313,10 +319,19 @@ socket.on('gameResponse', (data) => {
       myCards = [1,2,3,4,5];
       socket.emit("getCards",{cards:myCards});
     }
+    if(data.game=="Pick n' Pass"){
+      myCards = [];
+      while(myCards.length<10){
+        addCard();
+      }
+      socket.emit("getCards",{cards:myCards});
+    }
   }
 });
 
 socket.on('updateGameState', (data) => {
+  wagerSlider.value = gameWager;
+  wagerAmount.textContent = `${gameWager} ★`;
   if(currentGame=='21'){
   // Get the game div or create it if it doesn't exist
   const gameDiv = document.querySelector('.game');
@@ -447,6 +462,91 @@ checkStand();
   
    
   }}
+  if(currentGame=="Pick n' Pass"){
+    if(!data.opponentCards){
+    const gameDiv = document.querySelector('.game');
+gameDiv.innerHTML = ''; // Clear previous content
+
+// Create player section
+const playerCardsDiv = document.createElement('div');
+playerCardsDiv.classList.add('player-cards');
+playerCardsDiv.innerHTML = '<h3>Your Card</h3>';
+
+// Display only the first card
+const myCardEl = document.createElement('div');
+myCardEl.classList.add('card');
+myCardEl.textContent = myCards[0];
+
+playerCardsDiv.appendChild(myCardEl);
+
+// Create buttons
+const buttonsDiv = document.createElement('div');
+buttonsDiv.classList.add('buttons');
+
+const pickButton = document.createElement('button');
+pickButton.classList.add('pick-btn');
+pickButton.textContent = 'Pick';
+pickButton.onclick = () => pickCard(); // Define pickCard() function separately
+
+const passButton = document.createElement('button');
+passButton.classList.add('pass-btn');
+passButton.textContent = 'Pass';
+passButton.onclick = () => passCard(); // Define passCard() function separately
+
+buttonsDiv.appendChild(pickButton);
+buttonsDiv.appendChild(passButton);
+playerCardsDiv.appendChild(buttonsDiv);
+
+gameDiv.appendChild(playerCardsDiv);
+
+// Create opponent section
+const opponentCardsDiv = document.createElement('div');
+opponentCardsDiv.classList.add('opponent-cards');
+opponentCardsDiv.innerHTML = '<h3>Opponent’s Card</h3>';
+
+// Display a hidden card
+const opponentCardEl = document.createElement('div');
+opponentCardEl.classList.add('card', 'opponent-card');
+opponentCardEl.textContent = '?';
+
+opponentCardsDiv.appendChild(opponentCardEl);
+gameDiv.appendChild(opponentCardsDiv);
+
+function pickCard() {
+  myCardEl.classList.add('selected'); // Mark card as selected
+  myPoints = getCardValue(myCards[0]);
+  disableButtons();
+  playedClashCard = true;
+  socket.emit("playPickCard",myPoints);
+}
+
+// Function to handle passing (this should later cycle to the next card)
+function passCard() {
+
+  myCards.shift(); 
+  socket.emit("getCards", { cards: myCards });
+  // Add logic here to show the next card from myCards[]
+}
+
+if(myCards.length==1){
+  passButton.disabled = true;
+  passButton.style.opacity = "0.5"; 
+  passButton.style.cursor = "not-allowed";
+}
+else{
+  passButton.disabled = false;
+}
+// Disable buttons after selection
+function disableButtons() {
+  pickButton.disabled = true;
+  passButton.disabled = true;
+  pickButton.style.opacity = "0.5"; 
+    pickButton.style.cursor = "not-allowed";
+    passButton.style.opacity = "0.5"; 
+    passButton.style.cursor = "not-allowed";
+}
+
+  }}
 });
 
 function playCard(card, index) {
@@ -463,6 +563,17 @@ function playCard(card, index) {
       }
   });
 }
+
+socket.on('gotPickPlay', (data) => {
+  let wait = playedClashCard;
+  const waitForPlay = setInterval(() => {
+    if (playedClashCard){
+      clearInterval(waitForPlay); // Stop checking once the card is played
+      opponentTotal = data.opponentCard;
+      checkWin();
+    }
+  }, 100); // Check every 100ms
+});
 
 
 socket.on('gotClashPlay', (data) => {
@@ -525,7 +636,17 @@ function checkWin(){
     if(currentGame=="Card Clash"){
       myTotal = myPoints;
     }
-    if (myTotal > 21 && opponentTotal > 21) {
+    if(currentGame=="Pick n' Pass"){
+      myTotal = myPoints;
+    }
+
+    if (opponentTotal == -1){
+      appendMessage(`${otherUserName} has left the game. You win ${gameWager}★!`, "neutral");
+      document.dispatchEvent(new CustomEvent("updatePoints", {
+        detail: { name: userName, points: gameWager }
+      }));
+    }
+    else if (myTotal > 21 && opponentTotal > 21) {
       appendMessage("Game is a tie!", "neutral");
   } else if (myTotal > 21) {
       appendMessage(`${otherUserName} wins ${gameWager}★!`, "neutral");
@@ -547,20 +668,17 @@ function checkWin(){
       document.dispatchEvent(new CustomEvent("updatePoints", {
         detail: { name: userName, points: -1*gameWager }
       }));
-  } else {
-    if (myTotal==opponentTotal){
-      appendMessage("Game is a tie!", "neutral");}
-      else{
-        appendMessage(`${otherUserName} has left the game. You win ${gameWager}★!`, "neutral");
-        document.dispatchEvent(new CustomEvent("updatePoints", {
-          detail: { name: userName, points: gameWager }
-        }));
-      }
+  } else if (myTotal==opponentTotal){
+    appendMessage("Game is a tie!", "neutral");
+  } else{
+    console.log("Error checking win");
   }
   document.querySelector('.game').classList.add('old');  
   setTimeout(() => {
     socket.emit('giveStar', getStarCount());
-}, 2000);
+}, 1000);
+  wagerSlider.value = Math.min(wagerSlider.max,gameWager);
+  wagerAmount.textContent = `${wagerSlider.value} ★`;
 }}
 
 
@@ -583,6 +701,7 @@ socket.on('opponentStood', (data) => {
 
 
 setInterval(() => {
+  updateWagerSlider();
   if (numOpponentCards >= myCards.length) {
       if (currentlyInGame){
       setButtonsState(true);}
@@ -633,7 +752,19 @@ function addCard() {
 
   return total;
 }
-
+function getCardValue(card) {
+  // Extract the face value (e.g., 8, J, Q, K, A)
+  const cardValue = card.slice(0, -1); // Remove the suit (last character)
+  
+  // Map face cards to their values
+  if (cardValue === 'J') return 11;
+  if (cardValue === 'Q') return 12;
+  if (cardValue === 'K') return 13;
+  if (cardValue === 'A') return 1;
+  
+  // For number cards, just return the number
+  return parseInt(cardValue);
+}
 function setButtonsState(enabled) {
   const hitButton = document.querySelector(".hit-button");
   const standButton = document.querySelector(".stand-button");
@@ -673,4 +804,21 @@ wagerSlider.addEventListener('input', function() {
 
 function getWager() {
   return parseInt(wagerSlider.value, 10); // Ensures it returns a number
+}
+
+// Function to update wagerSlider based on currentlyInGame status
+function updateWagerSlider() {
+  const wagerSlider = document.querySelector('.wager-slider'); // Assume this is the class for the slider
+  
+  if (currentlyInGame) {
+      // Disable the slider if currentlyInGame is true
+      wagerSlider.disabled = true;
+      wagerSlider.style.opacity = "0.5"; // Optional: Change opacity to visually indicate it's disabled
+      wagerSlider.style.cursor = "not-allowed"; // Optional: Change cursor to indicate it's not clickable
+  } else {
+      // Enable the slider if currentlyInGame is false
+      wagerSlider.disabled = false;
+      wagerSlider.style.opacity = "1"; // Reset opacity to normal
+      wagerSlider.style.cursor = "pointer"; // Reset cursor to indicate it's clickable
+  }
 }
