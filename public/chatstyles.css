@@ -230,8 +230,8 @@ body {
   border: 1px inset black;
   border-radius: 8px;
   width: 200px;
-  max-height: 300px;
-  height: 300px;
+  max-height: 350px;
+  height: 350px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -307,7 +307,7 @@ body {
 .game {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: baseline;
   margin-top: 20px;
   margin-bottom: 20px;
   gap: 20px;  /* Creates space between opponent's and player's card */
@@ -503,4 +503,34 @@ h3 {
   background-color: #888; /* Grey out the card */
   opacity: 0.6; /* Make it slightly faded */
   border: 2px solid gold; /* Highlight the selection */
+}
+
+
+.pick-btn, .pass-btn {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pick-btn {
+  background-color: green;
+  color: white;
+}
+
+.pass-btn {
+  background-color: red;
+  color: white;
+}
+
+.pick-btn:hover {
+  background-color: darkgreen;
+}
+
+.pass-btn:hover {
+  background-color: darkred;
 }
