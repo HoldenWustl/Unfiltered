@@ -118,7 +118,12 @@ socket.on('getCards', (data) => {
   }
 });
 
-
+socket.on('playPickCard', (data) => {
+  const recipientSocket = findOpponent(socket);
+  if(recipientSocket){
+    recipientSocket.emit('gotPickPlay',{opponentCard:data});
+  }
+});
 
 
 socket.on('playCard', (data) => {
