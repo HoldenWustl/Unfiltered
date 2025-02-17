@@ -321,7 +321,7 @@ socket.on('gameResponse', (data) => {
     }
     if(data.game=="Pick n' Pass"){
       myCards = [];
-      while(myCards.length<8){
+      while(myCards.length<6){
         addCard();
       }
       socket.emit("getCards",{cards:myCards});
