@@ -321,7 +321,7 @@ socket.on('gameResponse', (data) => {
     }
     if(data.game=="Pick n' Pass"){
       myCards = [];
-      while(myCards.length<10){
+      while(myCards.length<8){
         addCard();
       }
       socket.emit("getCards",{cards:myCards});
@@ -479,9 +479,14 @@ myCardEl.textContent = myCards[0];
 
 playerCardsDiv.appendChild(myCardEl);
 
+const remainingCardsEl = document.createElement('p');
+remainingCardsEl.classList.add('remaining-cards');
+remainingCardsEl.textContent = `Remaining cards: ${myCards.length}`;
+playerCardsDiv.appendChild(remainingCardsEl);
+
 // Create buttons
 const buttonsDiv = document.createElement('div');
-buttonsDiv.classList.add('buttons');
+buttonsDiv.classList.add('pp-buttons');
 
 const pickButton = document.createElement('button');
 pickButton.classList.add('pick-btn');
@@ -517,7 +522,7 @@ function pickCard() {
   myPoints = getCardValue(myCards[0]);
   disableButtons();
   playedClashCard = true;
-  socket.emit("playPickCard",myPoints);
+  socket.emit("playPickCard",myCards[0]);
 }
 
 // Function to handle passing (this should later cycle to the next card)
@@ -568,8 +573,14 @@ socket.on('gotPickPlay', (data) => {
   let wait = playedClashCard;
   const waitForPlay = setInterval(() => {
     if (playedClashCard){
-      clearInterval(waitForPlay); // Stop checking once the card is played
-      opponentTotal = data.opponentCard;
+      clearInterval(waitForPlay); // Stop checking once the card is played     
+      const opponentCardElement = document.querySelector('.opponent-card');
+      if (opponentCardElement) {
+        opponentCardElement.innerHTML = data.opponentCard;
+        opponentCardElement.classList.add('selected');
+      }
+
+      opponentTotal = getCardValue(data.opponentCard);
       checkWin();
     }
   }, 100); // Check every 100ms
