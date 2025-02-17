@@ -498,7 +498,17 @@ h3 {
 .player-cards .card:hover {
   transform: scale(1.1);
 }
-
+.pp-buttons{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.remaining-cards {
+  font-size: 16px;
+  margin-top: 10px;
+  color: #333;
+  font-weight: bold;
+}
 
 .card.selected {
   background-color: #f0f0f0; /* Lighter grey background for better contrast */
