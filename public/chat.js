@@ -676,9 +676,11 @@ function checkWin(){
   document.querySelector('.game').classList.add('old');  
   setTimeout(() => {
     socket.emit('giveStar', getStarCount());
+    wagerSlider.value = Math.min(wagerSlider.max,gameWager);
+    wagerAmount.textContent = `${wagerSlider.value} ★`;
+    gameWager = 0;
 }, 1000);
-  wagerSlider.value = Math.min(wagerSlider.max,gameWager);
-  wagerAmount.textContent = `${wagerSlider.value} ★`;
+  
 }}
 
 
