@@ -68,7 +68,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
   // Step 4: Determine display limits
   let displayedCount = 0;
   let extraUsers = 0;
-  const maxUsersToShow = 5; // Limit for all-users leaderboard
+  const maxUsersToShow = 8; // Limit for all-users leaderboard
 
   for (let i = 0; i < filteredUsers.length; i++) {
     const user = filteredUsers[i];
