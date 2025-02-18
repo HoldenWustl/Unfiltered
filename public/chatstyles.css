@@ -266,7 +266,7 @@ body {
 }
 
 .game-item:hover {
-  background-color: #FFB600; /* A strong color that contrasts well with white */
+  background-color: #FFB600 !IMPORTANT; /* A strong color that contrasts well with white */
   color: #fff; /* White text on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow to make the item "pop" */
   transform: scale(1.05); /* Slightly enlarge the item on hover for emphasis */
@@ -276,7 +276,7 @@ body {
   transform: scale(1.05); /* Slight pop effect */
 }
 .theme-item.selected {
-  background: rgba(0, 0, 0, 0.1); /* Light gray highlight */
+  background: #FFB600 !IMPORTANT;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.8);
   z-index: 100;
 }
