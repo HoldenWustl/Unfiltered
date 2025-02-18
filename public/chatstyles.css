@@ -289,6 +289,7 @@ body.dark-mode {
   }
   .chat-container{
     background-color: dimgrey;
+    box-shadow: 0 4px 8px white;
   }
   .chat-messages{
     background-color: lightgrey;
