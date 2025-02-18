@@ -68,6 +68,6 @@ function startVideo() {
         // If name input is filled, redirect to the chat page (chat.html)
       sessionStorage.setItem('name', nameInput);
         let starCount = document.getElementById('star-count').textContent;
-        window.location.href = `video.html?userName=${encodeURIComponent(nameInput.trim())}&age=${encodeURIComponent(ageInput)}&videoStars=${encodeURIComponent(starCount)}`;
+        window.location.href = `video.html?userName=${encodeURIComponent(nameInput.trim())}&age=${encodeURIComponent(ageInput)}&stars=${encodeURIComponent(starCount)}`;
     }
 }
