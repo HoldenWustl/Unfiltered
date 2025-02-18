@@ -1,3 +1,5 @@
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { remove, equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
 
@@ -79,7 +81,17 @@ function updateLeaderboard(snapshot, filterDevice = false) {
     }
 
     const li = document.createElement("li");
-    li.innerHTML = `${user.rank}. ${user.name} <span>${user.points}</span>`;
+
+    let rankDisplay = `${user.rank}.`;
+    if (user.rank === 1) {
+      rankDisplay = "🥇"; // Gold medal
+    } else if (user.rank === 2) {
+      rankDisplay = "🥈"; // Silver medal
+    } else if (user.rank === 3) {
+      rankDisplay = "🥉"; // Bronze medal
+    }
+
+    li.innerHTML = `${rankDisplay} ${user.name} <span>${user.points}</span>`;
     if (!filterDevice && user.deviceId === getDeviceId()) {
 
       li.classList.add("highlight");
@@ -242,6 +254,7 @@ function updateStarCount() {
   if (name) {
     getUserPointsByDeviceId(name, deviceId)
       .then(points => {
+        sessionStorage.setItem('videoStars', points);
         starCountDiv.innerHTML = `${points} &#9733;`;  // Show points with the star symbol
       })
       .catch(error => {
