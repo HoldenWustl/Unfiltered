@@ -77,6 +77,8 @@ body {
 }
 
 #char-count {
+  display:flex;
+  align-items: center;
   margin-left: 10px;
   font-size: 14px;
   color: #999;
@@ -93,7 +95,7 @@ body {
   margin-bottom: 20px;
   position: relative;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
 }
@@ -101,7 +103,7 @@ body {
 
 .chat-message {
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   max-width: 80%; /* Limit the width of each message to 80% of the container width */
   word-wrap: break-word; /* Ensure long words break within the block */
   overflow-wrap: break-word; /* Ensure long words break and do not overflow */
@@ -139,7 +141,7 @@ body {
   flex-grow: 1;
   padding: 10px;
   border-radius: 20px;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   font-size: 14px;
   outline: none;
 }
@@ -164,12 +166,24 @@ body {
   margin-left: 10px;
   transition: background-color 0.3s ease;
 }
-
+#theme-btn{
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+#theme-btn:hover{
+  background-color: navy;
+}
 #send-message-btn:hover {
   background-color: #ff4500;
 }
 #game-btn:hover {
-  background-color: darkcyan;
+  background-color: darkgreen;
 }
 @media screen and (max-width: 768px) {
   body {
@@ -214,20 +228,21 @@ body {
   }
   #char-count{
     margin-left: 0;
+    margin-right: 10px;
   }
 }
 
 
 
 
-.game-menu {
+.game-menu, .theme-menu {
   display: none;
   flex-direction: column;
   position: relative;
   top: 50px;
   right: 10px;
   background-color: #f9f9f9;
-  border: 1px inset black;
+  border: 2px inset black;
   border-radius: 8px;
   width: 200px;
   max-height: 350px;
@@ -236,14 +251,16 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.game-item {
+.game-item, .theme-item {
   display: flex;
   align-items: center;
+  justify-content: stretch;
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
   border-radius: 8px; /* Rounded corners for a softer look */
   background-color: #ffffff; /* Keep the default background white */
+  z-index:10;
 }
 
 .game-item:hover {
@@ -252,11 +269,51 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow to make the item "pop" */
   transform: scale(1.05); /* Slightly enlarge the item on hover for emphasis */
 }
-
-.game-item img {
+.theme-item:hover {
+  background: rgba(0, 0, 0, 0.1); /* Light gray highlight */
+  transform: scale(1.05); /* Slight pop effect */
+}
+.theme-item.selected {
+  background: rgba(0, 0, 0, 0.1); /* Light gray highlight */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.8);
+  z-index: 100;
+}
+body.dark-mode {
+  background-color: #121212;
+  color: white;
+  #message-input{
+    background-color:black;
+    color: white;
+  }
+  .chat-container{
+    background-color: dimgrey;
+  }
+  .chat-messages{
+    background-color: lightgrey;
+  }
+  .game-menu, .theme-menu{
+    background-color: #909090;
+    border-color: white;
+  }
+  .game-item, .theme-item{
+    background-color: grey;
+  }
+  .game-invite{
+    background-color: black;
+  }
+  .points{
+    color:black;
+  }
+  .card{
+    background-color: black;
+  }
+}
+#importantChatButtons{
+  display: flex;
+}
+.game-item img, .theme-item img {
   width: 24px;
   height: 24px;
-  margin-right: 10px;
 }
 
 .game-invite {
