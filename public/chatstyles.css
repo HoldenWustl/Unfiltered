@@ -6,6 +6,7 @@ body {
   padding: 0;
   background-repeat: repeat;
   animation: moveBackground 10s linear infinite;
+  transition: background-color 0.3s
 }
 @keyframes moveBackground {
   0% {
