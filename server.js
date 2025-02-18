@@ -187,10 +187,11 @@ io.on('connection', (socket) => {
   console.log('A user connected');
  
   // Handle user joining the video chat
-  socket.on('joinVideoChat', ({ userName, age }) => {
+  socket.on('joinVideoChat', ({ userName, age, stars }) => {
     socket.isRefreshing = false;
     socket.userName = userName;
     socket.age = age;
+    socket.stars = stars;
     videoQueue.push(socket);
 
     if (videoQueue.length >= 2) {
@@ -200,8 +201,8 @@ io.on('connection', (socket) => {
       user1.partner = user2;
       user2.partner = user1;
 
-      user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age });
-      user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age });
+      user1.emit('pairedForVideo', { userName: user2.userName, age: user2.age, stars: user2.stars });
+      user2.emit('pairedForVideo', { userName: user1.userName, age: user1.age, stars: user1.stars });
     } else {
       socket.emit('waitingForVideoPair', false);
     }
