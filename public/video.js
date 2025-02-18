@@ -8,6 +8,7 @@ const age = urlParams.get('age') || 'Unknown';
 const stars = urlParams.get('stars') || 'Unknown';
 let otherUserName = null;
 let otherUserAge = null;
+let otherUserStars;
 let localStream;
 let remoteStream;
 let peerConnection = null;
@@ -81,7 +82,7 @@ async function ensureLocalStream() {
 startCamera();
 document.getElementById("caption1").innerHTML = `Name: ${userName}<br>Age: ${age}`;
 // Emit to server to join the video chat
-socket.emit('joinVideoChat', { userName, age });
+socket.emit('joinVideoChat', { userName, age, stars });
 document.getElementById("status").textContent = "Finding someone...";
 
 // Handle pairing
@@ -91,6 +92,7 @@ socket.on('pairedForVideo', async (otherUser) => {
   hideWaitingForMatch();
   otherUserName = otherUser.userName;
   otherUserAge = otherUser.age;
+  otherUserStars = otherUser.stars;
   document.getElementById("status").textContent = 'Unfiltered matched you!';
   document.getElementById("caption2").innerHTML = `Name: ${otherUserName}<br>Age: ${otherUserAge}`;
 
