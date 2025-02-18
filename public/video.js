@@ -94,7 +94,7 @@ socket.on('pairedForVideo', async (otherUser) => {
   otherUserAge = otherUser.age;
   otherUserStars = otherUser.stars;
   document.getElementById("status").textContent = 'Unfiltered matched you!';
-  document.getElementById("caption2").innerHTML = `Name: ${otherUserName}<br>Age: ${otherUserAge}<br>Stars: ${otherUseStars}`;
+  document.getElementById("caption2").innerHTML = `Name: ${otherUserName}<br>Age: ${otherUserAge}<br>Stars: ${otherUserStars}`;
 
 
   // Create peer connection if not already created
