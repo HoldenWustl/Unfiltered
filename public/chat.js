@@ -177,8 +177,12 @@ updateCharCount();
 function toggleGameMenu() {
   const gameMenu = document.getElementById('game-menu');
   gameMenu.style.display = gameMenu.style.display === 'flex' ? 'none' : 'flex';
-  
 }
+function toggeleThemeMenu() {
+  const themeMenu = document.getElementById('theme-menu');
+  themeMenu.style.display = themeMenu.style.display === 'flex' ? 'none' : 'flex';
+}
+
 setInterval(() => {
   wagerSlider.min = 0;
   wagerSlider.max = Math.min(getStarCount(), otherStarCount);
@@ -266,7 +270,7 @@ socket.on('startGame', (data) => {
   } else {
     // Show the game invite message
     inviteContainer.innerHTML = `
-      <p>${isSender ? `Inviting ${otherUserName}` : `${data.user} has invited you`} to play <strong>${data.game}</strong>! Wager = ${data.wager}★!</p>
+      <p>${isSender ? `Inviting ${otherUserName}` : `${data.user} has invited you`} to play <strong>${data.game}</strong>! Wager: ${data.wager}★!</p>
       <img src="${data.imageUrl}" class="game-image">
       <div class="invite-buttons">
         <button class="accept-btn" ${isSender ? 'disabled' : ''} style="${isSender ? 'opacity: 0.5; cursor: not-allowed;' : ''}">Accept</button>
@@ -835,3 +839,34 @@ function updateWagerSlider() {
       wagerSlider.style.cursor = "pointer"; // Reset cursor to indicate it's clickable
   }
 }
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const themeItems = document.querySelectorAll(".theme-item");
+  
+  // Load saved theme from localStorage
+  const savedTheme = localStorage.getItem("theme") || "light";
+  document.body.classList.toggle("dark-mode", savedTheme === "dark");
+
+  // Set selected state on the correct theme item
+  themeItems.forEach(item => {
+      item.classList.toggle("selected", item.dataset.theme === savedTheme);
+  });
+
+  themeItems.forEach(item => {
+      item.addEventListener("click", () => {
+          const selectedTheme = item.dataset.theme;
+
+          // Remove "selected" from all items, then set it on the clicked one
+          themeItems.forEach(i => i.classList.remove("selected"));
+          item.classList.add("selected");
+
+          // Apply dark mode class to body
+          document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+
+          // Save the theme selection
+          localStorage.setItem("theme", selectedTheme);
+      });
+  });
+});
