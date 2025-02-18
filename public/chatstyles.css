@@ -101,7 +101,7 @@ body {
 
 .chat-message {
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   max-width: 80%; /* Limit the width of each message to 80% of the container width */
   word-wrap: break-word; /* Ensure long words break within the block */
   overflow-wrap: break-word; /* Ensure long words break and do not overflow */
