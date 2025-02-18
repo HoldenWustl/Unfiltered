@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="chatstyles.css">
     <link rel="icon" href="favicon-32x32.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3446534815281767"
-     crossorigin="anonymous"></script>
+    
+
 </head>
 <body>
     <div class="chat-envelope">
@@ -31,9 +31,12 @@
         <!-- Chat Input -->
         <div class="chat-input-container">
             <input type="text" id="message-input" placeholder="Type a message..." maxlength="200"  />
+            <div id="importantChatButtons">
             <span id="char-count">200</span>
             <button id="send-message-btn" onclick="sendMessage()">Send</button>
             <button id="game-btn" onclick="toggleGameMenu()">Games</button>
+            <button id="theme-btn" onclick="toggeleThemeMenu()">Themes</button>
+        </div>
         </div>
     </div>
     <div id="game-menu" class="game-menu">
@@ -49,6 +52,7 @@
             <img src="icons/pickpass-icon.png" alt="Pick n' Pass Game" />
             <span>Pick n' Pass</span>
         </div>
+        
         <div class="starContainer" id="starContainer-1">
             <div id="star-count" class="star-block"> 
             </div>
@@ -70,10 +74,23 @@
             <span id="wager-amount">0 ★</span>
         </div>
     </div>
+    <div id="theme-menu" class="theme-menu">
+        <div class="theme-item selected" data-theme="light">
+            <img src="icons/lightMode-icon.png" alt="Light Mode" />
+            <span>Light Mode</span>
+        </div>
+        <div class="theme-item" data-theme="dark">
+            <img src="icons/darkMode-icon.png" alt="Dark Mode" />
+            <span>Dark Mode</span>
+        </div>
+    </div>    
 </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="firebase.js" type="module"></script>
     <script src="chat.js"></script>
+    
+    
+
 
 </body>
 </html>
