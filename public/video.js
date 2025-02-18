@@ -5,6 +5,7 @@ var socket = io.connect();
 const urlParams = new URLSearchParams(window.location.search);
 const userName = urlParams.get('userName') || 'User';
 const age = urlParams.get('age') || 'Unknown';
+const stars = urlParams.get('stars') || 'Unknown';
 let otherUserName = null;
 let otherUserAge = null;
 let localStream;
