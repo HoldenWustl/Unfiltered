@@ -1,6 +1,3 @@
-
-
-
 var socket = io.connect();
 const urlParams = new URLSearchParams(window.location.search);
 const userName = urlParams.get('userName') || 'User';
@@ -256,3 +253,29 @@ function hideWaitingForMatch() {
   document.getElementById("loading-symbol").style.display = "none";
 }
 
+const prompts = {
+  Truth: [
+      "What's your biggest fear?",
+      "What's a secret you've never told anyone?",
+      "If you could switch lives with someone for a day, who would it be?"
+  ],
+  Dare: [
+      "Do 10 push-ups.",
+      "Sing a song out loud.",
+      "Let someone send a text from your phone."
+  ],
+  "Would You Rather": [
+      "Have the ability to fly or be invisible?",
+      "Eat only sweet or only salty food forever?",
+      "Be rich but lonely or poor but surrounded by friends?"
+  ]
+};
+
+document.getElementById("random-prompt-btn").addEventListener("click", () => {
+  const categories = Object.keys(prompts);
+  const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+  const randomPrompt = prompts[randomCategory][Math.floor(Math.random() * prompts[randomCategory].length)];
+
+  document.getElementById("game-title").textContent = randomCategory + ":";
+  document.getElementById("prompt-display").textContent = randomPrompt;
+});
