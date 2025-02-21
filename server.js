@@ -362,11 +362,12 @@ app.post('/webhooks', express.raw({ type: 'application/json' }), (req, res) => {
   // Process the event
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    console.log(`✅ Payment successful for ${session.amount_total / 100} ${session.currency.toUpperCase()}`);
-    console.log(`🎉 Payment completed for: ${session.customer_details.email}`);
-    lastPayment = { email: session.customer_details.email };
-    
-      io.emit("payment-success", lastPayment);
+    const productName = session.line_items.data[0].price.product.name;
+    console.log(`✅ Payment completed for ${session.amount_total / 100} ${session.currency.toUpperCase()}`);
+    console.log(`✅ Payment completed for: ${session.customer_details.email}`);
+    console.log(`✅ Payment completed for product: ${productName}`);
+    lastPayment = { productName: productName };
+    io.emit("payment-success", lastPayment);
     
     
    
