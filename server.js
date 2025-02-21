@@ -362,7 +362,10 @@ app.post('/webhooks', express.raw({ type: 'application/json' }), (req, res) => {
   // Process the event
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const productName = session.line_items.data[0].price.product.name;
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+      limit: 10,  // Adjust limit based on the number of items
+    });
+    const productName = lineItems.data[0].price.product.name;
     console.log(`✅ Payment completed for ${session.amount_total / 100} ${session.currency.toUpperCase()}`);
     console.log(`✅ Payment completed for: ${session.customer_details.email}`);
     console.log(`✅ Payment completed for product: ${productName}`);
