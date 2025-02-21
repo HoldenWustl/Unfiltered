@@ -94,19 +94,19 @@ socket.on("disconnect", () => {
 const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea');
 
 document.getElementById('product-100-stars').addEventListener('click', async (event) => {
-  await handleCheckout(event, { name: '100 Stars', description: 'Gain 100 Stars', amount: 10 });  // Set the amount appropriately
+  await handleCheckout(event, '100 Stars'); // Only send the product name
 });
 
 document.getElementById('product-200-stars').addEventListener('click', async (event) => {
-  await handleCheckout(event, { name: '200 Stars', description: 'Gain 200 Stars', amount: 20 });  // Set the amount appropriately
+  await handleCheckout(event, '200 Stars'); // Only send the product name
 });
 
-async function handleCheckout(event, productData) {
+async function handleCheckout(event, productName) {
   try {
     const response = await fetch('/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productData })  // Send product data to backend
+      body: JSON.stringify({ productName })  // Send only the product name
     });
 
     if (response.ok) {
