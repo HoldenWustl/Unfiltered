@@ -342,8 +342,8 @@ app.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'https://yourdomain.com/success',  // Replace with your success URL
-      cancel_url: 'https://yourdomain.com/cancel',   // Replace with your cancel URL
+      success_url: 'https://www.unfiltered.chat/info.html',  // Replace with your success URL
+      cancel_url: 'https://www.unfiltered.chat/info.html',   // Replace with your cancel URL
     });
 
     res.json({ id: session.id });  // Respond with the session ID
