@@ -345,7 +345,7 @@ app.post('/create-checkout-session', async (req, res) => {
 });
 
 // Webhook endpoint to handle Stripe events
-app.post('/webhooks', express.raw({ type: 'application/json' }), (req, res) => {
+app.post('/webhooks', express.raw({ type: 'application/json' }), async (req, res) => {
   console.log("Webhook received!");
 
   const sig = req.headers['stripe-signature'];
