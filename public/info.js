@@ -1,4 +1,4 @@
-
+const socket = io();
 
 sessionStorage.removeItem("kicked");
     const userForm = document.getElementById('name');
@@ -71,3 +71,17 @@ function startVideo() {
         window.location.href = `video.html?userName=${encodeURIComponent(nameInput.trim())}&age=${encodeURIComponent(ageInput)}&stars=${encodeURIComponent(starCount)}`;
     }
 }
+
+
+window.onload = () => {
+socket.on("connect", () => {
+  console.log("🔗 Connected to WebSocket server");
+});
+
+socket.on("payment-success", (data) => {
+  console.log(`✅ Payment successful for ${data.email}`);
+});
+
+socket.on("disconnect", () => {
+  console.log("❌ Disconnected from WebSocket server");
+});}
