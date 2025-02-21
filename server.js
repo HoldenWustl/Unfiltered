@@ -314,7 +314,7 @@ app.post('/create-checkout-session', async (req, res) => {
       },
     ],
     mode: 'payment',
-    success_url: 'http://localhost:4242/success',  // Change to your success URL
+    success_url: 'http://unfiltered.chat/info.html',  // Change to your success URL
     cancel_url: 'http://localhost:4242/cancel',   // Change to your cancel URL
     metadata: metadata,  // Pass metadata to the session
   });
