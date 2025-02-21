@@ -96,32 +96,37 @@ const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8n
 document.getElementById('checkout-form').addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const nameInput = document.getElementById('name').value;
+  let productData;
 
-  // Check if the name input is empty
-  if (nameInput.trim() === "") {
-    alert("Please enter your name for stars!");
-  } else {
-    try {
-      const response = await fetch('/create-checkout-session', {
-        method: 'POST',
-      });
+  if (event.target.id === 'product-100-stars') {
+    productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 0 };
+  } else if (event.target.id === 'product-200-stars') {
+    productData = { name: '200 Stars', description: 'Gain 200 Stars', amount: 0 }; // Adjust the amount accordingly
+  }
 
-      if (response.ok) {
-        const session = await response.json();
+  if (!productData) {
+    console.error('No product selected');
+    return;
+  }
 
-        // Redirect to the Stripe Checkout page
-        const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
+  try {
+    const response = await fetch('/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productData })  // Send product data to backend
+    });
 
-        if (error) {
-          // Handle any errors that occur during redirection
-          console.error(error.message);
-        }
-      } else {
-        console.error('Failed to create checkout session');
+    if (response.ok) {
+      const session = await response.json();
+      const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
+
+      if (error) {
+        console.error(error.message);
       }
-    } catch (error) {
-      console.error('Error during checkout process:', error);
+    } else {
+      console.error('Failed to create checkout session');
     }
+  } catch (error) {
+    console.error('Error during checkout process:', error);
   }
 });
