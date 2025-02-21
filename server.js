@@ -306,36 +306,42 @@ io.on("connection", (socket) => {
 
 // Create checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
-  // Define metadata (custom data)
-  const metadata = {
-    product_name: 'T-shirt',
-    product_id: '12345',
-    description: 'A high-quality T-shirt',
-  };
+  try {
+    // Define metadata (custom data)
+    const metadata = {
+      product_name: '100 Stars',
+      product_id: '12345',
+      description: 'Gain 100 Stars',
+    };
 
-  // Create the checkout session
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: '100 Stars',
-            description: 'Gain 100 Stars!',
+    // Create the checkout session
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: '100 Stars',
+              description: 'Gain 100 Stars',
+            },
+            unit_amount: 0, // Amount in cents ($20.00)
           },
-          unit_amount: 0, // Amount in cents ($20.00)
+          quantity: 1,
         },
-        quantity: 1,
-      },
-    ],
-    mode: 'payment',
-    success_url: 'https://unfiltered.chat/info.html',  // Change to your success URL
-    cancel_url: 'https://unfiltered.chat/info.html',   // Change to your cancel URL
-    metadata: metadata,  // Pass metadata to the session
-  });
+      ],
+      mode: 'payment',
+      success_url: 'http://localhost:4242/info.html',  // Change to your success URL
+      cancel_url: 'http://localhost:4242/info.html',   // Change to your cancel URL
+      metadata: metadata,  // Pass metadata to the session
+    });
 
-  // Redirect to Stripe Checkout page
-  res.redirect(303, session.url);
+    // Respond with the session ID as JSON
+    res.json({ id: session.id });
+
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 // Webhook endpoint to handle Stripe events
