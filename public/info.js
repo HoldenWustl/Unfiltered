@@ -81,7 +81,7 @@ socket.on("connect", () => {
 });
     
 socket.on("payment-success", (data) => {
-  console.log(`✅ Payment successful for ${data.email}`);
+  console.log(`✅ Payment successful for ${data.productName}`);
 });
     
 socket.on("disconnect", () => {
