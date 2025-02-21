@@ -279,8 +279,12 @@ io.on('connection', (socket) => {
   });
 });
 
+// Use express.json() globally for regular routes
 app.use(express.json());
-app.use(express.raw({ type: 'application/json' }));
+
+// Use express.raw() only for the Stripe webhook route
+app.use('/webhooks', express.raw({ type: 'application/json' }));
+
 app.get('/info', (req, res) => {
   res.sendFile(__dirname + '/public/info.html');
 });
