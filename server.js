@@ -306,38 +306,47 @@ io.on("connection", (socket) => {
 
 // Create checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
-  try {
-    // Define metadata (custom data)
-    const metadata = {
-      product_name: '100 Stars',
-      product_id: '12345',
-      description: 'Gain 100 Stars',
-    };
+  const { product } = req.body; // Get the product name from the request body
 
-    // Create the checkout session
+  let productData;
+  
+  if (product === '100 Stars') {
+    productData = {
+      name: '100 Stars',
+      description: 'Gain 100 Stars',
+      amount: 0, // Amount in cents ($0)
+    };
+  } else if (product === 'Premium T-shirt') {
+    productData = {
+      name: 'Premium T-shirt',
+      description: 'A high-quality Premium T-shirt',
+      amount: 2000, // Amount in cents ($20)
+    };
+  } else {
+    return res.status(400).send('Product not found');
+  }
+
+  try {
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: '100 Stars',
-              description: 'Gain 100 Stars',
+              name: productData.name,
+              description: productData.description,
             },
-            unit_amount: 0, // Amount in cents ($20.00)
+            unit_amount: productData.amount,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: 'https://www.unfiltered.chat/info.html',  // Change to your success URL
-      cancel_url: 'https://www.unfiltered.chat/info.html',   // Change to your cancel URL
-      metadata: metadata,  // Pass metadata to the session
+      success_url: 'https://yourdomain.com/success',  // Replace with your success URL
+      cancel_url: 'https://yourdomain.com/cancel',   // Replace with your cancel URL
     });
 
-    // Respond with the session ID as JSON
-    res.json({ id: session.id });
-
+    res.json({ id: session.id });  // Respond with the session ID
   } catch (error) {
     console.error('Error creating checkout session:', error);
     res.status(500).send('Internal Server Error');
