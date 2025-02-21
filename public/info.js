@@ -75,7 +75,7 @@ function startVideo() {
 
 
 window.onload = () => {
-
+setTimeout(() => {
 socket.on("connect", () => {
   console.log("🔗 Connected to WebSocket server");
 });
@@ -87,6 +87,7 @@ socket.on("payment-success", (data) => {
 socket.on("disconnect", () => {
   console.log("❌ Disconnected from WebSocket server");
 });
+    }, 1000);
 }
 
 
