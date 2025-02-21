@@ -306,10 +306,27 @@ io.on("connection", (socket) => {
 
 // Create checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
-  const { productData } = req.body;
-
   try {
-    // Create the checkout session
+    // Manually parse the raw body
+    const body = JSON.parse(req.body.toString());
+
+    // Get the product name from the request body
+    const { productName } = body;
+    if (!productName) {
+      return res.status(400).send('Product name is required');
+    }
+
+    // Define product details based on the product name
+    let productData;
+    if (productName === '100 Stars') {
+      productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 10 };
+    } else if (productName === '200 Stars') {
+      productData = { name: '200 Stars', description: 'Gain 200 Stars', amount: 20 };
+    } else {
+      return res.status(400).send('Invalid product name');
+    }
+
+    // Create the checkout session using the product data
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
@@ -319,18 +336,16 @@ app.post('/create-checkout-session', async (req, res) => {
               name: productData.name,
               description: productData.description,
             },
-            unit_amount: productData.amount * 100, // Make sure to multiply by 100 to convert to cents
+            unit_amount: productData.amount * 100, // Convert amount to cents
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: 'https://www.unfiltered.chat/info.html',  // Change to your success URL
-      cancel_url: 'https://www.unfiltered.chat/info.html',   // Change to your cancel URL
-      metadata: { product_name: productData.name },  // Pass metadata if needed
+      success_url: 'https://www.unfiltered.chat/info.html',  // Your success URL
+      cancel_url: 'https://www.unfiltered.chat/info.html',   // Your cancel URL
     });
 
-    // Respond with the session ID as JSON
     res.json({ id: session.id });
 
   } catch (error) {
