@@ -280,14 +280,29 @@ io.on('connection', (socket) => {
 });
 
 
+app.use(express.raw({ type: 'application/json' }));
+app.get('/info', (req, res) => {
+  res.sendFile(__dirname + '/public/info.html');
+});
 
-const stripe = require('stripe')('sk_test_51QsZVcRxTYiZzB69aQ86j8tkNxPUAD4HW0SfDerXEtXgMt4cVGb7PxzXiXXYJ9Y8If1SxcW9idj1EKuOmBznwFHe00uH53oXNX');
+const stripe = require('stripe')('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');
 const endpointSecret = 'whsec_1CpFi93bQx3fojwMhbB75n5PkMcTJO8d';
-const bodyParser = require('body-parser');
-
-
+let lastPayment = null;
 // Use body-parser to retrieve the raw body as a buffer
-app.use(bodyParser.json());
+
+io.on("connection", (socket) => {
+  console.log("🟢 Client connected to WebSocket");
+
+  // If there's a last successful payment, send it to the new client
+  if (lastPayment) {
+    socket.emit("payment-success", lastPayment);
+    console.log("🔄 Sent last payment event to new client");
+  }
+
+  socket.on("disconnect", () => {
+    console.log("🔴 Client disconnected");
+  });
+});
 
 // Create checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
@@ -314,7 +329,7 @@ app.post('/create-checkout-session', async (req, res) => {
       },
     ],
     mode: 'payment',
-    success_url: 'http://unfiltered.chat/info.html',  // Change to your success URL
+    success_url: 'http://localhost:4242/info.html',  // Change to your success URL
     cancel_url: 'http://localhost:4242/cancel',   // Change to your cancel URL
     metadata: metadata,  // Pass metadata to the session
   });
@@ -324,43 +339,35 @@ app.post('/create-checkout-session', async (req, res) => {
 });
 
 // Webhook endpoint to handle Stripe events
-app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
-  const payload = req.body;
-  const sig = req.headers['stripe-signature'];
+app.post('/webhooks', express.raw({ type: 'application/json' }), (req, res) => {
+  console.log("Webhook received!");
 
+  const sig = req.headers['stripe-signature'];
   let event;
 
   try {
-    // Construct the event from Stripe webhook
-    event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    // Construct the event using raw body and signature
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
+    console.error(`⚠️ Webhook signature verification failed: ${err.message}`);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
+  // Process the event
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-
-    // Retrieve metadata from the session
-    const metadata = session.metadata;
     console.log(`✅ Payment successful for ${session.amount_total / 100} ${session.currency.toUpperCase()}`);
-    console.log(`Purchased item: ${metadata.product_name} (ID: ${metadata.product_id})`);
-    console.log(`Description: ${metadata.description}`);
-
-    // Handle fulfillment (e.g., grant stars, update database)
-    fulfillCheckout(session);
+    console.log(`🎉 Payment completed for: ${session.customer_details.email}`);
+    lastPayment = { email: session.customer_details.email };
+    
+      io.emit("payment-success", lastPayment);
+    
+    
+   
   }
 
-  res.status(200).end();  // Respond to acknowledge receipt of the event
+  res.status(200).send(); // Respond to Stripe to acknowledge receipt of the event
 });
-
-// Your fulfillment logic (e.g., grant stars or update the database)
-function fulfillCheckout(session) {
-  // This is where you'd handle post-purchase tasks like updating your database
-  console.log(`🎉 Fulfillment logic for purchase: ${session.id}`);
-}
-
-
 
 
 const port = process.env.PORT || 10000; // Default to 10000 if PORT isn't set
