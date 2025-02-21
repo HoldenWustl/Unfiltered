@@ -73,20 +73,22 @@ function startVideo() {
 }
 
 
+
+window.onload = () => {
+
 socket.on("connect", () => {
   console.log("🔗 Connected to WebSocket server");
 });
-window.onload = () => {
-
-
+    
 socket.on("payment-success", (data) => {
   console.log(`✅ Payment successful for ${data.email}`);
 });
-
-}
+    
 socket.on("disconnect", () => {
   console.log("❌ Disconnected from WebSocket server");
 });
+}
+
 
 
 // This is your Stripe public key
