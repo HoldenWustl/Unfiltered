@@ -279,12 +279,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Use express.json() globally for regular routes
-app.use(express.json());
 
-// Use express.raw() only for the Stripe webhook route
-app.use('/webhooks', express.raw({ type: 'application/json' }));
-
+app.use(express.raw({ type: 'application/json' }));
 app.get('/info', (req, res) => {
   res.sendFile(__dirname + '/public/info.html');
 });
@@ -309,31 +305,14 @@ io.on("connection", (socket) => {
 });
 
 // Create checkout session endpoint
-// Use express.raw() only for the routes where the raw body is needed
-app.use('/create-checkout-session', express.raw({ type: 'application/json' }));
-
 app.post('/create-checkout-session', async (req, res) => {
   try {
-    // Manually parse the JSON body since it's coming as raw
-    const body = JSON.parse(req.body.toString());
-    
-    const product = body.product;  // Extract the product name
-    
-    let productName, productDescription, productPrice;
-
-    // Based on the product, set the corresponding details
-    if (product === '100 Stars') {
-      productName = '100 Stars';
-      productDescription = 'Gain 100 Stars';
-      productPrice = 0;  // Set the price
-    } else if (product === 'Premium T-shirt') {
-      productName = 'Premium T-shirt';
-      productDescription = 'A high-quality Premium T-shirt';
-      productPrice = 2000;  // Example price in cents ($20.00)
-    } else {
-      // Return error if product is not recognized
-      return res.status(400).json({ error: 'Invalid product' });
-    }
+    // Define metadata (custom data)
+    const metadata = {
+      product_name: '100 Stars',
+      product_id: '12345',
+      description: 'Gain 100 Stars',
+    };
 
     // Create the checkout session
     const session = await stripe.checkout.sessions.create({
@@ -342,17 +321,18 @@ app.post('/create-checkout-session', async (req, res) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: productName,
-              description: productDescription,
+              name: '100 Stars',
+              description: 'Gain 100 Stars',
             },
-            unit_amount: productPrice,
+            unit_amount: 0, // Amount in cents ($20.00)
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: 'https://www.unfiltered.chat/info.html', // Change to your success URL
-      cancel_url: 'https://www.unfiltered.chat/info.html',  // Change to your cancel URL
+      success_url: 'https://www.unfiltered.chat/info.html',  // Change to your success URL
+      cancel_url: 'https://www.unfiltered.chat/info.html',   // Change to your cancel URL
+      metadata: metadata,  // Pass metadata to the session
     });
 
     // Respond with the session ID as JSON
@@ -363,7 +343,6 @@ app.post('/create-checkout-session', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
 
 // Webhook endpoint to handle Stripe events
 app.post('/webhooks', express.raw({ type: 'application/json' }), async (req, res) => {
