@@ -309,53 +309,61 @@ io.on("connection", (socket) => {
 });
 
 // Create checkout session endpoint
+// Use express.raw() only for the routes where the raw body is needed
+app.use('/create-checkout-session', express.raw({ type: 'application/json' }));
+
 app.post('/create-checkout-session', async (req, res) => {
-  const { product } = req.body; // Get the product name from the request body
-
-  let productData;
-  
-  if (product === '100 Stars') {
-    productData = {
-      name: '100 Stars',
-      description: 'Gain 100 Stars',
-      amount: 0, // Amount in cents ($0)
-    };
-  } else if (product === 'Premium T-shirt') {
-    productData = {
-      name: 'Premium T-shirt',
-      description: 'A high-quality Premium T-shirt',
-      amount: 2000, // Amount in cents ($20)
-    };
-  } else {
-    return res.status(400).send('Product not found');
-  }
-
   try {
+    // Manually parse the JSON body since it's coming as raw
+    const body = JSON.parse(req.body.toString());
+    
+    const product = body.product;  // Extract the product name
+    
+    let productName, productDescription, productPrice;
+
+    // Based on the product, set the corresponding details
+    if (product === '100 Stars') {
+      productName = '100 Stars';
+      productDescription = 'Gain 100 Stars';
+      productPrice = 0;  // Set the price
+    } else if (product === 'Premium T-shirt') {
+      productName = 'Premium T-shirt';
+      productDescription = 'A high-quality Premium T-shirt';
+      productPrice = 2000;  // Example price in cents ($20.00)
+    } else {
+      // Return error if product is not recognized
+      return res.status(400).json({ error: 'Invalid product' });
+    }
+
+    // Create the checkout session
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: productData.name,
-              description: productData.description,
+              name: productName,
+              description: productDescription,
             },
-            unit_amount: productData.amount,
+            unit_amount: productPrice,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: 'https://www.unfiltered.chat/info.html',  // Replace with your success URL
-      cancel_url: 'https://www.unfiltered.chat/info.html',   // Replace with your cancel URL
+      success_url: 'https://www.unfiltered.chat/info.html', // Change to your success URL
+      cancel_url: 'https://www.unfiltered.chat/info.html',  // Change to your cancel URL
     });
 
-    res.json({ id: session.id });  // Respond with the session ID
+    // Respond with the session ID as JSON
+    res.json({ id: session.id });
+
   } catch (error) {
     console.error('Error creating checkout session:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 // Webhook endpoint to handle Stripe events
 app.post('/webhooks', express.raw({ type: 'application/json' }), async (req, res) => {
