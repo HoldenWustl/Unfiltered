@@ -320,10 +320,10 @@ app.post('/create-checkout-session', async (req, res) => {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: 'T-shirt',
-            description: 'A high-quality T-shirt',
+            name: '100 Stars',
+            description: 'Gain 100 Stars!',
           },
-          unit_amount: 2000, // Amount in cents ($20.00)
+          unit_amount: 0, // Amount in cents ($20.00)
         },
         quantity: 1,
       },
