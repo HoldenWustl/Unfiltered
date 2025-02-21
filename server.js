@@ -281,43 +281,83 @@ io.on('connection', (socket) => {
 
 
 
-
 const stripe = require('stripe')('sk_test_51QsZVcRxTYiZzB69aQ86j8tkNxPUAD4HW0SfDerXEtXgMt4cVGb7PxzXiXXYJ9Y8If1SxcW9idj1EKuOmBznwFHe00uH53oXNX');
 const endpointSecret = 'whsec_1CpFi93bQx3fojwMhbB75n5PkMcTJO8d';
+const bodyParser = require('body-parser');
 
-app.use(express.raw({ type: 'application/json' }));  // Use this instead of body-parser for raw body
 
-// Webhook endpoint
-app.post('/webhook', (req, res) => {
-  let event;
+// Use body-parser to retrieve the raw body as a buffer
+app.use(bodyParser.json());
 
-  // Verify the webhook signature
-  const signature = req.headers['stripe-signature'];
-  try {
-    event = stripe.webhooks.constructEvent(req.body, signature, endpointSecret);
-  } catch (err) {
-    console.error(`⚠️ Webhook signature verification failed: ${err.message}`);
-    return res.sendStatus(400);
-  }
+// Create checkout session endpoint
+app.post('/create-checkout-session', async (req, res) => {
+  // Define metadata (custom data)
+  const metadata = {
+    product_name: 'T-shirt',
+    product_id: '12345',
+    description: 'A high-quality T-shirt',
+  };
 
-  // Handle the event
-  switch (event.type) {
-    case 'checkout.session.completed':
-      const session = event.data.object;
-      console.log(`✅ Payment successful for ${session.amount_total / 100} ${session.currency.toUpperCase()}`);
-      handleSuccessfulPurchase(session);
-      break;
-    default:
-      console.log(`Unhandled event type: ${event.type}`);
-  }
+  // Create the checkout session
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'T-shirt',
+            description: 'A high-quality T-shirt',
+          },
+          unit_amount: 2000, // Amount in cents ($20.00)
+        },
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    success_url: 'http://localhost:4242/success',  // Change to your success URL
+    cancel_url: 'http://localhost:4242/cancel',   // Change to your cancel URL
+    metadata: metadata,  // Pass metadata to the session
+  });
 
-  res.status(200).send();
+  // Redirect to Stripe Checkout page
+  res.redirect(303, session.url);
 });
 
-// Function to handle successful purchase
-function handleSuccessfulPurchase(session) {
-  const customerEmail = session.customer_details.email;
-  console.log(`🎉 Granting 100 stars to ${customerEmail}`);
+// Webhook endpoint to handle Stripe events
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
+  const payload = req.body;
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    // Construct the event from Stripe webhook
+    event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+    // Retrieve metadata from the session
+    const metadata = session.metadata;
+    console.log(`✅ Payment successful for ${session.amount_total / 100} ${session.currency.toUpperCase()}`);
+    console.log(`Purchased item: ${metadata.product_name} (ID: ${metadata.product_id})`);
+    console.log(`Description: ${metadata.description}`);
+
+    // Handle fulfillment (e.g., grant stars, update database)
+    fulfillCheckout(session);
+  }
+
+  res.status(200).end();  // Respond to acknowledge receipt of the event
+});
+
+// Your fulfillment logic (e.g., grant stars or update the database)
+function fulfillCheckout(session) {
+  // This is where you'd handle post-purchase tasks like updating your database
+  console.log(`🎉 Fulfillment logic for purchase: ${session.id}`);
 }
 
 
