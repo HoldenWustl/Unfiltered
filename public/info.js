@@ -73,15 +73,54 @@ function startVideo() {
 }
 
 
-window.onload = () => {
 socket.on("connect", () => {
   console.log("🔗 Connected to WebSocket server");
 });
+window.onload = () => {
+
 
 socket.on("payment-success", (data) => {
   console.log(`✅ Payment successful for ${data.email}`);
 });
 
+}
 socket.on("disconnect", () => {
   console.log("❌ Disconnected from WebSocket server");
-});}
+});
+
+
+// This is your Stripe public key
+const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea');
+
+document.getElementById('checkout-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const nameInput = document.getElementById('name').value;
+
+  // Check if the name input is empty
+  if (nameInput.trim() === "") {
+    alert("Please enter your name for stars!");
+  } else {
+    try {
+      const response = await fetch('/create-checkout-session', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const session = await response.json();
+
+        // Redirect to the Stripe Checkout page
+        const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
+
+        if (error) {
+          // Handle any errors that occur during redirection
+          console.error(error.message);
+        }
+      } else {
+        console.error('Failed to create checkout session');
+      }
+    } catch (error) {
+      console.error('Error during checkout process:', error);
+    }
+  }
+});
