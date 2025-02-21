@@ -280,6 +280,64 @@ io.on('connection', (socket) => {
 });
 
 
+
+
+
+
+
+
+
+const stripe = require('stripe')('sk_test_51QsZVcRxTYiZzB69aQ86j8tkNxPUAD4HW0SfDerXEtXgMt4cVGb7PxzXiXXYJ9Y8If1SxcW9idj1EKuOmBznwFHe00uH53oXNX');
+const endpointSecret = 'whsec_1CpFi93bQx3fojwMhbB75n5PkMcTJO8d';
+
+
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+
+app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  let event = req.body;
+
+  if (endpointSecret) {
+    const signature = req.headers['stripe-signature'];
+    try {
+      event = stripe.webhooks.constructEvent(req.body, signature, endpointSecret);
+    } catch (err) {
+      console.error(`⚠️ Webhook signature verification failed: ${err.message}`);
+      return res.sendStatus(400);
+    }
+  }
+
+  // Handle events
+  switch (event.type) {
+    case 'checkout.session.completed': {
+      const session = event.data.object;
+
+      console.log(`✅ Payment successful for ${session.amount_total / 100} ${session.currency.toUpperCase()}`);
+      
+      // TODO: Grant user 100 stars or update database
+      handleSuccessfulPurchase(session);
+
+      break;
+    }
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
+  }
+
+  res.status(200).send();
+});
+
+function handleSuccessfulPurchase(session) {
+  const customerEmail = session.customer_details.email;
+  console.log(`🎉 Granting 100 stars to ${customerEmail}`);
+
+  // Example: Update user database (replace with real logic)
+  // db.users.update({ email: customerEmail }, { $inc: { stars: 100 } });
+}
+
+
+
+
 const port = process.env.PORT || 10000; // Default to 10000 if PORT isn't set
 
 server.listen(port, '0.0.0.0', () => {
