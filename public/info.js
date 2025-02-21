@@ -93,22 +93,15 @@ socket.on("disconnect", () => {
 // This is your Stripe public key
 const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea');
 
-document.getElementById('checkout-form').addEventListener('submit', async (event) => {
-  event.preventDefault();
+document.getElementById('product-100-stars').addEventListener('click', async (event) => {
+  await handleCheckout(event, { name: '100 Stars', description: 'Gain 100 Stars', amount: 10 });  // Set the amount appropriately
+});
 
-  let productData;
+document.getElementById('product-200-stars').addEventListener('click', async (event) => {
+  await handleCheckout(event, { name: '200 Stars', description: 'Gain 200 Stars', amount: 20 });  // Set the amount appropriately
+});
 
-  if (event.target.id === 'product-100-stars') {
-    productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 0 };
-  } else if (event.target.id === 'product-200-stars') {
-    productData = { name: '200 Stars', description: 'Gain 200 Stars', amount: 0 }; // Adjust the amount accordingly
-  }
-
-  if (!productData) {
-    console.error('No product selected');
-    return;
-  }
-
+async function handleCheckout(event, productData) {
   try {
     const response = await fetch('/create-checkout-session', {
       method: 'POST',
@@ -129,4 +122,4 @@ document.getElementById('checkout-form').addEventListener('submit', async (event
   } catch (error) {
     console.error('Error during checkout process:', error);
   }
-});
+}
