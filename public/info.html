@@ -17,7 +17,15 @@
       <p>Claim your free daily fame!</p>
       <div class="reward-amount">+10 &#9733;</div>
       <button id="claim-reward-btn" class="claim-reward-btn">Claim Reward</button>
-    </div>
+      <div class="shop-container">
+        <h3>Shop</h3>
+        <p>Get extra rewards with a one-time purchase!</p>
+        <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+        <stripe-buy-button
+          buy-button-id="buy_btn_1QulATRxTYiZzB69mzaLWPJL"
+          publishable-key="pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea">
+        </stripe-buy-button>
+      </div>
     
   <div class="form-container">
     <h2>Enter Your Info</h2>
