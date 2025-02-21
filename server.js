@@ -366,7 +366,7 @@ app.post('/webhooks', express.raw({ type: 'application/json' }), (req, res) => {
     console.log(`🎉 Payment completed for: ${session.customer_details.email}`);
     lastPayment = { email: session.customer_details.email };
     
-      io.emit("payment-success", lastPayment);
+      socket.emit("payment-success", lastPayment);
     
     
    
