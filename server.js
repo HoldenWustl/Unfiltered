@@ -306,14 +306,9 @@ io.on("connection", (socket) => {
 
 // Create checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
-  try {
-    // Define metadata (custom data)
-    const metadata = {
-      product_name: '100 Stars',
-      product_id: '12345',
-      description: 'Gain 100 Stars',
-    };
+  const { productData } = req.body;
 
+  try {
     // Create the checkout session
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -321,10 +316,10 @@ app.post('/create-checkout-session', async (req, res) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: '100 Stars',
-              description: 'Gain 100 Stars',
+              name: productData.name,
+              description: productData.description,
             },
-            unit_amount: 0, // Amount in cents ($20.00)
+            unit_amount: productData.amount * 100, // Make sure to multiply by 100 to convert to cents
           },
           quantity: 1,
         },
@@ -332,7 +327,7 @@ app.post('/create-checkout-session', async (req, res) => {
       mode: 'payment',
       success_url: 'https://www.unfiltered.chat/info.html',  // Change to your success URL
       cancel_url: 'https://www.unfiltered.chat/info.html',   // Change to your cancel URL
-      metadata: metadata,  // Pass metadata to the session
+      metadata: { product_name: productData.name },  // Pass metadata if needed
     });
 
     // Respond with the session ID as JSON
