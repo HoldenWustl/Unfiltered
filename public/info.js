@@ -93,38 +93,35 @@ socket.on("disconnect", () => {
 // This is your Stripe public key
 const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea');
 
-document.getElementById('product-1-btn').addEventListener('click', async (event) => {
-    event.preventDefault();
-    
-    // Make request for product 1
-    const response = await fetch('/create-checkout-session', {
-      method: 'POST',
-      body: JSON.stringify({ product: '100 Stars' }),
-      headers: { 'Content-Type': 'application/json' }
-    });
+document.getElementById('checkout-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-    if (response.ok) {
-      const session = await response.json();
-      stripe.redirectToCheckout({ sessionId: session.id });
-    } else {
-      console.error('Failed to create checkout session for product 1');
+  const nameInput = document.getElementById('name').value;
+
+  // Check if the name input is empty
+  if (nameInput.trim() === "") {
+    alert("Please enter your name for stars!");
+  } else {
+    try {
+      const response = await fetch('/create-checkout-session', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const session = await response.json();
+
+        // Redirect to the Stripe Checkout page
+        const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
+
+        if (error) {
+          // Handle any errors that occur during redirection
+          console.error(error.message);
+        }
+      } else {
+        console.error('Failed to create checkout session');
+      }
+    } catch (error) {
+      console.error('Error during checkout process:', error);
     }
-  });
-
-  document.getElementById('product-2-btn').addEventListener('click', async (event) => {
-    event.preventDefault();
-    
-    // Make request for product 2
-    const response = await fetch('/create-checkout-session', {
-      method: 'POST',
-      body: JSON.stringify({ product: 'Premium T-shirt' }),
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    if (response.ok) {
-      const session = await response.json();
-      stripe.redirectToCheckout({ sessionId: session.id });
-    } else {
-      console.error('Failed to create checkout session for product 2');
-    }
-  });
+  }
+});
