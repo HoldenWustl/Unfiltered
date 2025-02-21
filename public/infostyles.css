@@ -541,3 +541,9 @@ button:active{
 button:focus{
   outline:0;
 }
+
+#checkout-form{
+    display:flex;
+    flex-direction: column;
+    gap: 20px;
+}
