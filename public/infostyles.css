@@ -505,6 +505,7 @@
 .purchase-btn:hover {
   background-color: #4e47d2;
   transform: scale(1.05);
+  color: white;
 }
 
 
