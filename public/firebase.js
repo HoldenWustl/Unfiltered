@@ -154,10 +154,11 @@ function resetBonus() {
 }
 let startBonus = parseInt(localStorage.getItem('startBonus'), 10);
 let lastResetTime = parseInt(localStorage.getItem('lastResetTime'), 10);
-if (isNaN(startBonus)) {
+if (isNaN(startBonus) || isNaN(lastResetTime)) {
   startBonus = 3;
+  lastResetTime = Date.now();
   localStorage.setItem('startBonus', startBonus);
-  localStorage.setItem('lastResetTime', Date.now());
+  localStorage.setItem('lastResetTime', lastResetTime);
 }
 if (lastResetTime && Date.now() - lastResetTime >= 86400000) {
   resetBonus(); // Reset the bonus if 24 hours have passed
