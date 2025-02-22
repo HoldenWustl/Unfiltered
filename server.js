@@ -320,10 +320,15 @@ app.post('/create-checkout-session', async (req, res) => {
     // Define product details based on the product name
     let productData;
     if (productName === '100 Stars') {
-      productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 5.99 };
-    } else if (productName === '200 Stars') {
-      productData = { name: '200 Stars', description: 'Gain 200 Stars', amount: 9.99 };
-    } else {
+      productData = { name: '100 Stars', description: 'Gain 100 Stars!', amount: 4.99 };
+    } else if (productName === '150 Stars') {
+      productData = { name: '150 Stars', description: 'Gain 150 Stars!', amount: 8.99 };
+    } else if (productName === '250 Stars') {
+      productData = { name: '250 Stars', description: 'Gain 250 Stars!', amount: 9.99 };
+    } else if (productName === '700 Stars') {
+      productData = { name: '700 Stars', description: 'Gain 700 Stars!', amount: 24.99 };
+    }
+    else {
       return res.status(400).send('Invalid product name');
     }
 
