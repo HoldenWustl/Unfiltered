@@ -842,7 +842,7 @@ function updateWagerSlider() {
 
 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => { 
   const themeItems = document.querySelectorAll(".theme-item");
   
   // Load saved theme from localStorage
@@ -851,27 +851,78 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.classList.toggle("jungle-mode", savedTheme === "jungle");
   document.body.classList.toggle("cyberpunk-mode", savedTheme === "cyberpunk");
 
-
   // Set selected state on the correct theme item
   themeItems.forEach(item => {
       item.classList.toggle("selected", item.dataset.theme === savedTheme);
+
+      // Check if the theme has been updated before by checking localStorage
+      const themeName = item.dataset.theme;
+      const themeUpdated = localStorage.getItem(`${themeName}-updated`) === "true";
+
+      if (themeUpdated) {
+          // If theme is updated, remove the star count from button text
+          const themeText = item.querySelector("span");
+          const originalText = themeText.textContent;
+          themeText.textContent = originalText.split(" | ")[0]; // Remove star count
+          item.classList.add("updated");
+      }
   });
 
   themeItems.forEach(item => {
       item.addEventListener("click", () => {
           const selectedTheme = item.dataset.theme;
+          const costText = item.querySelector("span").textContent;
+          const cost = parseInt(costText.split(" | ")[1], 10); // Extract cost (star count)
+          const starCount = getStarCount(); // Get the current star count
 
-          // Remove "selected" from all items, then set it on the clicked one
-          themeItems.forEach(i => i.classList.remove("selected"));
-          item.classList.add("selected");
+          // Check if user has enough stars and if the theme hasn't been updated
+          if (starCount >= cost && !item.classList.contains("updated")) {
+              // Remove "selected" from all items, then set it on the clicked one
+              themeItems.forEach(i => i.classList.remove("selected"));
+              item.classList.add("selected");
 
-          // Apply dark mode class to body
-          document.body.classList.toggle("dark-mode", selectedTheme === "dark");
-        document.body.classList.toggle("jungle-mode", selectedTheme === "jungle");
-         document.body.classList.toggle("cyberpunk-mode", selectedTheme === "cyberpunk");
+              // Apply theme class to body
+              document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+              document.body.classList.toggle("jungle-mode", selectedTheme === "jungle");
+              document.body.classList.toggle("cyberpunk-mode", selectedTheme === "cyberpunk");
 
-          // Save the theme selection
-          localStorage.setItem("theme", selectedTheme);
+              // Save the theme selection
+              localStorage.setItem("theme", selectedTheme);
+
+              // Update theme name by removing star count from the button
+              const themeText = item.querySelector("span");
+              const originalText = themeText.textContent;
+              themeText.textContent = originalText.split(" | ")[0]; // Remove star count
+
+              // First-time purchase logic
+              item.classList.add("updated");
+              localStorage.setItem(`${selectedTheme}-updated`, "true");
+
+              // Dispatch the updatePoints event to deduct stars
+              document.dispatchEvent(new CustomEvent("updatePoints", {
+                  detail: { name: userName, points: -cost }
+              }));
+
+              // Call updateStars() on first-time purchase
+              updateStars(); // Call your function to update stars
+          } else if (item.classList.contains("updated")) {
+              // If already updated, just switch to the theme without alert
+              themeItems.forEach(i => i.classList.remove("selected"));
+              item.classList.add("selected");
+
+              // Apply theme class to body
+              document.body.classList.toggle("dark-mode", selectedTheme === "dark");
+              document.body.classList.toggle("jungle-mode", selectedTheme === "jungle");
+              document.body.classList.toggle("cyberpunk-mode", selectedTheme === "cyberpunk");
+
+              // Save the theme selection without deducting stars again
+              localStorage.setItem("theme", selectedTheme);
+          } else {
+              alert("You don't have enough stars to select this theme!");
+          }
       });
   });
 });
+
+
+
