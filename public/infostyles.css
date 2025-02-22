@@ -549,3 +549,36 @@ button:focus{
     align-content: center;
     flex-wrap: wrap;
 }
+
+.best-value {
+  position: relative;
+  background-color: #ffcc00; /* Eye-catching yellow */
+  color: #000; /* High contrast text */
+  font-weight: bold;
+  border: none;
+  padding: 12px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+.best-value:hover {
+  transform: scale(1.05);
+}
+
+.best-value::before {
+  content: "🔥 Best Deal!";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
