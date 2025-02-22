@@ -285,7 +285,7 @@ app.get('/info', (req, res) => {
   res.sendFile(__dirname + '/public/info.html');
 });
 
-const stripe = require('stripe')('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');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const endpointSecret = 'whsec_1CpFi93bQx3fojwMhbB75n5PkMcTJO8d';
 let lastPayment = null;
 // Use body-parser to retrieve the raw body as a buffer
