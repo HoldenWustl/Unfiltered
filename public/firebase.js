@@ -413,14 +413,36 @@ document.getElementById('product-100-stars').addEventListener('click', async (ev
     }
 });
 
-document.getElementById('product-200-stars').addEventListener('click', async (event) => {
+document.getElementById('product-150-stars').addEventListener('click', async (event) => {
     const nameInput = document.getElementById('name').value;
     if (nameInput.trim() === "") {
         alert("Please enter your name for stars!");
     }
     else{
       sessionStorage.setItem('name', nameInput);
-  await handleCheckout(event, '200 Stars'); // Only send the product name
+  await handleCheckout(event, '150 Stars'); // Only send the product name
+    }
+});
+
+document.getElementById('product-250-stars').addEventListener('click', async (event) => {
+    const nameInput = document.getElementById('name').value;
+    if (nameInput.trim() === "") {
+        alert("Please enter your name for stars!");
+    }
+    else{
+      sessionStorage.setItem('name', nameInput);
+  await handleCheckout(event, '250 Stars'); // Only send the product name
+    }
+});
+
+document.getElementById('product-700-stars').addEventListener('click', async (event) => {
+    const nameInput = document.getElementById('name').value;
+    if (nameInput.trim() === "") {
+        alert("Please enter your name for stars!");
+    }
+    else{
+      sessionStorage.setItem('name', nameInput);
+  await handleCheckout(event, '700 Stars'); // Only send the product name
     }
 });
 
@@ -454,11 +476,17 @@ socket.on("connect", () => {
 socket.on("payment-success", (data) => {
   console.log(`✅ Payment successful for ${data.productName}`);
   let payment = 0;
-  if (productName==599){
+  if (productName==499){
     payment = 100;
   }
+  if (productName==899){
+    payment = 150;
+  }
   if (productName==999){
-    payment = 200;
+    payment = 250;
+  }
+  if (productName==2499){
+    payment = 700;
   }
   addUser(nameInput.value.trim(),10);
   setTimeout(() => {
