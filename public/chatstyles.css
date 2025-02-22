@@ -715,3 +715,87 @@ body.cyberpunk-mode .card {
   box-shadow: 0 2px 10px #00eaff; /* Cyber glow */
 }
 
+
+
+
+
+
+body.snow-mode {
+  background-color: #006994; /* Ocean blue */
+  background-image: url('https://www.transparenttextures.com/patterns/wet-snow.png'); /* Ocean waves texture */
+  background-size: cover;
+  animation: snow-wave 3s linear infinite; /* Animation for wave effect */
+  color: #e0f7fa; /* Light oceanic cyan for text */
+}
+
+body.snow-mode #message-input {
+  background-color: #004d63; /* Deep ocean blue */
+  color: #e0f7fa;
+  border: 1px solid #00bcd4; /* Ocean blue */
+}
+
+body.snow-mode .chat-container {
+  background-color: #008c9e; /* Teal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.snow-mode .chat-messages {
+  background-color: #004e58; /* Darker ocean shade */
+  color: #00bcd4; /* Neon teal text */
+}
+
+body.snow-mode .game-menu, 
+body.snow-mode .theme-menu {
+  background-color: #007f8c; /* Muted teal */
+  border-color: #00bcd4;
+}
+
+body.snow-mode .game-item, 
+body.snow-mode .theme-item {
+  background-color: #006d7f; /* Oceanic dark blue */
+}
+
+body.snow-mode .game-invite {
+  background-color: #005965; /* Deeper ocean green */
+  border: 1px solid #00bcd4;
+}
+
+body.snow-mode .points {
+  color: #00bcd4; /* Vibrant teal for points */
+  text-shadow: 0 0 10px #00bcd4;
+}
+
+body.snow-mode .card {
+  background-color: #004d63; /* Deep ocean card */
+  border: 2px solid #00bcd4;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes snow-wave {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 0 20px;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.snowflake {
+  position: fixed;
+  top: -10px;
+  color: inherit!important;
+  font-size: 10px;
+  opacity: 0.7;
+  animation: fall linear infinite;
+  pointer-events: none;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
