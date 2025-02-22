@@ -396,7 +396,7 @@
 }
 
 .remove-btn {
-      background-color: #ff4d4d; /* Red color for delete */
+      background-color: coral; /* Red color for delete */
       color: white;
       border: none;
       border-radius: 50%;
