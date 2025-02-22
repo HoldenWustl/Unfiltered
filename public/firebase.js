@@ -147,6 +147,21 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 }
 
 
+function resetBonus() {
+  localStorage.setItem('startBonus', 3);
+}
+let startBonus = parseInt(localStorage.getItem('startBonus'), 10);
+if (isNaN(startBonus)) {
+  startBonus = 3;
+  localStorage.setItem('startBonus', startBonus);
+}
+setInterval(resetBonus, 86400000);
+function setBonus(newBonus) {
+  startBonus = newBonus;
+  localStorage.setItem('startBonus', startBonus);  // Save the new value to localStorage
+}
+
+
   // Function to update an existing user's score
   function setUserScore(username, newPoints) {
     const userRef = ref(db, `leaderboard/${username}`);
@@ -301,7 +316,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check if the name input is empty
         if (nameInput.trim() !== "") {
           console.log("New user added!");
+          if(startBonus>0){
+            addUser(nameInput,10);
+          setBonus(startBonus-1);}
+          else{
             addUser(nameInput,0);
+          }
         }
       });
   }
@@ -353,7 +373,6 @@ function removeUser(name) {
 
 
 
-
 document.addEventListener("DOMContentLoaded", function() {
   const Rewardbutton = document.getElementById('claim-reward-btn');
 
@@ -385,7 +404,13 @@ document.addEventListener("DOMContentLoaded", function() {
     localStorage.setItem('lastClaimDate', currentDate);
 
     // Disable the button and change the text
-    addUser(nameInput.value.trim(),0);
+        if(startBonus>0){
+            addUser(nameInput.value.trim(),10);
+          setBonus(startBonus-1);}
+          else{
+            addUser(nameInput.value.trim(),0);
+          }
+  
   setTimeout(() => {
     incrementUserScore(nameInput.value.trim(),10);
 }, 200);
@@ -488,7 +513,12 @@ socket.on("payment-success", (data) => {
   if (data.productName==2499){
     payment = 700;
   }
-  addUser(nameInput.value.trim(),0);
+  if(startBonus>0){
+            addUser(nameInput.value.trim(),10);
+          setBonus(startBonus-1);}
+          else{
+            addUser(nameInput.value.trim(),0);
+          }
   setTimeout(() => {
     incrementUserScore(nameInput.value.trim(),payment);
 }, 200);
