@@ -927,5 +927,49 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+function createSnowflakes() { 
+  const numFlakes = 50; 
+  const colors = ['#ffffff', '#d4f1f9', '#e8f8ff']; 
+
+  for (let i = 0; i < numFlakes; i++) {
+    const flake = document.createElement('div');
+    flake.classList.add('snowflake');
+    flake.innerHTML = '❄'; 
+    document.body.appendChild(flake);
+
+    const size = Math.random() * 10 + 10 + 'px';
+    flake.style.left = Math.random() * 90 + 5 + 'vw';
+    flake.style.fontSize = size;
+    flake.style.color = colors[Math.floor(Math.random() * colors.length)];
+    flake.style.animationDuration = Math.random() * 3 + 2 + 's';
+    flake.style.animationDelay = Math.random() * 5 + 's';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Create snowflakes initially if snow-mode class is present
+  if (document.body.classList.contains('snow-mode')) {
+    createSnowflakes(); 
+  }
+
+  // Set up MutationObserver to detect changes to the body class
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(mutation => {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+        if (document.body.classList.contains('snow-mode')) {
+          createSnowflakes(); 
+        } else {
+          // Optionally, remove existing snowflakes if the class is removed
+          document.querySelectorAll('.snowflake').forEach(flake => flake.remove());
+        }
+      }
+    });
+  });
+
+  observer.observe(document.body, {
+    attributes: true // Listen for changes to attributes (like class)
+  });
+});
+
 
 
