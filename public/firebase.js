@@ -476,16 +476,16 @@ socket.on("connect", () => {
 socket.on("payment-success", (data) => {
   console.log(`✅ Payment successful for ${data.productName}`);
   let payment = 0;
-  if (productName==499){
+  if (data.productName==499){
     payment = 100;
   }
-  if (productName==899){
+  if (data.productName==899){
     payment = 150;
   }
-  if (productName==999){
+  if (data.productName==999){
     payment = 250;
   }
-  if (productName==2499){
+  if (data.productName==2499){
     payment = 700;
   }
   addUser(nameInput.value.trim(),10);
