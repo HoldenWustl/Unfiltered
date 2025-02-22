@@ -355,7 +355,7 @@ function removeUser(name) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-  const button = document.getElementById('claim-reward-btn');
+  const Rewardbutton = document.getElementById('claim-reward-btn');
 
   // Function to check if the button should be enabled
   function checkRewardStatus() {
@@ -363,11 +363,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const currentDate = new Date().toISOString().split('T')[0]; // Get the date in YYYY-MM-DD format
 
     if (lastClaimDate === currentDate) {
-      button.disabled = true; // Disable the button if the reward was already claimed today
-      button.innerText = 'Reward Claimed'; // Change the text to show reward has been claimed
+      Rewardbutton.disabled = true; // Disable the button if the reward was already claimed today
+      Rewardbutton.innerText = 'Reward Claimed'; // Change the text to show reward has been claimed
     } else {
-      button.disabled = false; // Enable the button if it's a new day
-      button.innerText = 'Claim Reward'; // Reset the text to the original one
+      Rewardbutton.disabled = false; // Enable the button if it's a new day
+      Rewardbutton.innerText = 'Claim Reward'; // Reset the text to the original one
     }
   }
 
@@ -377,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Handle button click
   if (infopage){
-  button.addEventListener('click', function() {
+  Rewardbutton.addEventListener('click', function() {
     
       if(nameInput.value.trim()){
     // Save today's date in localStorage to prevent claiming again today
@@ -398,3 +398,49 @@ document.addEventListener("DOMContentLoaded", function() {
 }
   });}
 });
+
+// This is your Stripe public key
+const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea');
+
+document.getElementById('product-100-stars').addEventListener('click', async (event) => {
+    const nameInput = document.getElementById('name').value;
+    if (nameInput.trim() === "") {
+        alert("Please enter your name for stars!");
+    }
+    else{
+  await handleCheckout(event, '100 Stars'); // Only send the product name
+    }
+});
+
+document.getElementById('product-200-stars').addEventListener('click', async (event) => {
+    const nameInput = document.getElementById('name').value;
+    if (nameInput.trim() === "") {
+        alert("Please enter your name for stars!");
+    }
+    else{
+  await handleCheckout(event, '200 Stars'); // Only send the product name
+    }
+});
+
+async function handleCheckout(event, productName) {
+  try {
+    const response = await fetch('/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productName })  // Send only the product name
+    });
+
+    if (response.ok) {
+      const session = await response.json();
+      const { error } = await stripe.redirectToCheckout({ sessionId: session.id });
+
+      if (error) {
+        console.error(error.message);
+      }
+    } else {
+      console.error('Failed to create checkout session');
+    }
+  } catch (error) {
+    console.error('Error during checkout process:', error);
+  }
+}
