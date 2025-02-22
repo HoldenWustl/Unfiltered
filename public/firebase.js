@@ -453,9 +453,16 @@ socket.on("connect", () => {
     
 socket.on("payment-success", (data) => {
   console.log(`✅ Payment successful for ${data.productName}`);
+  let payment = 0;
+  if (productName==599){
+    payment = 100;
+  }
+  if (productName==999){
+    payment = 200;
+  }
   addUser(nameInput.value.trim(),10);
   setTimeout(() => {
-    incrementUserScore(nameInput.value.trim(),10);
+    incrementUserScore(nameInput.value.trim(),payment);
 }, 200);
   setTimeout(() => {
     updateStarCount();
