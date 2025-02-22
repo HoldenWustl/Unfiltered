@@ -615,3 +615,49 @@ h3 {
 .pass-btn:hover {
   background-color: darkred;
 }
+
+
+body.jungle-mode {
+  background-color: #1b3a1b; /* Deep forest green */
+  color: #e0f2e0; /* Light leafy green for contrast */
+}
+
+body.jungle-mode #message-input {
+  background-color: #2e5d2e; /* Dark green */
+  color: #e0f2e0;
+}
+
+body.jungle-mode .chat-container {
+  background-color: #3d6b3d; /* Jungle green */
+  box-shadow: 0 4px 8px #143d14; /* Dark green shadow */
+}
+
+body.jungle-mode .chat-messages {
+  background-color: #a5d6a7; /* Soft jungle mist */
+  color: #103410; /* Deep forest color */
+}
+
+body.jungle-mode .game-menu, 
+body.jungle-mode .theme-menu {
+  background-color: #5e8c5e; /* Muted jungle green */
+  border-color: #2d572d; /* Darker green */
+}
+
+body.jungle-mode .game-item, 
+body.jungle-mode .theme-item {
+  background-color: #3d5a3d; /* Earthy green */
+}
+
+body.jungle-mode .game-invite {
+  background-color: #2c442c; /* Dark mossy green */
+}
+
+body.jungle-mode .points {
+  color: #ffcc00; /* Golden jungle treasure */
+}
+
+body.jungle-mode .card {
+  background-color: #264d26; /* Deep jungle shade */
+  border: 2px solid #1b3a1b;
+  box-shadow: 0 2px 6px #0e2a0e; /* Dark jungle shadow */
+}
