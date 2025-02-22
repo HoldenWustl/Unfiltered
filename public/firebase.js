@@ -5,7 +5,7 @@ import { remove, equalTo, getDatabase, ref, onValue, set, update, orderByChild, 
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyA9QTejm8dOn_YedXx_fWU_VgXFOnuwQVY",
+    apiKey: process.env.FIREBASE_KEY,
     authDomain: "unfiltered-5894e.firebaseapp.com",
     projectId: "unfiltered-5894e",
     storageBucket: "unfiltered-5894e.firebasestorage.app",
