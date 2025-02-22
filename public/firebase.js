@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check if the name input is empty
         if (nameInput.trim() !== "") {
           console.log("New user added!");
-            addUser(nameInput,10);
+            addUser(nameInput,0);
         }
       });
   }
@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", function() {
     localStorage.setItem('lastClaimDate', currentDate);
 
     // Disable the button and change the text
-    addUser(nameInput.value.trim(),10);
+    addUser(nameInput.value.trim(),0);
   setTimeout(() => {
     incrementUserScore(nameInput.value.trim(),10);
 }, 200);
@@ -488,7 +488,7 @@ socket.on("payment-success", (data) => {
   if (data.productName==2499){
     payment = 700;
   }
-  addUser(nameInput.value.trim(),10);
+  addUser(nameInput.value.trim(),0);
   setTimeout(() => {
     incrementUserScore(nameInput.value.trim(),payment);
 }, 200);
