@@ -94,11 +94,23 @@ socket.on("disconnect", () => {
 const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea');
 
 document.getElementById('product-100-stars').addEventListener('click', async (event) => {
+    const nameInput = document.getElementById('name').value;
+    if (nameInput.trim() === "") {
+        alert("Please enter your name for stars!");
+    }
+    else{
   await handleCheckout(event, '100 Stars'); // Only send the product name
+    }
 });
 
 document.getElementById('product-200-stars').addEventListener('click', async (event) => {
+    const nameInput = document.getElementById('name').value;
+    if (nameInput.trim() === "") {
+        alert("Please enter your name for stars!");
+    }
+    else{
   await handleCheckout(event, '200 Stars'); // Only send the product name
+    }
 });
 
 async function handleCheckout(event, productName) {
