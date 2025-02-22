@@ -850,6 +850,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.classList.toggle("dark-mode", savedTheme === "dark");
   document.body.classList.toggle("jungle-mode", savedTheme === "jungle");
   document.body.classList.toggle("cyberpunk-mode", savedTheme === "cyberpunk");
+  document.body.classList.toggle("snow-mode", savedTheme === "snow");
 
   // Set selected state on the correct theme item
   themeItems.forEach(item => {
@@ -885,6 +886,7 @@ document.addEventListener("DOMContentLoaded", () => {
               document.body.classList.toggle("dark-mode", selectedTheme === "dark");
               document.body.classList.toggle("jungle-mode", selectedTheme === "jungle");
               document.body.classList.toggle("cyberpunk-mode", selectedTheme === "cyberpunk");
+              document.body.classList.toggle("snow-mode", selectedTheme === "snow");
 
               // Save the theme selection
               localStorage.setItem("theme", selectedTheme);
@@ -914,6 +916,7 @@ document.addEventListener("DOMContentLoaded", () => {
               document.body.classList.toggle("dark-mode", selectedTheme === "dark");
               document.body.classList.toggle("jungle-mode", selectedTheme === "jungle");
               document.body.classList.toggle("cyberpunk-mode", selectedTheme === "cyberpunk");
+              document.body.classList.toggle("snow-mode", selectedTheme === "snow");
 
               // Save the theme selection without deducting stars again
               localStorage.setItem("theme", selectedTheme);
