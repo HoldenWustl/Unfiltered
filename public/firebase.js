@@ -1,4 +1,4 @@
-
+const socket = io();
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { remove, equalTo, getDatabase, ref, onValue, set, update, orderByChild, query, limitToLast, get } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";
@@ -444,3 +444,15 @@ async function handleCheckout(event, productName) {
     console.error('Error during checkout process:', error);
   }
 }
+
+socket.on("connect", () => {
+  console.log("🔗 Connected to WebSocket server");
+});
+    
+socket.on("payment-success", (data) => {
+  console.log(`✅ Payment successful for ${data.productName}`);
+});
+    
+socket.on("disconnect", () => {
+  console.log("❌ Disconnected from WebSocket server");
+});
