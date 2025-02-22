@@ -650,10 +650,12 @@ body.jungle-mode .theme-item {
 
 body.jungle-mode .game-invite {
   background-color: #2c442c; /* Dark mossy green */
+  color: white;
 }
 
 body.jungle-mode .points {
-  color: #ffcc00; /* Golden jungle treasure */
+  color: white;
+  font-weight: 600;
 }
 
 body.jungle-mode .card {
@@ -679,7 +681,7 @@ body.cyberpunk-mode .chat-container {
 }
 
 body.cyberpunk-mode .chat-messages {
-  background-color: #2b1d5e; /* Deep purple */
+  background-color: rebeccapurple;
   color: #00eaff; /* Bright neon text */
 }
 
