@@ -849,6 +849,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme") || "light";
   document.body.classList.toggle("dark-mode", savedTheme === "dark");
   document.body.classList.toggle("jungle-mode", savedTheme === "jungle");
+  document.body.classList.toggle("cyberpunk-mode", savedTheme === "cyberpunk");
+
 
   // Set selected state on the correct theme item
   themeItems.forEach(item => {
@@ -866,6 +868,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // Apply dark mode class to body
           document.body.classList.toggle("dark-mode", selectedTheme === "dark");
         document.body.classList.toggle("jungle-mode", selectedTheme === "jungle");
+         document.body.classList.toggle("cyberpunk-mode", selectedTheme === "cyberpunk");
 
           // Save the theme selection
           localStorage.setItem("theme", selectedTheme);
