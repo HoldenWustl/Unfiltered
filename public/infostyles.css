@@ -567,10 +567,6 @@ button:focus{
   overflow: visible; /* Ensure the badge is not cut off */
 }
 
-.best-value:hover {
-  transform: scale(1.05);
-}
-
 .best-value::before {
   content: "🔥 Best Deal!";
   position: absolute;
