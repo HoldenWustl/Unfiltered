@@ -1,5 +1,3 @@
-const socket = io();
-
 sessionStorage.removeItem("kicked");
     const userForm = document.getElementById('name');
     const savedValue = sessionStorage.getItem('name');
@@ -72,18 +70,3 @@ function startVideo() {
     }
 }
 
-
-
-
-
-socket.on("connect", () => {
-  console.log("🔗 Connected to WebSocket server");
-});
-    
-socket.on("payment-success", (data) => {
-  console.log(`✅ Payment successful for ${data.productName}`);
-});
-    
-socket.on("disconnect", () => {
-  console.log("❌ Disconnected from WebSocket server");
-});
