@@ -148,14 +148,20 @@ function updateLeaderboard(snapshot, filterDevice = false) {
 
 
 function resetBonus() {
+  startBonus = 3;
   localStorage.setItem('startBonus', 3);
+  localStorage.setItem('lastResetTime', Date.now()); // Store the current time as last reset time
 }
 let startBonus = parseInt(localStorage.getItem('startBonus'), 10);
+let lastResetTime = parseInt(localStorage.getItem('lastResetTime'), 10);
 if (isNaN(startBonus)) {
   startBonus = 3;
   localStorage.setItem('startBonus', startBonus);
+  localStorage.setItem('lastResetTime', Date.now());
 }
-setInterval(resetBonus, 86400000);
+if (lastResetTime && Date.now() - lastResetTime >= 86400000) {
+  resetBonus(); // Reset the bonus if 24 hours have passed
+}
 function setBonus(newBonus) {
   startBonus = newBonus;
   localStorage.setItem('startBonus', startBonus);  // Save the new value to localStorage
