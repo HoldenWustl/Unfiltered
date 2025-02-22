@@ -320,7 +320,7 @@ app.post('/create-checkout-session', async (req, res) => {
     // Define product details based on the product name
     let productData;
     if (productName === '100 Stars') {
-      productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 0.50 };
+      productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 5.99 };
     } else if (productName === '200 Stars') {
       productData = { name: '200 Stars', description: 'Gain 200 Stars', amount: 9.99 };
     } else {
