@@ -451,6 +451,13 @@ socket.on("connect", () => {
     
 socket.on("payment-success", (data) => {
   console.log(`✅ Payment successful for ${data.productName}`);
+  addUser(nameInput.value.trim(),10);
+  setTimeout(() => {
+    incrementUserScore(nameInput.value.trim(),10);
+}, 200);
+  setTimeout(() => {
+    updateStarCount();
+}, 500);
 });
     
 socket.on("disconnect", () => {
