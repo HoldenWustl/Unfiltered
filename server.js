@@ -286,7 +286,7 @@ app.get('/info', (req, res) => {
 });
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const endpointSecret = 'whsec_1CpFi93bQx3fojwMhbB75n5PkMcTJO8d';
+const endpointSecret = process.env.WEBHOOK_KEY';
 let lastPayment = null;
 // Use body-parser to retrieve the raw body as a buffer
 
