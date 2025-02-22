@@ -546,4 +546,6 @@ button:focus{
     display:flex;
     flex-direction: column;
     gap: 20px;
+    align-content: center;
+    flex-wrap: wrap;
 }
