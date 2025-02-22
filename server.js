@@ -297,6 +297,7 @@ io.on("connection", (socket) => {
   if (lastPayment) {
     socket.emit("payment-success", lastPayment);
     console.log("🔄 Sent last payment event to new client");
+    lastPayment = null;
   }
 
   socket.on("disconnect", () => {
@@ -319,7 +320,7 @@ app.post('/create-checkout-session', async (req, res) => {
     // Define product details based on the product name
     let productData;
     if (productName === '100 Stars') {
-      productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 0.99 };
+      productData = { name: '100 Stars', description: 'Gain 100 Stars', amount: 0.01 };
     } else if (productName === '200 Stars') {
       productData = { name: '200 Stars', description: 'Gain 200 Stars', amount: 9.99 };
     } else {
