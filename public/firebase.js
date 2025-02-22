@@ -408,6 +408,7 @@ document.getElementById('product-100-stars').addEventListener('click', async (ev
         alert("Please enter your name for stars!");
     }
     else{
+      sessionStorage.setItem('name', nameInput);
   await handleCheckout(event, '100 Stars'); // Only send the product name
     }
 });
@@ -418,6 +419,7 @@ document.getElementById('product-200-stars').addEventListener('click', async (ev
         alert("Please enter your name for stars!");
     }
     else{
+      sessionStorage.setItem('name', nameInput);
   await handleCheckout(event, '200 Stars'); // Only send the product name
     }
 });
