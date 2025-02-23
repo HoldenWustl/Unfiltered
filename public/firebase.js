@@ -313,20 +313,33 @@ function animateStarCount(targetPoints, duration = 200) {
       } else if (targetPoints >= 100) {
         badgeSrc = "icons/bronzeBadge6.png";
       }
-      if (targetPoints >= 100 && targetPoints < 140) {
+      if (targetPoints >= 120 && targetPoints < 160) {
         badgeSrc = "icons/silverBadge.png";
-      } else if (targetPoints >= 140 && targetPoints < 180) {
+      } else if (targetPoints >= 160 && targetPoints < 200) {
         badgeSrc = "icons/silverBadge2.png";
-      } else if (targetPoints >= 180 && targetPoints < 220) {
+      } else if (targetPoints >= 200 && targetPoints < 240) {
         badgeSrc = "icons/silverBadge3.png";
-      } else if (targetPoints >= 220 && targetPoints < 260) {
+      } else if (targetPoints >= 240 && targetPoints < 280) {
         badgeSrc = "icons/silverBadge4.png";
-      } else if (targetPoints >= 260 && targetPoints < 300) {
+      } else if (targetPoints >= 280 && targetPoints < 320) {
         badgeSrc = "icons/silverBadge5.png";
-      } else if (targetPoints >= 300) {
+      } else if (targetPoints >= 320) {
         badgeSrc = "icons/silverBadge6.png";
       }
-    
+      if (targetPoints >= 360 && targetPoints < 440) {
+        badgeSrc = "icons/goldBadge.png";
+      } else if (targetPoints >= 440 && targetPoints < 520) {
+        badgeSrc = "icons/goldBadge2.png";
+      } else if (targetPoints >= 520 && targetPoints < 600) {
+        badgeSrc = "icons/goldBadge3.png";
+      } else if (targetPoints >= 600 && targetPoints < 680) {
+        badgeSrc = "icons/goldBadge4.png";
+      } else if (targetPoints >= 680 && targetPoints < 760) {
+        badgeSrc = "icons/goldBadge5.png";
+      } else if (targetPoints >= 760) {
+        badgeSrc = "icons/goldBadge6.png";
+      }
+      
       badgeDiv.src = badgeSrc; // Set the new image
     }
     if (progress < 1) {
