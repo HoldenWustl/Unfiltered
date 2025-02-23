@@ -266,9 +266,9 @@ const starCountDiv = document.getElementById("star-count");
 // Event listener for real-time input
 function updateStarCount() {
   let name;
-  if(infopage){
-  name = nameInput.value.trim();}
-  else{
+  if (infopage) {
+    name = nameInput.value.trim();
+  } else {
     name = userName;
   }
 
@@ -277,15 +277,35 @@ function updateStarCount() {
     getUserPointsByDeviceId(name, deviceId)
       .then(points => {
         sessionStorage.setItem('videoStars', points);
-        starCountDiv.innerHTML = `${points} &#9733;`;  // Show points with the star symbol
+        animateStarCount(points); // Use animation instead of direct update
       })
       .catch(error => {
-        starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 with the star symbol
+        animateStarCount(0); // Default to 0 with animation
         console.error(error);
       });
   } else {
-    starCountDiv.innerHTML = "0 &#9733;";  // Default to 0 when input is empty
+    animateStarCount(0); // Default to 0 when input is empty
   }
+}
+
+function animateStarCount(targetPoints, duration = 200) {
+  let currentPoints = parseInt(starCountDiv.innerText) || 0;
+  let startTime = null;
+
+  function updateCount(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const progress = Math.min((timestamp - startTime) / duration, 1); // Ensure progress doesn't exceed 1
+
+    // Interpolating between currentPoints and targetPoints
+    const animatedValue = Math.round(currentPoints + (targetPoints - currentPoints) * progress);
+    starCountDiv.innerHTML = `${animatedValue} &#9733;`;
+
+    if (progress < 1) {
+      requestAnimationFrame(updateCount);
+    }
+  }
+
+  requestAnimationFrame(updateCount);
 }
 
 // Run on input event
