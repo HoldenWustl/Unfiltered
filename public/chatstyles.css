@@ -67,8 +67,7 @@ body {
   text-align: center;   /* Center the text */
   font-style: italic;   /* Make it look more neutral */
   color: #777;          /* Use a subtle color */
-  margin-top: 10px;     /* Add some space above */
-  margin-bottom: 10px;  /* Add some space below */
+  background-color: lightgrey;
   max-width: 100%;
 }
 
