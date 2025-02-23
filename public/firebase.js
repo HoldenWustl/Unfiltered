@@ -45,7 +45,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
   leaderboardList.innerHTML = ""; // Clear current list
   if(!filterDevice){
     const firstPrize = document.createElement("li");
-    firstPrize.classList.add("first-prize highlight");
+    firstPrize.classList.add("first-prize", "highlight");
     firstPrize.textContent = `First Place Gains Free $40.00 USD! (3/1 12:00PM EST)`;
     leaderboardList.appendChild(firstPrize);
   }
