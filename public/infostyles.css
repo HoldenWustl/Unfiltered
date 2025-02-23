@@ -584,3 +584,19 @@ button:focus{
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
 }
+
+#star-badge{
+  display: flex;
+  align-items: center;
+}
+
+#badge {
+  width: 50px; /* Adjust size as needed */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+#badge:hover {
+  transform: scale(1.2); /* Increase size on hover */
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
