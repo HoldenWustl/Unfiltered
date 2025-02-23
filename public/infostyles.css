@@ -599,4 +599,8 @@ button:focus{
   transform: scale(1.2); /* Increase size on hover */
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
 }
-
+.first-prize{
+    white-space: normal;
+    width: fit-content;
+    font-size: 14px;
+}
