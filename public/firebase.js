@@ -313,6 +313,19 @@ function animateStarCount(targetPoints, duration = 200) {
       } else if (targetPoints >= 100) {
         badgeSrc = "icons/bronzeBadge6.png";
       }
+      if (targetPoints >= 100 && targetPoints < 140) {
+        badgeSrc = "icons/silverBadge.png";
+      } else if (targetPoints >= 140 && targetPoints < 180) {
+        badgeSrc = "icons/silverBadge2.png";
+      } else if (targetPoints >= 180 && targetPoints < 220) {
+        badgeSrc = "icons/silverBadge3.png";
+      } else if (targetPoints >= 220 && targetPoints < 260) {
+        badgeSrc = "icons/silverBadge4.png";
+      } else if (targetPoints >= 260 && targetPoints < 300) {
+        badgeSrc = "icons/silverBadge5.png";
+      } else if (targetPoints >= 300) {
+        badgeSrc = "icons/silverBadge6.png";
+      }
     
       badgeDiv.src = badgeSrc; // Set the new image
     }
