@@ -259,7 +259,7 @@ function setBonus(newBonus) {
 
 const nameInput = document.getElementById("name");
 const starCountDiv = document.getElementById("star-count");
-
+const badgeDiv = document.getElementById('badge');
 // Example deviceId (this could come from the user's session or be dynamically assigned)
  // Replace this with the actual deviceId logic
 
@@ -299,7 +299,13 @@ function animateStarCount(targetPoints, duration = 200) {
     // Interpolating between currentPoints and targetPoints
     const animatedValue = Math.round(currentPoints + (targetPoints - currentPoints) * progress);
     starCountDiv.innerHTML = `${animatedValue} &#9733;`;
-
+    if(infopage){
+      if (targetPoints < 20) {
+        badgeDiv.src = "icons/bronzeBadge.png";
+      } else {
+        badgeDiv.src = "icons/silverBadge.png";
+      }
+    }
     if (progress < 1) {
       requestAnimationFrame(updateCount);
     }
