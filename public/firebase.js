@@ -300,11 +300,21 @@ function animateStarCount(targetPoints, duration = 200) {
     const animatedValue = Math.round(currentPoints + (targetPoints - currentPoints) * progress);
     starCountDiv.innerHTML = `${animatedValue} &#9733;`;
     if(infopage){
-      if (targetPoints < 20) {
-        badgeDiv.src = "icons/bronzeBadge.png";
-      } else {
-        badgeDiv.src = "icons/silverBadge.png";
+      let badgeSrc = "icons/bronzeBadge.png"; // Default to the first badge
+
+      if (targetPoints >= 20 && targetPoints < 40) {
+        badgeSrc = "icons/bronzeBadge2.png";
+      } else if (targetPoints >= 40 && targetPoints < 60) {
+        badgeSrc = "icons/bronzeBadge3.png";
+      } else if (targetPoints >= 60 && targetPoints < 80) {
+        badgeSrc = "icons/bronzeBadge4.png";
+      } else if (targetPoints >= 80 && targetPoints < 100) {
+        badgeSrc = "icons/bronzeBadge5.png";
+      } else if (targetPoints >= 100) {
+        badgeSrc = "icons/bronzeBadge6.png";
       }
+    
+      badgeDiv.src = badgeSrc; // Set the new image
     }
     if (progress < 1) {
       requestAnimationFrame(updateCount);
