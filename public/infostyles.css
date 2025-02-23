@@ -584,6 +584,37 @@ button:focus{
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
 }
+.popular-value {
+  position: relative;
+  background-color: #ff5733; /* Eye-catching yellow */
+  color: #000;
+  font-weight: bold;
+  border: none;
+  padding: 16px 20px 12px; /* Increased top padding */
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+  overflow: visible; /* Ensure the badge is not cut off */
+}
+
+.popular-value::before {
+  content: "🔥 Most Popular!";
+  position: absolute;
+  top: -16px; /* Move higher above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
 
 #star-badge{
   display: flex;
