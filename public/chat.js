@@ -24,6 +24,33 @@ let otherStarCount = 0;
 let checkStarCount;
 const otherStarBlock = document.getElementById('other-star-count');
 
+function getRandomPrompt() {
+  return chatPrompts[Math.floor(Math.random() * chatPrompts.length)];
+}
+
+const chatPrompts = [
+  "Convince the other person you're a millionaire.",
+  "Tell a wild story, but one detail is a lie. See if they catch it.",
+  "Talk in riddles for the first two minutes of the chat.",
+  "Describe your dream life in 10 years as if it’s already real.",
+  "Make up a crazy job and explain why you’re the best at it.",
+  "Act like you're on a secret mission but can’t reveal it directly.",
+  "Talk as if you and the other person have met before, but they forgot.",
+  "Pretend you're a time traveler from 100 years in the future.",
+  "Explain a normal thing (e.g., eating, sleeping) like it’s a new invention.",
+  "Use way too many fancy words for everything you say.",
+  "Casually mention you just got out of jail—see their reaction.",
+  "Act like you know a shocking secret about the other person.",
+  "Talk as if you're writing a dramatic movie script of this conversation.",
+  "Only speak in motivational quotes for the first minute.",
+  "Pretend you're famous, but don’t say why—make them guess.",
+  "Drop random deep philosophical thoughts into casual conversation.",
+  "Subtly act like you have psychic abilities.",
+  "Use medieval-style language like you're a knight or noble.",
+  "Speak like a wise old mentor giving life advice.",
+  "Act like an AI chatbot that occasionally glitches."
+];
+
 socket.emit('joinChat', userName);
 document.querySelector('.chat-header h2').textContent = "Finding someone...";
 
@@ -34,6 +61,7 @@ socket.on('paired', (name) => {
   document.querySelector('.chat-header h2').textContent = `Chatting with ${name}`;
   otherUserName = name;
   appendMessage(`${name} has joined the chat.`, 'neutral');
+  appendMessage(`${getRandomPrompt()}`, 'neutral');
 });
 socket.on('gotStar',(star) =>{
   socket.emit('giveStar', getStarCount());
