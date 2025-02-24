@@ -639,6 +639,9 @@ footer {
 
 /* Mobile-Specific Styles (Phones) */
 @media screen and (max-width: 768px) {
+  .hero h2 {
+    font-size: 12vw;
+  }
   .navbar {
     padding: 10px;
     opacity: 0.9;
