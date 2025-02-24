@@ -46,7 +46,7 @@ function updateLeaderboard(snapshot, filterDevice = false) {
   if(!filterDevice){
     const firstPrize = document.createElement("li");
     firstPrize.classList.add("first-prize", "highlight");
-    firstPrize.innerHTML = `First Place Gains Free $40.00 USD!<br>(3/1/25 12:00PM EST)`;
+    firstPrize.innerHTML = `First Place Gains Free $40.00 USD!<br>(3/3/25 12:00PM EST)`;
     leaderboardList.appendChild(firstPrize);
   }
   // Step 1: Collect and sort users by points (highest first)
