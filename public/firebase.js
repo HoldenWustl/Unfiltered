@@ -190,10 +190,12 @@ function setBonus(newBonus) {
       }
     });
   }
-  function incrementUserScore(username, amount) {
-    const deviceId = getDeviceId();
+ function incrementUserScore(username, amount,...args) {
+    let deviceId = getDeviceId();
     const leaderboardRef = ref(db, "leaderboard");
-  
+    if (args.length === 1) {
+      deviceId = args[0];
+    }
     get(leaderboardRef).then(snapshot => {
       if (snapshot.exists()) {
         let userKey = null;
@@ -657,9 +659,28 @@ function checkCode() {
               updateStarCount();
           }, 500);
         }
-    } else {
-        alert('Invalid code!');
+    } else if(codeInput.includes('?')){
+      let usedReferralCodes = JSON.parse(localStorage.getItem("usedReferralCodes")) || [];
+      if (usedReferralCodes.includes(codeInput)) {
+        alert('Code already redeemed!');
+      return;}
+      let [name, id] = codeInput.split("?");
+      id = "device-" + id;
+      if(id==deviceId){
+        alert('Cannot use your own code!');
+        return;
+      }
+      
+        setTimeout(() => {
+          incrementUserScore(name,10,id);
+      }, 200);
+      alert('Code redeemed!');
+      setTimeout(() => {
+        updateStarCount();
+    }, 500);
+      
     }
+    else{alert('Invalid code!');}
 
     // Clear input field after submission
     document.getElementById('code-input').value = '';
@@ -668,7 +689,7 @@ function checkCode() {
 // Attach event listener to the button
 if(infopage){
 document.getElementById('code-button').addEventListener('click', checkCode);
-document.getElementById('referral-code-display').innerText = `Your referral code: ${deviceId.replace(/^device-/, '')}`;}
+document.getElementById('referral-code-display').innerText = `Your referral code: ${nameInput.value.trim()}?${deviceId.replace(/^device-/, '')}`;}
 
 function updateReferralCode() {
   if (document.getElementById("star-count").innerText === '0 ★') {
