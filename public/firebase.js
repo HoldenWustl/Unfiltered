@@ -693,8 +693,10 @@ document.getElementById('referral-code-display').innerText = `Your referral code
 
 function updateReferralCode() {
   if (document.getElementById("star-count").innerText === '0 ★') {
+    document.querySelector('.copy-btn').style.display = 'none';
       document.getElementById('referral-code-display').innerText = ``;
   } else {
+    document.querySelector('.copy-btn').style.display = 'inline-block';
       document.getElementById('referral-code-display').innerText = 
           `Your referral code: ${nameInput.value.trim()}?${deviceId.replace(/^device-/, '')}`;
   }
