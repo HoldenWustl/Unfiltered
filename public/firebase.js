@@ -674,7 +674,7 @@ function checkCode() {
         setTimeout(() => {
           incrementUserScore(name,10,id);
       }, 200);
-      alert('Code redeemed!');
+      alert('Checking Referral Code!');
       setTimeout(() => {
         updateStarCount();
     }, 500);
