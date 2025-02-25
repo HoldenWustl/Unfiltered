@@ -642,11 +642,13 @@ function checkCode() {
         // Check if the code has been redeemed before
         if (redeemedCodes.includes(codeInput)) {
             alert('Code already redeemed!');
-        } else {
+        } else if(document.getElementById("star-count").innerText=='0 ★'){
+          alert('Must have stars to redeem!');
+        }
+          else{
             // Mark the code as redeemed and update localStorage
             redeemedCodes.push(codeInput);
             localStorage.setItem('redeemedCodes', JSON.stringify(redeemedCodes));
-            
               setTimeout(() => {
                 incrementUserScore(nameInput.value.trim(),10);
             }, 200);
