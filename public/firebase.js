@@ -665,4 +665,5 @@ function checkCode() {
 
 // Attach event listener to the button
 if(infopage){
-document.getElementById('code-button').addEventListener('click', checkCode);}
+document.getElementById('code-button').addEventListener('click', checkCode);
+document.getElementById('referral-code-display').innerText = `Your referral code: ${deviceId.replace(/^device-/, '')}`;}
