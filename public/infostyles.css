@@ -689,3 +689,16 @@ button:focus{
 #referral-code-display{
     font-size:13px;
 }
+
+.copy-btn {
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.copy-btn:hover {
+  background-color: #0056b3;
+}
