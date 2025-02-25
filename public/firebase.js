@@ -660,6 +660,16 @@ function checkCode() {
           }, 500);
         }
     } else if(codeInput.includes('?')){
+        let starCountText = document.getElementById("star-count").innerText;
+
+        // Extract the numeric part of the string (removes the ' ★' part)
+        let starCount = parseInt(starCountText, 10);
+
+        // Check if the star count is greater than or equal to 20
+        if (starCount < 20) {
+          alert("You need more stars to use referral codes.");
+            return;
+        }
       let usedReferralCodes = JSON.parse(localStorage.getItem("usedReferralCodes")) || [];
       if (usedReferralCodes.includes(codeInput)) {
         alert('Code already redeemed!');
