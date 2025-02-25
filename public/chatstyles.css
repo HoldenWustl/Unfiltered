@@ -288,7 +288,7 @@ body.dark-mode {
     background-color:black;
     color: white;
   }
-  .chat-message .neutral-message{
+  .chat-message.neutral-message{
     background-color: darkgrey;
   }
   .chat-container{
@@ -630,7 +630,7 @@ body.jungle-mode #message-input {
   background-color: #2e5d2e; /* Dark green */
   color: #e0f2e0;
 }
-body.jungle-mode .chat-message .neutral-message {
+body.jungle-mode .chat-message.neutral-message {
   background-color: #070D0D;
 }
 body.jungle-mode .chat-container {
@@ -707,7 +707,7 @@ body.cyberpunk-mode .game-invite {
   background-color: #120445; /* Even darker shade */
   border: 1px solid #ff00ff;
 }
-body.cyberpunk-mode .chat-message .neutral-message{
+body.cyberpunk-mode .chat-message.neutral-message{
   background-color: pink;
 }
 body.cyberpunk-mode .points {
@@ -739,7 +739,7 @@ body.snow-mode #message-input {
   color: #e0f7fa;
   border: 1px solid #00bcd4; /* Ocean blue */
 }
-body.snow-mode .chat-message .neutral-message{
+body.snow-mode .chat-message.neutral-message{
   background-color: lightblue;
 }
 body.snow-mode .chat-container {
