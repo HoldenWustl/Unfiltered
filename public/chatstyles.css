@@ -113,7 +113,7 @@ body {
   transition: transform 0.3s ease;
 }
 .chat-message:hover {
-  transform: scale(1.1); /* Slightly enlarge the element (5% larger) */
+  transform: scale(1.05); /* Slightly enlarge the element (5% larger) */
 }
 .chat-message.user {
   background-color: #ff6a00;
