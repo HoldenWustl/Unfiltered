@@ -636,7 +636,16 @@ const codes = [
 // Check if code has been redeemed
 function checkCode() {
     const codeInput = document.getElementById('code-input').value.trim();
-    
+    let starCountText = document.getElementById("star-count").innerText;
+
+        // Extract the numeric part of the string (removes the ' ★' part)
+        let starCount = parseInt(starCountText, 10);
+
+        // Check if the star count is greater than or equal to 20
+        if (starCount < 20) {
+          alert("You need more stars to use codes.");
+            return;
+        }
     // Check if code exists in the list
     if (codes.includes(codeInput)) {
         const redeemedCodes = JSON.parse(localStorage.getItem('redeemedCodes')) || [];
@@ -644,10 +653,9 @@ function checkCode() {
         // Check if the code has been redeemed before
         if (redeemedCodes.includes(codeInput)) {
             alert('Code already redeemed!');
-        } else if(document.getElementById("star-count").innerText=='0 ★'){
-          alert('Must have stars to redeem!');
-        }
-          else{
+          return;
+        } 
+          
             // Mark the code as redeemed and update localStorage
             redeemedCodes.push(codeInput);
             localStorage.setItem('redeemedCodes', JSON.stringify(redeemedCodes));
@@ -658,18 +666,8 @@ function checkCode() {
             setTimeout(() => {
               updateStarCount();
           }, 500);
-        }
     } else if(codeInput.includes('?')){
-        let starCountText = document.getElementById("star-count").innerText;
-
-        // Extract the numeric part of the string (removes the ' ★' part)
-        let starCount = parseInt(starCountText, 10);
-
-        // Check if the star count is greater than or equal to 20
-        if (starCount < 20) {
-          alert("You need more stars to use referral codes.");
-            return;
-        }
+        
       let usedReferralCodes = JSON.parse(localStorage.getItem("usedReferralCodes")) || [];
       if (usedReferralCodes.includes(codeInput)) {
         alert('Code already redeemed!');
@@ -680,7 +678,8 @@ function checkCode() {
         alert('Cannot use your own code!');
         return;
       }
-      
+        usedReferralCodes.push(codeInput);
+        localStorage.setItem('usedReferralCodes', JSON.stringify(usedReferralCodes));
         setTimeout(() => {
           incrementUserScore(name,10,id);
       }, 200);
