@@ -686,3 +686,6 @@ button:focus{
     width: fit-content !IMPORTANT;
     font-size: 14px !IMPORTANT;
 }
+#referral-code-display{
+    font-size:13px;
+}
