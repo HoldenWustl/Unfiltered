@@ -70,3 +70,6 @@ function startVideo() {
     }
 }
 
+function copyReferralCode() {
+  navigator.clipboard.writeText(document.getElementById('referral-code-display').textContent.replace("Your referral code: ", "").trim());
+}
