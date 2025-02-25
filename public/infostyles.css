@@ -698,7 +698,12 @@ button:focus{
   cursor: pointer;
   border-radius: 5px;
   font-size: 14px;
+    height: min-content;
 }
 .copy-btn:hover {
   background-color: #0056b3;
+}
+.referral-section{
+    display:flex;
+    align-items:center;
 }
