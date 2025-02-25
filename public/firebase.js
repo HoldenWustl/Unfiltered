@@ -669,3 +669,16 @@ function checkCode() {
 if(infopage){
 document.getElementById('code-button').addEventListener('click', checkCode);
 document.getElementById('referral-code-display').innerText = `Your referral code: ${deviceId.replace(/^device-/, '')}`;}
+
+function updateReferralCode() {
+  if (document.getElementById("star-count").innerText === '0 ★') {
+      document.getElementById('referral-code-display').innerText = ``;
+  } else {
+      document.getElementById('referral-code-display').innerText = 
+          `Your referral code: ${nameInput.value.trim()}?${deviceId.replace(/^device-/, '')}`;
+  }
+}
+
+// Run updateReferralCode every second (1000 ms)
+setInterval(updateReferralCode, 200);
+
