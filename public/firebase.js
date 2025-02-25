@@ -605,3 +605,64 @@ socket.on("payment-success", (data) => {
 socket.on("disconnect", () => {
   console.log("❌ Disconnected from WebSocket server");
 });
+
+
+
+const codes = [
+    "MARIO-1985",          // Classic Mario game reference
+    "HARRY-P0TTER7",       // Harry Potter book series
+    "SPIDERMAN-2099",      // Spider-Man (future version)
+    "THE-WINNING-1",       // Inspirational theme
+    "JEDI-MASTER22",       // Star Wars reference
+    "C0D3X-RED",           // Coding + color reference
+    "R2D2-42",             // Star Wars droid
+    "IRONMAN-2025",        // Iron Man Marvel reference
+    "THOR-THUNDER",        // Thor from Marvel
+    "CAPTAIN-AMERICA-5",   // Marvel Captain America
+    "SONIC-BOOM",          // Sonic the Hedgehog
+    "G0LDEN-FURY",         // Golden Fist (martial arts vibe)
+    "BATMAN-DARK",         // Batman reference
+    "YODA-LIGHT",          // Yoda from Star Wars
+    "ALIEN-XENOMORPH",     // Alien franchise
+    "WINNER-101",          // Winning theme
+    "DELOREAN-88MPH",      // Back to the Future reference
+    "RICK-AND-MORTY-RV",   // Rick and Morty reference
+    "MATRIX-TRINITY",      // The Matrix movie reference
+];
+
+
+// Check if code has been redeemed
+function checkCode() {
+    const codeInput = document.getElementById('code-input').value.trim();
+    
+    // Check if code exists in the list
+    if (codes.includes(codeInput)) {
+        const redeemedCodes = JSON.parse(localStorage.getItem('redeemedCodes')) || [];
+
+        // Check if the code has been redeemed before
+        if (redeemedCodes.includes(codeInput)) {
+            alert('Code already redeemed!');
+        } else {
+            // Mark the code as redeemed and update localStorage
+            redeemedCodes.push(codeInput);
+            localStorage.setItem('redeemedCodes', JSON.stringify(redeemedCodes));
+            
+              setTimeout(() => {
+                incrementUserScore(nameInput.value.trim(),10);
+            }, 200);
+            alert('Code redeemed!');
+            setTimeout(() => {
+              updateStarCount();
+          }, 500);
+        }
+    } else {
+        alert('Invalid code!');
+    }
+
+    // Clear input field after submission
+    document.getElementById('code-input').value = '';
+}
+
+// Attach event listener to the button
+if(infopage){
+document.getElementById('code-button').addEventListener('click', checkCode);}
