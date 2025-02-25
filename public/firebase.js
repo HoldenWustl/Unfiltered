@@ -701,5 +701,6 @@ function updateReferralCode() {
 }
 
 // Run updateReferralCode every second (1000 ms)
-setInterval(updateReferralCode, 200);
+if(infopage){
+setInterval(updateReferralCode, 200);}
 
