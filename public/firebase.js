@@ -388,10 +388,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (startChatBtn) {
       startChatBtn.addEventListener("click", () => {
-        const nameInput = document.getElementById('name').value;
+        const nameInput = document.getElementById('name').value.trim();
 
         // Check if the name input is empty
-        if (nameInput.trim() !== "") {
+        if (nameInput !== "") {
           console.log("New user added!");
           if(startBonus>0){
             addUser(nameInput,10);
@@ -505,8 +505,8 @@ document.addEventListener("DOMContentLoaded", function() {
 const stripe = Stripe('pk_live_51QsZVcRxTYiZzB69SpU7q13vCSMYj1sJwvY7wQDYk2Rm0C8nZyeu03y7KceScHeumpgLzvHY47ilzTXxdRHE7ocR00OYLgZvea');
 
 document.getElementById('product-100-stars').addEventListener('click', async (event) => {
-    const nameInput = document.getElementById('name').value;
-    if (nameInput.trim() === "") {
+    const nameInput = document.getElementById('name').value.trim();
+    if (nameInput === "") {
         alert("Please enter your name for stars!");
     }
     else{
@@ -516,8 +516,8 @@ document.getElementById('product-100-stars').addEventListener('click', async (ev
 });
 
 document.getElementById('product-150-stars').addEventListener('click', async (event) => {
-    const nameInput = document.getElementById('name').value;
-    if (nameInput.trim() === "") {
+    const nameInput = document.getElementById('name').value.trim();
+    if (nameInput === "") {
         alert("Please enter your name for stars!");
     }
     else{
@@ -527,8 +527,8 @@ document.getElementById('product-150-stars').addEventListener('click', async (ev
 });
 
 document.getElementById('product-250-stars').addEventListener('click', async (event) => {
-    const nameInput = document.getElementById('name').value;
-    if (nameInput.trim() === "") {
+    const nameInput = document.getElementById('name').value.trim();
+    if (nameInput === "") {
         alert("Please enter your name for stars!");
     }
     else{
@@ -538,8 +538,8 @@ document.getElementById('product-250-stars').addEventListener('click', async (ev
 });
 
 document.getElementById('product-700-stars').addEventListener('click', async (event) => {
-    const nameInput = document.getElementById('name').value;
-    if (nameInput.trim() === "") {
+    const nameInput = document.getElementById('name').value.trim();
+    if (nameInput === "") {
         alert("Please enter your name for stars!");
     }
     else{
